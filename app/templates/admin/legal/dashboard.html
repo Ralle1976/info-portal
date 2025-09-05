@@ -1,0 +1,300 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Legal Compliance Dashboard - Admin{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="bg-white shadow rounded-lg p-6">
+        <h1 class="text-2xl font-bold text-gray-900 mb-2">Legal Compliance Dashboard</h1>
+        <p class="text-gray-600">Thailand PDPA und EU DSGVO Compliance Management</p>
+    </div>
+
+    <!-- Compliance Status Overview -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Compliance Score -->
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        {% if compliance_status.compliance_score >= 90 %}
+                            <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                </svg>
+                            </div>
+                        {% elif compliance_status.compliance_score >= 70 %}
+                            <div class="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center">
+                                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                </svg>
+                            </div>
+                        {% else %}
+                            <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
+                                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                </svg>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Compliance Score</dt>
+                            <dd class="text-lg font-medium text-gray-900">{{ compliance_status.compliance_score }}%</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Consents -->
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Aktive Einwilligungen</dt>
+                            <dd class="text-lg font-medium text-gray-900">{{ compliance_status.active_consents }}</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending Requests -->
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
+                            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Ausstehende Anfragen</dt>
+                            <dd class="text-lg font-medium text-gray-900">{{ compliance_status.pending_data_requests }}</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Overdue Requests -->
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
+                            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Überfällige Anfragen</dt>
+                            <dd class="text-lg font-medium text-gray-900">{{ compliance_status.overdue_requests }}</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Missing Documents Alert -->
+    {% if compliance_status.missing_documents %}
+    <div class="bg-red-50 border-l-4 border-red-400 p-4">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+            </div>
+            <div class="ml-3">
+                <h3 class="text-sm font-medium text-red-800">Fehlende Rechtsdokumente</h3>
+                <div class="mt-2 text-sm text-red-700">
+                    <p>Die folgenden Rechtsdokumente fehlen für vollständige Compliance:</p>
+                    <ul class="list-disc list-inside mt-2">
+                        {% for doc in compliance_status.missing_documents %}
+                        <li>{{ doc }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="mt-4">
+                    <a href="{{ url_for('legal_admin.manage_documents') }}" 
+                       class="bg-red-100 text-red-800 px-4 py-2 rounded hover:bg-red-200 transition-colors">
+                        Dokumente verwalten
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Quick Actions -->
+    <div class="bg-white shadow rounded-lg p-6">
+        <h2 class="text-lg font-medium text-gray-900 mb-4">Schnellaktionen</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <a href="{{ url_for('legal_admin.manage_documents') }}" 
+               class="bg-blue-50 border border-blue-200 rounded-lg p-4 hover:bg-blue-100 transition-colors">
+                <div class="flex items-center">
+                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <div class="ml-3">
+                        <p class="text-sm font-medium text-gray-900">Rechtsdokumente</p>
+                        <p class="text-sm text-gray-500">Verwalten</p>
+                    </div>
+                </div>
+            </a>
+
+            <a href="{{ url_for('legal_admin.manage_data_requests') }}" 
+               class="bg-orange-50 border border-orange-200 rounded-lg p-4 hover:bg-orange-100 transition-colors">
+                <div class="flex items-center">
+                    <svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    <div class="ml-3">
+                        <p class="text-sm font-medium text-gray-900">Datenanfragen</p>
+                        <p class="text-sm text-gray-500">Bearbeiten</p>
+                    </div>
+                </div>
+            </a>
+
+            <a href="{{ url_for('legal_admin.legal_settings') }}" 
+               class="bg-green-50 border border-green-200 rounded-lg p-4 hover:bg-green-100 transition-colors">
+                <div class="flex items-center">
+                    <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    <div class="ml-3">
+                        <p class="text-sm font-medium text-gray-900">Legal Settings</p>
+                        <p class="text-sm text-gray-500">Konfigurieren</p>
+                    </div>
+                </div>
+            </a>
+
+            <form method="POST" action="{{ url_for('legal_admin.cleanup_expired_data') }}" class="inline">
+                <button type="submit" 
+                        onclick="return confirm('Sind Sie sicher, dass Sie abgelaufene Daten bereinigen möchten?')"
+                        class="w-full bg-gray-50 border border-gray-200 rounded-lg p-4 hover:bg-gray-100 transition-colors text-left">
+                    <div class="flex items-center">
+                        <svg class="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                        </svg>
+                        <div class="ml-3">
+                            <p class="text-sm font-medium text-gray-900">Datenbereinigung</p>
+                            <p class="text-sm text-gray-500">Starten</p>
+                        </div>
+                    </div>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Recent Compliance Logs -->
+    <div class="bg-white shadow rounded-lg">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+                <h2 class="text-lg font-medium text-gray-900">Aktuelle Compliance-Logs</h2>
+                <a href="{{ url_for('legal_admin.view_compliance_logs') }}" 
+                   class="text-blue-600 hover:text-blue-800 transition-colors">
+                    Alle anzeigen →
+                </a>
+            </div>
+        </div>
+        <div class="px-6 py-4">
+            {% if recent_logs %}
+            <div class="space-y-4">
+                {% for log in recent_logs[:10] %}
+                <div class="flex items-start space-x-3">
+                    <div class="flex-shrink-0">
+                        {% if log.severity == 'critical' %}
+                            <div class="w-2 h-2 bg-red-500 rounded-full mt-2"></div>
+                        {% elif log.severity == 'warning' %}
+                            <div class="w-2 h-2 bg-yellow-500 rounded-full mt-2"></div>
+                        {% else %}
+                            <div class="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
+                        {% endif %}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm text-gray-900">
+                            <span class="font-medium">{{ log.log_type }}</span>: {{ log.action }}
+                        </p>
+                        <p class="text-sm text-gray-500">
+                            {{ log.created_at.strftime('%d.%m.%Y %H:%M') }}
+                            {% if log.compliance_framework %}
+                                · {{ log.compliance_framework | join(', ') }}
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-gray-500 text-center py-4">Keine Logs verfügbar</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Pending Data Requests -->
+    {% if pending_requests %}
+    <div class="bg-white shadow rounded-lg">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+                <h2 class="text-lg font-medium text-gray-900">Ausstehende Datenanfragen</h2>
+                <a href="{{ url_for('legal_admin.manage_data_requests') }}" 
+                   class="text-blue-600 hover:text-blue-800 transition-colors">
+                    Alle verwalten →
+                </a>
+            </div>
+        </div>
+        <div class="divide-y divide-gray-200">
+            {% for request in pending_requests[:5] %}
+            <div class="px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-900">
+                            {{ request.request_type.title() }} Anfrage
+                        </p>
+                        <p class="text-sm text-gray-500">
+                            {{ request.email }} · {{ request.created_at.strftime('%d.%m.%Y') }}
+                            {% if request.deadline < (now|default(datetime.utcnow())) %}
+                                <span class="text-red-600 font-medium">· ÜBERFÄLLIG</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div class="flex space-x-2">
+                        {% if request.status == 'pending' %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                Ausstehend
+                            </span>
+                        {% elif request.status == 'verified' %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                Verifiziert
+                            </span>
+                        {% elif request.status == 'processing' %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                                Bearbeitung
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,1372 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ t('admin.settings_management.title') }}{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+    <div class="mb-6 flex justify-between items-start">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900">{{ t('admin.settings_management.title') }}</h1>
+            <p class="mt-2 text-gray-600">{{ t('admin.settings_management.description') }}</p>
+        </div>
+        <button onclick="showHelpModal()" 
+                class="flex items-center px-4 py-2 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors">
+            <i class="fas fa-question-circle mr-2"></i>
+{{ t('admin.settings_management.help_tips') }}
+        </button>
+    </div>
+    
+    <!-- Settings Tabs -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200" x-data="{ activeTab: 'contact' }">
+        <!-- Tab Navigation -->
+        <div class="border-b border-gray-200">
+            <nav class="-mb-px flex space-x-8 px-6">
+                <button @click="activeTab = 'contact'; scrollToSection('contact')" 
+                        :class="{ 'border-blue-500 text-blue-600': activeTab === 'contact', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'contact' }"
+                        class="py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap">
+                    <i class="fas fa-address-card mr-2"></i>{{ t('admin.settings_management.tabs.contact_location') }}
+                </button>
+                <button @click="activeTab = 'appearance'; scrollToSection('appearance')" 
+                        :class="{ 'border-blue-500 text-blue-600': activeTab === 'appearance', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'appearance' }"
+                        class="py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap">
+                    <i class="fas fa-palette mr-2"></i>{{ t('admin.settings_management.tabs.design_theme') }}
+                </button>
+                <button @click="activeTab = 'system'; scrollToSection('system')" 
+                        :class="{ 'border-blue-500 text-blue-600': activeTab === 'system', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'system' }"
+                        class="py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap">
+                    <i class="fas fa-cogs mr-2"></i>{{ t('admin.settings_management.tabs.system') }}
+                </button>
+                <button @click="activeTab = 'logs'; scrollToSection('logs')" 
+                        :class="{ 'border-blue-500 text-blue-600': activeTab === 'logs', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'logs' }"
+                        class="py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap">
+                    <i class="fas fa-file-alt mr-2"></i>{{ t('admin.settings_management.tabs.system_logs') }}
+                </button>
+            </nav>
+        </div>
+        
+        <!-- Contact & Location Tab -->
+        <div x-show="activeTab === 'contact'" class="p-6">
+            <form id="contact-settings-form" method="POST" class="space-y-6">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Contact Information -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-medium text-gray-900">{{ t('admin.settings_management.contact_tab.contact_info') }}</h3>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+{{ t('admin.settings_management.contact_tab.site_name') }}
+                                <button type="button" class="ml-1 text-gray-400 hover:text-gray-600" 
+                                        onclick="showTooltip(event, 'Name der Website/des Labors')"
+                                    <i class="fas fa-info-circle text-xs"></i>
+                                </button>
+                            </label>
+                            <input type="text" id="site-name" name="site_name" placeholder="ห้องปฏิบัติการพัทยา - เจาะเลือด" 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+{{ t('admin.settings_management.contact_tab.phone') }}
+                                <button type="button" class="ml-1 text-gray-400 hover:text-gray-600" 
+                                        onclick="showTooltip(event, 'Telefonnummer für Termine und Anfragen')"
+                                    <i class="fas fa-info-circle text-xs"></i>
+                                </button>
+                            </label>
+                            <input type="tel" id="contact-phone" name="contact_phone" placeholder="+66 XX XXX XXXX" 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+{{ t('admin.settings_management.contact_tab.email') }}
+                                <button type="button" class="ml-1 text-gray-400 hover:text-gray-600" 
+                                        onclick="showTooltip(event, 'E-Mail-Adresse für Kontakt')"
+                                    <i class="fas fa-info-circle text-xs"></i>
+                                </button>
+                            </label>
+                            <input type="email" id="contact-email" name="contact_email" placeholder="info@labor-pattaya.com" 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('admin.settings_management.contact_tab.website') }}</label>
+                            <input type="url" id="contact-website" placeholder="https://labor-pattaya.com" 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    </div>
+                    
+                    <!-- Location -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-medium text-gray-900">{{ t('admin.settings_management.contact_tab.location_info') }}</h3>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('admin.settings_management.contact_tab.address') }}</label>
+                            <textarea id="location-address" rows="3" placeholder="ถนน, เลขที่&#10;พัทยา, ประเทศไทย" 
+                                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('admin.settings_management.contact_tab.latitude') }}</label>
+                                <input type="number" step="any" id="location-latitude" placeholder="12.923556" 
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('admin.settings_management.contact_tab.longitude') }}</label>
+                                <input type="number" step="any" id="location-longitude" placeholder="100.882507" 
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                        </div>
+                        
+                        <div class="flex space-x-2">
+                            <button type="button" onclick="geocodeFromAddress()" 
+                                    class="flex-1 px-3 py-2 bg-orange-600 text-white text-sm rounded-md hover:bg-orange-700">
+                                <i class="fas fa-map-marker-alt mr-2"></i>Auto-Koordinaten
+                            </button>
+                            <button type="button" onclick="getCurrentLocation()" 
+                                    class="flex-1 px-3 py-2 bg-green-600 text-white text-sm rounded-md hover:bg-green-700">
+                                <i class="fas fa-location-arrow mr-2"></i>{{ t('admin.settings_management.contact_tab.use_current_location') }}
+                            </button>
+                            <button type="button" onclick="previewLocation()" 
+                                    class="flex-1 px-3 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700">
+                                <i class="fas fa-map-marker-alt mr-2"></i>{{ t('admin.settings_management.contact_tab.show_location') }}
+                            </button>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('admin.settings_management.contact_tab.directions') }}</label>
+                            <textarea id="location-directions" rows="3" placeholder="ที่จอดรถ, รถสาธารณะ, อื่นๆ" 
+                                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Services -->
+                <div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">{{ t('admin.settings_management.contact_tab.services.title') }}</h3>
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <div id="services-list" class="space-y-2">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                        <button type="button" onclick="addService()" 
+                                class="mt-2 text-sm text-blue-600 hover:text-blue-800 flex items-center">
+                            <i class="fas fa-plus mr-1"></i>{{ t('admin.settings_management.contact_tab.services.add') }}
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="loadContactSettings()" 
+                            class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                        {{ t('admin.settings_management.actions.reset') }}
+                    </button>
+                    <button type="submit" 
+                            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                        {{ t('admin.settings_management.actions.save') }}
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Appearance Tab -->
+        <div x-show="activeTab === 'appearance'" class="p-6">
+            <form id="appearance-settings-form" class="space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Theme Settings -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-medium text-gray-900">{{ t('admin.settings_management.appearance_tab.theme.title') }}</h3>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('admin.settings_management.appearance_tab.theme.color_scheme') }}</label>
+                            <div class="grid grid-cols-3 gap-3">
+                                <label class="relative cursor-pointer">
+                                    <input type="radio" name="color-scheme" value="blue" class="sr-only peer">
+                                    <div class="w-full h-12 rounded-lg bg-gradient-to-r from-blue-400 to-blue-600 peer-checked:ring-2 peer-checked:ring-blue-500 peer-checked:ring-offset-2"></div>
+                                    <span class="block text-center text-xs mt-1">{{ t('admin.settings_management.appearance_tab.theme.colors.blue') }}</span>
+                                </label>
+                                <label class="relative cursor-pointer">
+                                    <input type="radio" name="color-scheme" value="teal" class="sr-only peer">
+                                    <div class="w-full h-12 rounded-lg bg-gradient-to-r from-teal-400 to-teal-600 peer-checked:ring-2 peer-checked:ring-teal-500 peer-checked:ring-offset-2"></div>
+                                    <span class="block text-center text-xs mt-1">{{ t('admin.settings_management.appearance_tab.theme.colors.teal') }}</span>
+                                </label>
+                                <label class="relative cursor-pointer">
+                                    <input type="radio" name="color-scheme" value="coral" class="sr-only peer">
+                                    <div class="w-full h-12 rounded-lg bg-gradient-to-r from-orange-400 to-red-400 peer-checked:ring-2 peer-checked:ring-orange-500 peer-checked:ring-offset-2"></div>
+                                    <span class="block text-center text-xs mt-1">{{ t('admin.settings_management.appearance_tab.theme.colors.coral') }}</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('admin.settings_management.appearance_tab.theme.font_size') }}</label>
+                            <select id="font-size" 
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="small">{{ t('admin.settings_management.appearance_tab.theme.font_sizes.small') }}</option>
+                                <option value="medium" selected>{{ t('admin.settings_management.appearance_tab.theme.font_sizes.medium') }}</option>
+                                <option value="large">{{ t('admin.settings_management.appearance_tab.theme.font_sizes.large') }}</option>
+                                <option value="xl">{{ t('admin.settings_management.appearance_tab.theme.font_sizes.xl') }}</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="flex items-center">
+                                <input type="checkbox" id="high-contrast" class="rounded">
+                                <span class="ml-2 text-sm text-gray-700">{{ t('admin.settings_management.appearance_tab.theme.high_contrast') }}</span>
+                            </label>
+                        </div>
+                        
+                        <div>
+                            <label class="flex items-center">
+                                <input type="checkbox" id="dark-mode" class="rounded">
+                                <span class="ml-2 text-sm text-gray-700">{{ t('admin.settings_management.appearance_tab.theme.dark_mode') }}</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Logo & Branding -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-medium text-gray-900">{{ t('admin.settings_management.appearance_tab.branding.title') }}</h3>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('admin.settings_management.appearance_tab.branding.logo_url') }}</label>
+                            <input type="url" id="logo-url" placeholder="https://beispiel.com/logo.png" 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <p class="text-xs text-gray-500 mt-1">{{ t('admin.settings_management.appearance_tab.branding.logo_help') }}</p>
+                        </div>
+                        
+                        <div id="logo-preview" class="hidden">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('admin.settings_management.appearance_tab.branding.preview') }}</label>
+                            <div class="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                                <img id="logo-preview-img" src="" alt="Logo Preview" class="max-h-16 mx-auto">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('admin.settings_management.appearance_tab.branding.favicon_url') }}</label>
+                            <input type="url" id="favicon-url" placeholder="https://beispiel.com/favicon.ico" 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Preview -->
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h4 class="text-sm font-medium text-gray-900 mb-2">{{ t('admin.settings_management.appearance_tab.preview.title') }}</h4>
+                    <div id="theme-preview" class="bg-white rounded-lg shadow-sm p-4 border">
+                        <div class="flex items-center space-x-3 mb-3">
+                            <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                                <i class="fas fa-flask text-white text-sm"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-medium">Labor Pattaya</h5>
+                                <p class="text-sm text-gray-500">{{ t('admin.settings_management.appearance_tab.preview.hours') }}</p>
+                            </div>
+                        </div>
+                        <div class="bg-blue-50 border-l-4 border-blue-400 p-3">
+                            <p class="text-sm">{{ t('admin.settings_management.appearance_tab.preview.announcement') }}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="loadAppearanceSettings()" 
+                            class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                        {{ t('admin.settings_management.actions.reset') }}
+                    </button>
+                    <button type="submit" 
+                            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                        {{ t('admin.settings_management.actions.save') }}
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- System Tab -->
+        <div x-show="activeTab === 'system'" class="p-6">
+            <div class="space-y-6">
+                <!-- System Info -->
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">{{ t('admin.settings_management.system_tab.system_info.title') }}</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <span class="font-medium text-gray-700">{{ t('admin.settings_management.system_tab.system_info.version') }}</span>
+                            <span class="text-gray-600" id="system-version">1.0.0</span>
+                        </div>
+                        <div>
+                            <span class="font-medium text-gray-700">{{ t('admin.settings_management.system_tab.system_info.uptime') }}</span>
+                            <span class="text-gray-600" id="system-uptime">--</span>
+                        </div>
+                        <div>
+                            <span class="font-medium text-gray-700">{{ t('admin.settings_management.system_tab.system_info.database') }}</span>
+                            <span class="text-gray-600" id="db-status">SQLite</span>
+                        </div>
+                        <div>
+                            <span class="font-medium text-gray-700">{{ t('admin.settings_management.system_tab.system_info.timezone') }}</span>
+                            <span class="text-gray-600">Asia/Bangkok</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Security & Admin -->
+                <div class="bg-white border border-gray-200 rounded-lg p-4">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">{{ t('admin.settings_management.system_tab.security.title') }}</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <a href="{{ url_for('admin.change_password') }}" 
+                           class="flex items-center justify-center px-4 py-3 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors">
+                            <i class="fas fa-key mr-2"></i>{{ t('admin.settings_management.system_tab.security.change_password') }}
+                        </a>
+                        <div class="flex items-center justify-center px-4 py-3 bg-gray-100 text-gray-500 rounded-md">
+                            <i class="fas fa-shield-alt mr-2"></i>2FA (coming soon)
+                        </div>
+                    </div>
+                    <div class="mt-4 text-sm text-gray-600">
+                        <p><i class="fas fa-info-circle mr-1 text-blue-500"></i> 
+                           {{ t('admin.settings_management.system_tab.security.password_requirements') }}</p>
+                    </div>
+                </div>
+                
+                <!-- Cache & Maintenance -->
+                <div class="bg-white border border-gray-200 rounded-lg p-4">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">{{ t('admin.settings_management.system_tab.maintenance.title') }}</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                        <button onclick="clearCache()" 
+                                class="flex items-center justify-center px-4 py-3 bg-yellow-500 text-white rounded-md hover:bg-yellow-600">
+                            <i class="fas fa-sync-alt mr-2"></i>{{ t('admin.settings_management.system_tab.maintenance.clear_cache') }}
+                        </button>
+                        <button onclick="regenerateQR()" 
+                                class="flex items-center justify-center px-4 py-3 bg-green-500 text-white rounded-md hover:bg-green-600">
+                            <i class="fas fa-qrcode mr-2"></i>{{ t('admin.settings_management.system_tab.maintenance.regenerate_qr') }}
+                        </button>
+                        <button onclick="exportSettings()" 
+                                class="flex items-center justify-center px-4 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                            <i class="fas fa-download mr-2"></i>{{ t('admin.settings_management.system_tab.maintenance.export_settings') }}
+                        </button>
+                        <button onclick="showImportModal()" 
+                                class="flex items-center justify-center px-4 py-3 bg-purple-500 text-white rounded-md hover:bg-purple-600">
+                            <i class="fas fa-upload mr-2"></i>{{ t('admin.settings_management.system_tab.maintenance.import_settings') }}
+                        </button>
+                    </div>
+                    
+                    <!-- Translation Validator -->
+                    <div class="mt-4">
+                        <a href="{{ url_for('admin.validate_translations') }}" 
+                           class="flex items-center justify-center px-4 py-3 bg-thai-turquoise text-white rounded-md hover:bg-thai-turquoise-dark">
+                            <i class="fas fa-language mr-2"></i>{{ t('admin.settings_management.system_tab.maintenance.validate_translations') }}
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Backup -->
+                <div class="bg-white border border-gray-200 rounded-lg p-4">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">{{ t('admin.settings_management.system_tab.backup.title') }}</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div>
+                                <p class="font-medium text-gray-900">{{ t('admin.settings_management.system_tab.backup.full_backup') }}</p>
+                                <p class="text-sm text-gray-500">{{ t('admin.settings_management.system_tab.backup.full_backup_desc') }}</p>
+                            </div>
+                            <button onclick="createBackup()" 
+                                    class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                                <i class="fas fa-save mr-2"></i>{{ t('admin.settings_management.system_tab.backup.create') }}
+                            </button>
+                        </div>
+                        <div id="backup-history" class="space-y-2">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Logs Tab -->
+        <div x-show="activeTab === 'logs'" class="p-6">
+            <div class="space-y-4">
+                <!-- Log Controls -->
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0 sm:space-x-4">
+                    <div class="flex items-center space-x-3">
+                        <select id="log-level-filter" 
+                                class="px-3 py-2 border border-gray-300 rounded-md text-sm">
+                            <option value="">{{ t('admin.settings_management.logs_tab.filters.all_levels') }}</option>
+                            <option value="ERROR">{{ t('admin.settings_management.logs_tab.levels.error') }}</option>
+                            <option value="WARNING">{{ t('admin.settings_management.logs_tab.levels.warning') }}</option>
+                            <option value="INFO">{{ t('admin.settings_management.logs_tab.levels.info') }}</option>
+                            <option value="DEBUG">{{ t('admin.settings_management.logs_tab.levels.debug') }}</option>
+                        </select>
+                        <select id="log-source-filter" 
+                                class="px-3 py-2 border border-gray-300 rounded-md text-sm">
+                            <option value="">{{ t('admin.settings_management.logs_tab.filters.all_sources') }}</option>
+                            <option value="admin">{{ t('admin.settings_management.logs_tab.sources.admin') }}</option>
+                            <option value="public">{{ t('admin.settings_management.logs_tab.sources.public') }}</option>
+                            <option value="api">{{ t('admin.settings_management.logs_tab.sources.api') }}</option>
+                            <option value="system">{{ t('admin.settings_management.logs_tab.sources.system') }}</option>
+                        </select>
+                        <input type="date" id="log-date-filter" 
+                               class="px-3 py-2 border border-gray-300 rounded-md text-sm">
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="refreshLogs()" 
+                                class="px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm">
+                            <i class="fas fa-refresh mr-2"></i>{{ t('admin.settings_management.logs_tab.actions.refresh') }}
+                        </button>
+                        <button onclick="clearLogs()" 
+                                class="px-3 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 text-sm">
+                            <i class="fas fa-trash mr-2"></i>{{ t('admin.settings_management.logs_tab.actions.clear') }}
+                        </button>
+                        <button onclick="downloadLogs()" 
+                                class="px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 text-sm">
+                            <i class="fas fa-download mr-2"></i>{{ t('admin.settings_management.logs_tab.actions.download') }}
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Live Log Display -->
+                <div class="bg-black rounded-lg p-4 font-mono text-sm max-h-96 overflow-y-auto" id="log-display">
+                    <div class="text-green-400">{{ t('admin.settings_management.logs_tab.loading') }}</div>
+                </div>
+                
+                <!-- Log Statistics -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-3 text-center">
+                        <div class="text-2xl font-bold text-red-600" id="error-count">0</div>
+                        <div class="text-sm text-red-500">{{ t('admin.settings_management.logs_tab.stats.errors') }}</div>
+                    </div>
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-center">
+                        <div class="text-2xl font-bold text-yellow-600" id="warning-count">0</div>
+                        <div class="text-sm text-yellow-500">{{ t('admin.settings_management.logs_tab.stats.warnings') }}</div>
+                    </div>
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 text-center">
+                        <div class="text-2xl font-bold text-blue-600" id="info-count">0</div>
+                        <div class="text-sm text-blue-500">{{ t('admin.settings_management.logs_tab.stats.info') }}</div>
+                    </div>
+                    <div class="bg-gray-50 border border-gray-200 rounded-lg p-3 text-center">
+                        <div class="text-2xl font-bold text-gray-600" id="total-count">0</div>
+                        <div class="text-sm text-gray-500">{{ t('admin.settings_management.logs_tab.stats.total') }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tooltip -->
+<div id="tooltip" class="fixed z-50 px-3 py-2 bg-gray-800 text-white text-sm rounded-lg shadow-lg max-w-xs hidden" style="pointer-events: none;">
+    <div id="tooltip-content"></div>
+    <div id="tooltip-arrow" class="absolute w-2 h-2 bg-gray-800 transform rotate-45" style="top: -4px; left: 50%; transform: translateX(-50%) rotate(45deg);"></div>
+</div>
+
+<!-- Help Modal -->
+<div id="help-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden" style="z-index: 1000;">
+    <div class="relative top-10 mx-auto p-5 border max-w-4xl shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-medium text-gray-900">
+                    <i class="fas fa-question-circle text-blue-500 mr-2"></i>
+                    {{ t('admin.settings_management.help_modal.title') }}
+                </h3>
+                <button onclick="hideHelpModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="space-y-6 max-h-96 overflow-y-auto">
+                <div>
+                    <h4 class="text-lg font-semibold text-gray-800 mb-3">
+                        <i class="fas fa-address-card text-blue-500 mr-2"></i>
+                        {{ t('admin.settings_management.help_modal.sections.contact.title') }}
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div class="space-y-2">
+                            <div><strong>{{ t('admin.settings_management.help_modal.sections.contact.fields.name') }}:</strong> {{ t('admin.settings_management.help_modal.sections.contact.descriptions.name') }}</div>
+                            <div><strong>{{ t('admin.settings_management.help_modal.sections.contact.fields.phone') }}:</strong> {{ t('admin.settings_management.help_modal.sections.contact.descriptions.phone') }}</div>
+                            <div><strong>{{ t('admin.settings_management.help_modal.sections.contact.fields.email') }}:</strong> {{ t('admin.settings_management.help_modal.sections.contact.descriptions.email') }}</div>
+                            <div><strong>{{ t('admin.settings_management.help_modal.sections.contact.fields.website') }}:</strong> {{ t('admin.settings_management.help_modal.sections.contact.descriptions.website') }}</div>
+                        </div>
+                        <div class="space-y-2">
+                            <div><strong>{{ t('admin.settings_management.help_modal.sections.contact.fields.address') }}:</strong> {{ t('admin.settings_management.help_modal.sections.contact.descriptions.address') }}</div>
+                            <div><strong>{{ t('admin.settings_management.help_modal.sections.contact.fields.coordinates') }}:</strong> {{ t('admin.settings_management.help_modal.sections.contact.descriptions.coordinates') }}</div>
+                            <div><strong>{{ t('admin.settings_management.help_modal.sections.contact.fields.directions') }}:</strong> {{ t('admin.settings_management.help_modal.sections.contact.descriptions.directions') }}</div>
+                            <div><strong>{{ t('admin.settings_management.help_modal.sections.contact.fields.services') }}:</strong> {{ t('admin.settings_management.help_modal.sections.contact.descriptions.services') }}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold text-gray-800 mb-3">
+                        <i class="fas fa-palette text-purple-500 mr-2"></i>
+                        {{ t('admin.settings_management.help_modal.sections.appearance.title') }}
+                    </h4>
+                    <div class="text-sm space-y-2">
+                        <div><strong>{{ t('admin.settings_management.help_modal.sections.appearance.fields.color_scheme') }}:</strong> {{ t('admin.settings_management.help_modal.sections.appearance.descriptions.color_scheme') }}</div>
+                        <div><strong>{{ t('admin.settings_management.help_modal.sections.appearance.fields.font_size') }}:</strong> {{ t('admin.settings_management.help_modal.sections.appearance.descriptions.font_size') }}</div>
+                        <div><strong>{{ t('admin.settings_management.help_modal.sections.appearance.fields.high_contrast') }}:</strong> {{ t('admin.settings_management.help_modal.sections.appearance.descriptions.high_contrast') }}</div>
+                        <div><strong>{{ t('admin.settings_management.help_modal.sections.appearance.fields.branding') }}:</strong> {{ t('admin.settings_management.help_modal.sections.appearance.descriptions.branding') }}</div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold text-gray-800 mb-3">
+                        <i class="fas fa-cogs text-green-500 mr-2"></i>
+                        {{ t('admin.settings_management.help_modal.sections.system.title') }}
+                    </h4>
+                    <div class="text-sm space-y-2">
+                        <div><strong>{{ t('admin.settings_management.help_modal.sections.system.fields.clear_cache') }}:</strong> {{ t('admin.settings_management.help_modal.sections.system.descriptions.clear_cache') }}</div>
+                        <div><strong>{{ t('admin.settings_management.help_modal.sections.system.fields.regenerate_qr') }}:</strong> {{ t('admin.settings_management.help_modal.sections.system.descriptions.regenerate_qr') }}</div>
+                        <div><strong>{{ t('admin.settings_management.help_modal.sections.system.fields.export_settings') }}:</strong> {{ t('admin.settings_management.help_modal.sections.system.descriptions.export_settings') }}</div>
+                        <div><strong>{{ t('admin.settings_management.help_modal.sections.system.fields.create_backup') }}:</strong> {{ t('admin.settings_management.help_modal.sections.system.descriptions.create_backup') }}</div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold text-gray-800 mb-3">
+                        <i class="fas fa-file-alt text-orange-500 mr-2"></i>
+                        {{ t('admin.settings_management.help_modal.sections.logs.title') }}
+                    </h4>
+                    <div class="text-sm space-y-2">
+                        <div><strong>{{ t('admin.settings_management.help_modal.sections.logs.fields.log_level') }}:</strong> {{ t('admin.settings_management.help_modal.sections.logs.descriptions.log_level') }}</div>
+                        <div><strong>{{ t('admin.settings_management.help_modal.sections.logs.fields.source') }}:</strong> {{ t('admin.settings_management.help_modal.sections.logs.descriptions.source') }}</div>
+                        <div><strong>{{ t('admin.settings_management.help_modal.sections.logs.fields.date') }}:</strong> {{ t('admin.settings_management.help_modal.sections.logs.descriptions.date') }}</div>
+                        <div><strong>{{ t('admin.settings_management.help_modal.sections.logs.fields.download') }}:</strong> {{ t('admin.settings_management.help_modal.sections.logs.descriptions.download') }}</div>
+                    </div>
+                </div>
+                
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <h5 class="font-semibold text-blue-800 mb-2">
+                        <i class="fas fa-lightbulb mr-2"></i>{{ t('admin.settings_management.help_modal.tips.title') }}
+                    </h5>
+                    <ul class="text-sm text-blue-700 space-y-1">
+                        <li>• {{ t('admin.settings_management.help_modal.tips.items.gps_coordinates') }}</li>
+                        <li>• {{ t('admin.settings_management.help_modal.tips.items.color_schemes') }}</li>
+                        <li>• {{ t('admin.settings_management.help_modal.tips.items.high_contrast') }}</li>
+                        <li>• {{ t('admin.settings_management.help_modal.tips.items.regular_backups') }}</li>
+                        <li>• {{ t('admin.settings_management.help_modal.tips.items.monitor_logs') }}</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                    <h5 class="font-semibold text-yellow-800 mb-2">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>{{ t('admin.settings_management.help_modal.warnings.title') }}
+                    </h5>
+                    <ul class="text-sm text-yellow-700 space-y-1">
+                        <li>• {{ t('admin.settings_management.help_modal.warnings.items.immediate_changes') }}</li>
+                        <li>• {{ t('admin.settings_management.help_modal.warnings.items.qr_reprint') }}</li>
+                        <li>• {{ t('admin.settings_management.help_modal.warnings.items.cache_performance') }}</li>
+                        <li>• {{ t('admin.settings_management.help_modal.warnings.items.backup_security') }}</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="mt-6 flex justify-end">
+                <button onclick="hideHelpModal()" 
+                        class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                    {{ t('admin.settings_management.help_modal.close') }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Import Modal -->
+<div id="import-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden" style="z-index: 1000;">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-medium text-gray-900">{{ t('admin.settings_management.import_modal.title') }}</h3>
+                <button onclick="hideImportModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="import-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('admin.settings_management.import_modal.file_label') }}</label>
+                    <input type="file" id="import-file" accept=".json" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="flex justify-end space-x-2">
+                    <button type="button" onclick="hideImportModal()" 
+                            class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">
+                        {{ t('admin.settings_management.actions.cancel') }}
+                    </button>
+                    <button type="submit" 
+                            class="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700">
+                        {{ t('admin.settings_management.import_modal.import') }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+let services = [];
+let logRefreshInterval;
+
+// Initialize page
+document.addEventListener('DOMContentLoaded', function() {
+    loadContactSettings();
+    loadAppearanceSettings();
+    loadSystemInfo();
+    loadLogs();
+    
+    // Setup form handlers
+    document.getElementById('contact-settings-form').addEventListener('submit', saveContactSettings);
+    document.getElementById('appearance-settings-form').addEventListener('submit', saveAppearanceSettings);
+    document.getElementById('import-form').addEventListener('submit', importSettings);
+    
+    // Setup log filters
+    document.getElementById('log-level-filter').addEventListener('change', filterLogs);
+    document.getElementById('log-source-filter').addEventListener('change', filterLogs);
+    document.getElementById('log-date-filter').addEventListener('change', filterLogs);
+    
+    // Setup logo preview
+    document.getElementById('logo-url').addEventListener('input', function() {
+        const url = this.value;
+        const preview = document.getElementById('logo-preview');
+        const img = document.getElementById('logo-preview-img');
+        
+        if (url) {
+            img.src = url;
+            img.onload = () => preview.classList.remove('hidden');
+            img.onerror = () => preview.classList.add('hidden');
+        } else {
+            preview.classList.add('hidden');
+        }
+    });
+    
+    // Start log auto-refresh
+    logRefreshInterval = setInterval(refreshLogs, 30000); // Every 30 seconds
+});
+
+// Contact Settings
+function loadContactSettings() {
+    fetch('/admin/api/contact-settings')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const settings = data.settings;
+                document.getElementById('site-name').value = settings.site_name || '';
+                document.getElementById('contact-phone').value = settings.phone || '';
+                document.getElementById('contact-email').value = settings.email || '';
+                document.getElementById('contact-website').value = settings.website || '';
+                document.getElementById('location-address').value = settings.address || '';
+                document.getElementById('location-latitude').value = settings.latitude || '';
+                document.getElementById('location-longitude').value = settings.longitude || '';
+                document.getElementById('location-directions').value = settings.directions || '';
+                
+                // Ensure services are in proper format
+                services = settings.services || [];
+                // Make sure each service has the proper structure
+                services = services.map(service => {
+                    if (typeof service === 'string') {
+                        return {
+                            name: {
+                                de: service,
+                                en: '',
+                                th: ''
+                            }
+                        };
+                    }
+                    return service;
+                });
+                renderServices();
+            }
+        })
+        .catch(error => {
+            console.error('Failed to load contact settings:', error);
+        });
+}
+
+function saveContactSettings(event) {
+    event.preventDefault();
+    
+    // Get CSRF token from hidden input
+    const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+    
+    const formData = {
+        site_name: document.getElementById('site-name').value,
+        phone: document.getElementById('contact-phone').value,
+        email: document.getElementById('contact-email').value,
+        website: document.getElementById('contact-website').value,
+        address: document.getElementById('location-address').value,
+        latitude: parseFloat(document.getElementById('location-latitude').value) || null,
+        longitude: parseFloat(document.getElementById('location-longitude').value) || null,
+        directions: document.getElementById('location-directions').value,
+        services: services,
+        csrf_token: csrfToken
+    };
+    
+    fetch('/admin/api/contact-settings', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': csrfToken
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            adminUtils.showNotification('Kontakteinstellungen erfolgreich gespeichert', 'success');
+        } else {
+            adminUtils.showNotification('Fehler beim Speichern: ' + data.error, 'error');
+        }
+    })
+    .catch(error => {
+        adminUtils.showNotification('Netzwerkfehler beim Speichern', 'error');
+        console.error('Save error:', error);
+    });
+}
+
+function renderServices() {
+    const listDiv = document.getElementById('services-list');
+    listDiv.innerHTML = '';
+    
+    services.forEach((service, index) => {
+        // Handle both simple strings and multilingual objects
+        let serviceName = '';
+        if (typeof service === 'object' && service !== null) {
+            if (service.name && typeof service.name === 'object') {
+                // For multilingual objects, use German as primary display
+                serviceName = service.name.de || service.name.en || service.name.th || 'Unbenannter Service';
+            } else if (service.name && typeof service.name === 'string') {
+                serviceName = service.name;
+            } else {
+                serviceName = 'Unbenannter Service';
+            }
+        } else if (typeof service === 'string') {
+            serviceName = service;
+        } else {
+            serviceName = 'Unbenannter Service';
+        }
+        
+        const serviceDiv = document.createElement('div');
+        serviceDiv.className = 'space-y-2 p-3 bg-gray-50 rounded-md mb-2';
+        // Create elements properly to avoid HTML encoding issues
+        const gridDiv = document.createElement('div');
+        gridDiv.className = 'grid grid-cols-3 gap-2';
+        
+        // German input
+        const deDiv = document.createElement('div');
+        const deLabel = document.createElement('label');
+        deLabel.className = 'block text-xs font-medium text-gray-700 mb-1';
+        deLabel.textContent = 'Deutsch';
+        const deInput = document.createElement('input');
+        deInput.type = 'text';
+        // Properly extract German name from the service structure
+        if (typeof service === 'object' && service.name && typeof service.name === 'object') {
+            deInput.value = service.name.de || '';
+        } else if (typeof service === 'string') {
+            deInput.value = service;
+        } else {
+            deInput.value = serviceName;
+        }
+        deInput.placeholder = 'Deutscher Name';
+        deInput.className = 'w-full px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500';
+        deInput.onchange = () => updateServiceLang(index, 'de', deInput.value);
+        deDiv.appendChild(deLabel);
+        deDiv.appendChild(deInput);
+        
+        // English input
+        const enDiv = document.createElement('div');
+        const enLabel = document.createElement('label');
+        enLabel.className = 'block text-xs font-medium text-gray-700 mb-1';
+        enLabel.textContent = 'English';
+        const enInput = document.createElement('input');
+        enInput.type = 'text';
+        // Properly extract English name from the service structure
+        if (typeof service === 'object' && service.name && typeof service.name === 'object') {
+            enInput.value = service.name.en || '';
+        } else {
+            enInput.value = '';
+        }
+        enInput.placeholder = 'English Name';
+        enInput.className = 'w-full px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500';
+        enInput.onchange = () => updateServiceLang(index, 'en', enInput.value);
+        enDiv.appendChild(enLabel);
+        enDiv.appendChild(enInput);
+        
+        // Thai input
+        const thDiv = document.createElement('div');
+        const thLabel = document.createElement('label');
+        thLabel.className = 'block text-xs font-medium text-gray-700 mb-1';
+        thLabel.textContent = 'ไทย';
+        const thInput = document.createElement('input');
+        thInput.type = 'text';
+        // Properly extract Thai name from the service structure
+        if (typeof service === 'object' && service.name && typeof service.name === 'object') {
+            thInput.value = service.name.th || '';
+        } else {
+            thInput.value = '';
+        }
+        thInput.placeholder = 'ชื่อภาษาไทย';
+        thInput.className = 'w-full px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500';
+        thInput.onchange = () => updateServiceLang(index, 'th', thInput.value);
+        thDiv.appendChild(thLabel);
+        thDiv.appendChild(thInput);
+        
+        gridDiv.appendChild(deDiv);
+        gridDiv.appendChild(enDiv);
+        gridDiv.appendChild(thDiv);
+        
+        // Delete button
+        const deleteDiv = document.createElement('div');
+        deleteDiv.className = 'flex justify-end';
+        deleteDiv.innerHTML = `
+            <button type="button" onclick="removeService(${index})" 
+                    class="text-red-600 hover:text-red-800 px-2 py-1 text-sm">
+                <i class="fas fa-trash mr-1"></i>${t('admin.settings_management.contact_tab.services.remove') || 'Entfernen'}
+            </button>
+        `;
+        
+        serviceDiv.appendChild(gridDiv);
+        serviceDiv.appendChild(deleteDiv);
+        listDiv.appendChild(serviceDiv);
+    });
+}
+
+function addService() {
+    // Add new service with multilingual structure
+    services.push({
+        name: {
+            de: 'Neuer Service',
+            en: 'New Service',
+            th: 'บริการใหม่'
+        }
+    });
+    renderServices();
+}
+
+function updateServiceLang(index, lang, value) {
+    // Ensure service has proper structure
+    if (typeof services[index] === 'string') {
+        // Convert string to multilingual object
+        const oldValue = services[index];
+        services[index] = {
+            name: {
+                de: oldValue,
+                en: '',
+                th: ''
+            }
+        };
+    }
+    
+    // Ensure name object exists
+    if (!services[index].name) {
+        services[index].name = {};
+    }
+    
+    // Update specific language
+    services[index].name[lang] = value;
+}
+
+function removeService(index) {
+    services.splice(index, 1);
+    renderServices();
+}
+
+async function geocodeFromAddress() {
+    const address = document.getElementById('location-address').value.trim();
+    if (!address) {
+        adminUtils.showNotification('Bitte geben Sie zuerst eine Adresse ein', 'error');
+        return;
+    }
+    
+    try {
+        adminUtils.showNotification('Koordinaten werden ermittelt...', 'info');
+        
+        const response = await fetch('/admin/api/geocode', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ address: address })
+        });
+        
+        if (!response.ok) {
+            throw new Error('Geocoding-Service nicht erreichbar');
+        }
+        
+        const data = await response.json();
+        
+        if (data.success && data.coordinates) {
+            document.getElementById('location-latitude').value = data.coordinates.latitude;
+            document.getElementById('location-longitude').value = data.coordinates.longitude;
+            adminUtils.showNotification('✅ Koordinaten automatisch ermittelt!', 'success');
+        } else {
+            adminUtils.showNotification('❌ Adresse konnte nicht gefunden werden', 'error');
+        }
+    } catch (error) {
+        console.error('Geocoding error:', error);
+        adminUtils.showNotification('Fehler beim Ermitteln der Koordinaten: ' + error.message, 'error');
+    }
+}
+
+function getCurrentLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                document.getElementById('location-latitude').value = position.coords.latitude;
+                document.getElementById('location-longitude').value = position.coords.longitude;
+                adminUtils.showNotification('Standort erfolgreich ermittelt', 'success');
+            },
+            function(error) {
+                adminUtils.showNotification('Fehler beim Ermitteln des Standorts: ' + error.message, 'error');
+            }
+        );
+    } else {
+        adminUtils.showNotification('Geolocation wird nicht unterstützt', 'error');
+    }
+}
+
+function previewLocation() {
+    const lat = document.getElementById('location-latitude').value;
+    const lng = document.getElementById('location-longitude').value;
+    
+    if (lat && lng) {
+        const url = `https://maps.google.com/?q=${lat},${lng}`;
+        window.open(url, '_blank');
+    } else {
+        adminUtils.showNotification('Koordinaten sind erforderlich', 'error');
+    }
+}
+
+// Appearance Settings
+function loadAppearanceSettings() {
+    fetch('/admin/api/appearance-settings')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const settings = data.settings;
+                if (settings.color_scheme) {
+                    document.querySelector(`input[name="color-scheme"][value="${settings.color_scheme}"]`).checked = true;
+                }
+                if (settings.font_size) {
+                    document.getElementById('font-size').value = settings.font_size;
+                }
+                document.getElementById('high-contrast').checked = settings.high_contrast || false;
+                document.getElementById('dark-mode').checked = settings.dark_mode || false;
+                document.getElementById('logo-url').value = settings.logo_url || '';
+                document.getElementById('favicon-url').value = settings.favicon_url || '';
+                
+                updateThemePreview();
+            }
+        })
+        .catch(error => {
+            console.error('Failed to load appearance settings:', error);
+        });
+}
+
+function saveAppearanceSettings(event) {
+    event.preventDefault();
+    
+    // Get CSRF token
+    const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+    
+    const formData = {
+        color_scheme: document.querySelector('input[name="color-scheme"]:checked')?.value || 'blue',
+        font_size: document.getElementById('font-size').value,
+        high_contrast: document.getElementById('high-contrast').checked,
+        dark_mode: document.getElementById('dark-mode').checked,
+        logo_url: document.getElementById('logo-url').value,
+        favicon_url: document.getElementById('favicon-url').value,
+        csrf_token: csrfToken
+    };
+    
+    fetch('/admin/api/appearance-settings', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': csrfToken
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            adminUtils.showNotification('Design-Einstellungen erfolgreich gespeichert', 'success');
+            updateThemePreview();
+        } else {
+            adminUtils.showNotification('Fehler beim Speichern: ' + data.error, 'error');
+        }
+    })
+    .catch(error => {
+        adminUtils.showNotification('Netzwerkfehler. Bitte versuchen Sie es erneut.', 'error');
+        console.error('Save error:', error);
+    });
+}
+
+function updateThemePreview() {
+    const preview = document.getElementById('theme-preview');
+    const colorScheme = document.querySelector('input[name="color-scheme"]:checked')?.value || 'blue';
+    const fontSize = document.getElementById('font-size').value;
+    const highContrast = document.getElementById('high-contrast').checked;
+    
+    // Update preview colors based on color scheme
+    const colors = {
+        blue: { primary: 'bg-blue-500', accent: 'bg-blue-50 border-blue-400', text: 'text-blue-600' },
+        teal: { primary: 'bg-teal-500', accent: 'bg-teal-50 border-teal-400', text: 'text-teal-600' },
+        coral: { primary: 'bg-orange-500', accent: 'bg-orange-50 border-orange-400', text: 'text-orange-600' }
+    };
+    
+    const scheme = colors[colorScheme] || colors.blue;
+    
+    // Apply preview changes (simplified)
+    preview.className = `bg-white rounded-lg shadow-sm p-4 border ${highContrast ? 'border-2 border-gray-800' : 'border'}`;
+    
+    const icon = preview.querySelector('.w-8');
+    icon.className = `w-8 h-8 ${scheme.primary} rounded-full flex items-center justify-center`;
+    
+    const announcement = preview.querySelector('.bg-blue-50');
+    announcement.className = `${scheme.accent} border-l-4 p-3`;
+}
+
+// System Functions
+function loadSystemInfo() {
+    fetch('/admin/api/system-info')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('system-version').textContent = data.version || '1.0.0';
+                document.getElementById('system-uptime').textContent = data.uptime || 'Unknown';
+                document.getElementById('db-status').textContent = data.db_status || 'SQLite';
+            }
+        })
+        .catch(error => {
+            console.error('Failed to load system info:', error);
+        });
+}
+
+function clearCache() {
+    if (confirm('Möchten Sie wirklich den Cache leeren?')) {
+        const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+        fetch('/admin/api/clear-cache', { 
+            method: 'POST',
+            headers: {
+                'X-CSRF-Token': csrfToken,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ csrf_token: csrfToken })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    adminUtils.showNotification('Cache erfolgreich geleert', 'success');
+                } else {
+                    adminUtils.showNotification('Fehler beim Leeren des Caches: ' + data.error, 'error');
+                }
+            })
+            .catch(error => {
+                adminUtils.showNotification('Netzwerkfehler beim Cache leeren', 'error');
+                console.error('Clear cache error:', error);
+            });
+    }
+}
+
+function regenerateQR() {
+    const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+    fetch('/admin/api/regenerate-qr', { 
+        method: 'POST',
+        headers: {
+            'X-CSRF-Token': csrfToken,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ csrf_token: csrfToken })
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                adminUtils.showNotification('QR-Codes erfolgreich neu generiert', 'success');
+            } else {
+                adminUtils.showNotification('Fehler beim Generieren der QR-Codes: ' + data.error, 'error');
+            }
+        })
+        .catch(error => {
+            adminUtils.showNotification('Netzwerkfehler beim QR-Code generieren', 'error');
+            console.error('Regenerate QR error:', error);
+        });
+}
+
+function exportSettings() {
+    fetch('/admin/api/export-settings')
+        .then(response => response.blob())
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = `qr-portal-settings-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            adminUtils.showNotification('Einstellungen erfolgreich exportiert', 'success');
+        })
+        .catch(error => {
+            adminUtils.showNotification('Fehler beim Exportieren', 'error');
+            console.error('Export error:', error);
+        });
+}
+
+function showImportModal() {
+    document.getElementById('import-modal').classList.remove('hidden');
+}
+
+function hideImportModal() {
+    document.getElementById('import-modal').classList.add('hidden');
+    document.getElementById('import-file').value = '';
+}
+
+function importSettings(event) {
+    event.preventDefault();
+    
+    const fileInput = document.getElementById('import-file');
+    const file = fileInput.files[0];
+    
+    if (!file) {
+        adminUtils.showNotification('Bitte wählen Sie eine Datei aus', 'error');
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('settings_file', file);
+    
+    fetch('/admin/api/import-settings', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            adminUtils.showNotification('Einstellungen erfolgreich importiert', 'success');
+            hideImportModal();
+            // Reload all settings
+            loadContactSettings();
+            loadAppearanceSettings();
+        } else {
+            adminUtils.showNotification('Fehler beim Importieren: ' + data.error, 'error');
+        }
+    })
+    .catch(error => {
+        adminUtils.showNotification('Netzwerkfehler beim Importieren', 'error');
+        console.error('Import error:', error);
+    });
+}
+
+function createBackup() {
+    const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+    fetch('/admin/api/create-backup', { 
+        method: 'POST',
+        headers: {
+            'X-CSRF-Token': csrfToken,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ csrf_token: csrfToken })
+    })
+        .then(response => response.blob())
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = `qr-portal-backup-${new Date().toISOString().split('T')[0]}.zip`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            adminUtils.showNotification('Backup erfolgreich erstellt', 'success');
+        })
+        .catch(error => {
+            adminUtils.showNotification('Fehler beim Backup erstellen', 'error');
+            console.error('Backup error:', error);
+        });
+}
+
+// Log Management
+function loadLogs() {
+    refreshLogs();
+}
+
+function refreshLogs() {
+    const level = document.getElementById('log-level-filter').value;
+    const source = document.getElementById('log-source-filter').value;
+    const date = document.getElementById('log-date-filter').value;
+    
+    const params = new URLSearchParams();
+    if (level) params.append('level', level);
+    if (source) params.append('source', source);
+    if (date) params.append('date', date);
+    
+    fetch(`/admin/api/logs?${params.toString()}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                renderLogs(data.logs);
+                updateLogStats(data.stats);
+            }
+        })
+        .catch(error => {
+            console.error('Failed to load logs:', error);
+            document.getElementById('log-display').innerHTML = 
+                '<div class="text-red-400">Fehler beim Laden der Logs: ' + error.message + '</div>';
+        });
+}
+
+function renderLogs(logs) {
+    const logDisplay = document.getElementById('log-display');
+    
+    if (logs.length === 0) {
+        logDisplay.innerHTML = '<div class="text-gray-400">Keine Logs gefunden</div>';
+        return;
+    }
+    
+    const logHTML = logs.map(log => {
+        const colors = {
+            'ERROR': 'text-red-400',
+            'WARNING': 'text-yellow-400',
+            'INFO': 'text-blue-400',
+            'DEBUG': 'text-gray-400'
+        };
+        
+        const color = colors[log.level] || 'text-white';
+        const timestamp = new Date(log.timestamp).toLocaleString('de-DE');
+        
+        return `<div class="${color}">
+            [${timestamp}] [${log.level}] [${log.source}] ${log.message}
+            ${log.details ? '<div class="text-gray-500 ml-4">' + log.details + '</div>' : ''}
+        </div>`;
+    }).join('');
+    
+    logDisplay.innerHTML = logHTML;
+    logDisplay.scrollTop = logDisplay.scrollHeight;
+}
+
+function updateLogStats(stats) {
+    document.getElementById('error-count').textContent = stats.error || 0;
+    document.getElementById('warning-count').textContent = stats.warning || 0;
+    document.getElementById('info-count').textContent = stats.info || 0;
+    document.getElementById('total-count').textContent = stats.total || 0;
+}
+
+function filterLogs() {
+    refreshLogs();
+}
+
+function clearLogs() {
+    if (confirm(t('admin.settings_management.messages.confirm_clear_logs'))) {
+        fetch('/admin/api/logs', { 
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-Token': document.querySelector('input[name="csrf_token"]').value
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    adminUtils.showNotification(t('admin.settings_management.messages.logs_clear_success'), 'success');
+                    refreshLogs();
+                } else {
+                    adminUtils.showNotification(t('admin.settings_management.messages.logs_clear_error') + ' ' + data.error, 'error');
+                }
+            })
+            .catch(error => {
+                adminUtils.showNotification(t('admin.settings_management.messages.logs_clear_network_error'), 'error');
+                console.error('Clear logs error:', error);
+            });
+    }
+}
+
+function downloadLogs() {
+    const level = document.getElementById('log-level-filter').value;
+    const source = document.getElementById('log-source-filter').value;
+    const date = document.getElementById('log-date-filter').value;
+    
+    const params = new URLSearchParams();
+    if (level) params.append('level', level);
+    if (source) params.append('source', source);
+    if (date) params.append('date', date);
+    params.append('format', 'download');
+    
+    fetch(`/admin/api/logs?${params.toString()}`)
+        .then(response => response.blob())
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = `logs-${new Date().toISOString().split('T')[0]}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            adminUtils.showNotification(t('admin.settings_management.messages.logs_download_success'), 'success');
+        })
+        .catch(error => {
+            adminUtils.showNotification(t('admin.settings_management.messages.logs_download_error'), 'error');
+            console.error('Download logs error:', error);
+        });
+}
+
+// Tooltip functions
+function showTooltip(event, content) {
+    const tooltip = document.getElementById('tooltip');
+    const tooltipContent = document.getElementById('tooltip-content');
+    const tooltipArrow = document.getElementById('tooltip-arrow');
+    
+    tooltipContent.innerHTML = content;
+    tooltip.classList.remove('hidden');
+    
+    const rect = event.target.getBoundingClientRect();
+    const tooltipRect = tooltip.getBoundingClientRect();
+    
+    // Position tooltip above the element
+    const left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
+    const top = rect.top - tooltipRect.height - 8;
+    
+    tooltip.style.left = Math.max(10, Math.min(left, window.innerWidth - tooltipRect.width - 10)) + 'px';
+    tooltip.style.top = Math.max(10, top) + 'px';
+    
+    // Auto-hide after 5 seconds
+    setTimeout(() => hideTooltip(), 5000);
+}
+
+function hideTooltip() {
+    document.getElementById('tooltip').classList.add('hidden');
+}
+
+// Help modal functions
+function showHelpModal() {
+    document.getElementById('help-modal').classList.remove('hidden');
+}
+
+function hideHelpModal() {
+    document.getElementById('help-modal').classList.add('hidden');
+}
+
+// Hide tooltip when clicking elsewhere
+document.addEventListener('click', function(event) {
+    if (!event.target.closest('.fas.fa-info-circle')) {
+        hideTooltip();
+    }
+});
+
+// Cleanup on page unload
+window.addEventListener('beforeunload', function() {
+    if (logRefreshInterval) {
+        clearInterval(logRefreshInterval);
+    }
+});
+
+// Smooth scrolling to tab sections
+function scrollToSection(sectionId) {
+    setTimeout(() => {
+        const element = document.querySelector(`[x-show="activeTab === '${sectionId}'"]`);
+        if (element) {
+            element.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start',
+                inline: 'nearest'
+            });
+        }
+    }, 50); // Small delay to let Alpine.js update the DOM
+}
+</script>
+{% endblock %}

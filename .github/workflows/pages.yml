@@ -1,0 +1,432 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'docs/**'
+      - 'README.md'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build Documentation
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install sphinx sphinx-rtd-theme sphinx-autoapi myst-parser
+      
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      
+      - name: Create documentation structure
+        run: |
+          mkdir -p github-pages
+          
+          # Copy existing documentation
+          if [ -d "docs" ]; then
+            cp -r docs/* github-pages/ 2>/dev/null || true
+          fi
+          
+          # Generate project overview page
+          cat > github-pages/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="de">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>QR Info Portal - Dokumentation</title>
+              <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+              <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+          </head>
+          <body class="bg-gray-50">
+              <div class="min-h-screen">
+                  <!-- Header -->
+                  <header class="bg-blue-600 text-white">
+                      <div class="container mx-auto px-4 py-6">
+                          <div class="flex items-center justify-between">
+                              <div>
+                                  <h1 class="text-3xl font-bold">QR Info Portal</h1>
+                                  <p class="text-blue-100 mt-2">Laborstandort Pattaya - Dokumentation</p>
+                              </div>
+                              <div class="text-right">
+                                  <div class="text-sm text-blue-200">Version</div>
+                                  <div class="text-lg font-semibold">${{ github.ref_name || 'main' }}</div>
+                              </div>
+                          </div>
+                      </div>
+                  </header>
+
+                  <!-- Main Content -->
+                  <main class="container mx-auto px-4 py-8">
+                      <!-- Quick Info -->
+                      <div class="bg-white rounded-lg shadow-sm p-6 mb-8">
+                          <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                              <i class="fas fa-qrcode text-blue-600 mr-2"></i>Projektübersicht
+                          </h2>
+                          <p class="text-gray-600 mb-4">
+                              Ein modernes Web-Portal für Laborstandorte, das über QR-Codes sofortige Informationen 
+                              über Öffnungszeiten, Status und Verfügbarkeiten bereitstellt.
+                          </p>
+                          <div class="grid md:grid-cols-3 gap-4">
+                              <div class="text-center">
+                                  <i class="fas fa-hospital text-blue-600 text-2xl mb-2"></i>
+                                  <div class="font-semibold">Medizinische Einrichtungen</div>
+                                  <div class="text-sm text-gray-600">Labor & Blutabnahme</div>
+                              </div>
+                              <div class="text-center">
+                                  <i class="fas fa-mobile-alt text-green-600 text-2xl mb-2"></i>
+                                  <div class="font-semibold">Mobile-First</div>
+                                  <div class="text-sm text-gray-600">QR-Code optimiert</div>
+                              </div>
+                              <div class="text-center">
+                                  <i class="fas fa-globe-asia text-orange-600 text-2xl mb-2"></i>
+                                  <div class="font-semibold">Mehrsprachig</div>
+                                  <div class="text-sm text-gray-600">Thai, Deutsch, English</div>
+                              </div>
+                          </div>
+                      </div>
+
+                      <!-- Documentation Links -->
+                      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                          <!-- Installation -->
+                          <div class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
+                              <h3 class="text-xl font-semibold text-gray-800 mb-3">
+                                  <i class="fas fa-rocket text-blue-600 mr-2"></i>Installation
+                              </h3>
+                              <p class="text-gray-600 mb-4">Setup und Deployment-Anweisungen</p>
+                              <div class="space-y-2">
+                                  <a href="./DEPLOYMENT.md" class="block text-blue-600 hover:text-blue-800">
+                                      <i class="fas fa-file-alt mr-1"></i>Deployment Guide
+                                  </a>
+                                  <a href="./GITHUB_SETUP.md" class="block text-blue-600 hover:text-blue-800">
+                                      <i class="fab fa-github mr-1"></i>GitHub CI/CD Setup
+                                  </a>
+                                  <a href="./docker-compose.yml" class="block text-blue-600 hover:text-blue-800">
+                                      <i class="fab fa-docker mr-1"></i>Docker Configuration
+                                  </a>
+                              </div>
+                          </div>
+
+                          <!-- Configuration -->
+                          <div class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
+                              <h3 class="text-xl font-semibold text-gray-800 mb-3">
+                                  <i class="fas fa-cogs text-green-600 mr-2"></i>Konfiguration
+                              </h3>
+                              <p class="text-gray-600 mb-4">System-Konfiguration und Einstellungen</p>
+                              <div class="space-y-2">
+                                  <a href="./config.yml" class="block text-blue-600 hover:text-blue-800">
+                                      <i class="fas fa-file-code mr-1"></i>config.yml
+                                  </a>
+                                  <a href="./.env.example" class="block text-blue-600 hover:text-blue-800">
+                                      <i class="fas fa-key mr-1"></i>Environment Variables
+                                  </a>
+                                  <a href="./docs/configuration.md" class="block text-blue-600 hover:text-blue-800">
+                                      <i class="fas fa-book mr-1"></i>Configuration Guide
+                                  </a>
+                              </div>
+                          </div>
+
+                          <!-- API Documentation -->
+                          <div class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
+                              <h3 class="text-xl font-semibold text-gray-800 mb-3">
+                                  <i class="fas fa-code text-purple-600 mr-2"></i>API & Development
+                              </h3>
+                              <p class="text-gray-600 mb-4">Entwickler-Dokumentation und API</p>
+                              <div class="space-y-2">
+                                  <a href="./api-docs/" class="block text-blue-600 hover:text-blue-800">
+                                      <i class="fas fa-plug mr-1"></i>API Documentation
+                                  </a>
+                                  <a href="./CONTRIBUTING.md" class="block text-blue-600 hover:text-blue-800">
+                                      <i class="fas fa-users mr-1"></i>Contributing Guide
+                                  </a>
+                                  <a href="./docs/architecture.md" class="block text-blue-600 hover:text-blue-800">
+                                      <i class="fas fa-sitemap mr-1"></i>Architecture
+                                  </a>
+                              </div>
+                          </div>
+
+                          <!-- Analytics -->
+                          <div class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
+                              <h3 class="text-xl font-semibold text-gray-800 mb-3">
+                                  <i class="fas fa-chart-bar text-orange-600 mr-2"></i>Analytics
+                              </h3>
+                              <p class="text-gray-600 mb-4">Besucher-Tracking und Statistiken</p>
+                              <div class="space-y-2">
+                                  <a href="./docs/analytics.md" class="block text-blue-600 hover:text-blue-800">
+                                      <i class="fas fa-analytics mr-1"></i>Analytics Guide
+                                  </a>
+                                  <a href="./docs/privacy.md" class="block text-blue-600 hover:text-blue-800">
+                                      <i class="fas fa-shield-alt mr-1"></i>Privacy & PDPA
+                                  </a>
+                                  <a href="/admin/analytics" class="block text-blue-600 hover:text-blue-800">
+                                      <i class="fas fa-dashboard mr-1"></i>Live Dashboard
+                                  </a>
+                              </div>
+                          </div>
+
+                          <!-- Security -->
+                          <div class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
+                              <h3 class="text-xl font-semibold text-gray-800 mb-3">
+                                  <i class="fas fa-shield-alt text-red-600 mr-2"></i>Sicherheit
+                              </h3>
+                              <p class="text-gray-600 mb-4">Sicherheits-Richtlinien und Best Practices</p>
+                              <div class="space-y-2">
+                                  <a href="./SECURITY.md" class="block text-blue-600 hover:text-blue-800">
+                                      <i class="fas fa-lock mr-1"></i>Security Policy
+                                  </a>
+                                  <a href="./docs/security-checklist.md" class="block text-blue-600 hover:text-blue-800">
+                                      <i class="fas fa-tasks mr-1"></i>Security Checklist
+                                  </a>
+                                  <a href="https://github.com/Ralle1976/qr-info-portal/security" class="block text-blue-600 hover:text-blue-800">
+                                      <i class="fas fa-bug mr-1"></i>Security Advisories
+                                  </a>
+                              </div>
+                          </div>
+
+                          <!-- Troubleshooting -->
+                          <div class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
+                              <h3 class="text-xl font-semibold text-gray-800 mb-3">
+                                  <i class="fas fa-tools text-gray-600 mr-2"></i>Support
+                              </h3>
+                              <p class="text-gray-600 mb-4">Hilfe und Fehlerbehebung</p>
+                              <div class="space-y-2">
+                                  <a href="./docs/troubleshooting.md" class="block text-blue-600 hover:text-blue-800">
+                                      <i class="fas fa-question-circle mr-1"></i>Troubleshooting
+                                  </a>
+                                  <a href="./CHANGELOG.md" class="block text-blue-600 hover:text-blue-800">
+                                      <i class="fas fa-list-alt mr-1"></i>Changelog
+                                  </a>
+                                  <a href="https://github.com/Ralle1976/qr-info-portal/issues" class="block text-blue-600 hover:text-blue-800">
+                                      <i class="fas fa-bug mr-1"></i>Issues & Support
+                                  </a>
+                              </div>
+                          </div>
+                      </div>
+
+                      <!-- Quick Start -->
+                      <div class="bg-white rounded-lg shadow-sm p-6">
+                          <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                              <i class="fas fa-play text-green-600 mr-2"></i>Quick Start
+                          </h2>
+                          <div class="bg-gray-50 rounded-lg p-4">
+                              <pre class="text-sm"><code># Clone Repository
+git clone https://github.com/Ralle1976/qr-info-portal.git
+cd qr-info-portal
+
+# Setup Environment
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
+# Configure
+cp .env.example .env
+# Edit .env with your settings
+
+# Run
+python -m flask run --host 0.0.0.0 --port 5000</code></pre>
+                          </div>
+                          <p class="text-sm text-gray-600 mt-4">
+                              <i class="fas fa-info-circle mr-1"></i>
+                              Weitere Details finden Sie im <a href="./DEPLOYMENT.md" class="text-blue-600 hover:text-blue-800">Deployment Guide</a>
+                          </p>
+                      </div>
+                  </main>
+
+                  <!-- Footer -->
+                  <footer class="bg-gray-800 text-white mt-12">
+                      <div class="container mx-auto px-4 py-6">
+                          <div class="flex flex-col md:flex-row justify-between items-center">
+                              <div>
+                                  <div class="text-lg font-semibold">QR Info Portal</div>
+                                  <div class="text-gray-400 text-sm">Laborstandort Pattaya</div>
+                              </div>
+                              <div class="flex space-x-4 mt-4 md:mt-0">
+                                  <a href="https://github.com/Ralle1976/qr-info-portal" class="text-gray-400 hover:text-white">
+                                      <i class="fab fa-github text-xl"></i>
+                                  </a>
+                                  <a href="https://github.com/Ralle1976/qr-info-portal/issues" class="text-gray-400 hover:text-white">
+                                      <i class="fas fa-bug text-xl"></i>
+                                  </a>
+                                  <a href="https://github.com/Ralle1976/qr-info-portal/discussions" class="text-gray-400 hover:text-white">
+                                      <i class="fas fa-comments text-xl"></i>
+                                  </a>
+                              </div>
+                          </div>
+                          <div class="mt-4 pt-4 border-t border-gray-700 text-center text-sm text-gray-400">
+                              <p>© 2025 QR Info Portal. Open Source Software.</p>
+                              <p class="mt-1">Built with ❤️ for medical facilities worldwide.</p>
+                          </div>
+                      </div>
+                  </footer>
+              </div>
+          </body>
+          </html>
+          EOF
+          
+          # Generate API documentation if possible
+          if [ -f "app/__init__.py" ]; then
+            echo "Generating API documentation..."
+            mkdir -p github-pages/api-docs
+            
+            # Create simple API docs page
+            cat > github-pages/api-docs/index.html << 'API_EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>QR Info Portal - API Documentation</title>
+              <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+          </head>
+          <body class="bg-gray-50">
+              <div class="container mx-auto px-4 py-8">
+                  <h1 class="text-3xl font-bold text-gray-800 mb-6">QR Info Portal API</h1>
+                  
+                  <div class="bg-white rounded-lg shadow p-6">
+                      <h2 class="text-2xl font-semibold mb-4">Public Endpoints</h2>
+                      
+                      <div class="space-y-4">
+                          <div class="border-l-4 border-green-500 pl-4">
+                              <h3 class="font-semibold">GET /</h3>
+                              <p class="text-gray-600">Homepage with current status and today's hours</p>
+                          </div>
+                          
+                          <div class="border-l-4 border-green-500 pl-4">
+                              <h3 class="font-semibold">GET /week</h3>
+                              <p class="text-gray-600">Week view with daily schedules</p>
+                          </div>
+                          
+                          <div class="border-l-4 border-green-500 pl-4">
+                              <h3 class="font-semibold">GET /month</h3>
+                              <p class="text-gray-600">Month view with calendar</p>
+                          </div>
+                          
+                          <div class="border-l-4 border-blue-500 pl-4">
+                              <h3 class="font-semibold">GET /qr.png</h3>
+                              <p class="text-gray-600">QR code as PNG image</p>
+                          </div>
+                          
+                          <div class="border-l-4 border-blue-500 pl-4">
+                              <h3 class="font-semibold">GET /qr.svg</h3>
+                              <p class="text-gray-600">QR code as SVG vector</p>
+                          </div>
+                          
+                          <div class="border-l-4 border-yellow-500 pl-4">
+                              <h3 class="font-semibold">GET /healthz</h3>
+                              <p class="text-gray-600">Health check endpoint</p>
+                          </div>
+                      </div>
+                      
+                      <h2 class="text-2xl font-semibold mb-4 mt-8">Admin Endpoints</h2>
+                      <p class="text-gray-600 mb-4">Protected by HTTP Basic Authentication</p>
+                      
+                      <div class="space-y-4">
+                          <div class="border-l-4 border-red-500 pl-4">
+                              <h3 class="font-semibold">GET /admin</h3>
+                              <p class="text-gray-600">Admin dashboard</p>
+                          </div>
+                          
+                          <div class="border-l-4 border-red-500 pl-4">
+                              <h3 class="font-semibold">GET /admin/analytics</h3>
+                              <p class="text-gray-600">Visitor analytics dashboard</p>
+                          </div>
+                          
+                          <div class="border-l-4 border-red-500 pl-4">
+                              <h3 class="font-semibold">POST /admin/api/analytics/*</h3>
+                              <p class="text-gray-600">Analytics API endpoints</p>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </body>
+          </html>
+          API_EOF
+          fi
+      
+      - name: Build with Jekyll
+        run: |
+          cd github-pages
+          # Create _config.yml for Jekyll
+          cat > _config.yml << 'EOF'
+          title: QR Info Portal Documentation
+          description: Laborstandort Pattaya - Comprehensive documentation and setup guide
+          url: "https://ralle1976.github.io"
+          baseurl: "/qr-info-portal"
+          
+          markdown: kramdown
+          highlighter: rouge
+          theme: minima
+          
+          plugins:
+            - jekyll-feed
+            - jekyll-sitemap
+            - jekyll-seo-tag
+          
+          exclude:
+            - .sass-cache/
+            - .jekyll-cache/
+            - gemfiles/
+            - Gemfile
+            - Gemfile.lock
+            - node_modules/
+            - vendor/bundle/
+            - vendor/cache/
+            - vendor/gems/
+            - vendor/ruby/
+          EOF
+          
+          # Install Jekyll and build
+          gem install jekyll bundler
+          bundle init
+          echo 'gem "jekyll"' >> Gemfile
+          echo 'gem "minima"' >> Gemfile
+          bundle install
+          bundle exec jekyll build
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./github-pages/_site
+
+  deploy:
+    name: Deploy to GitHub Pages
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        
+      - name: Notify deployment success
+        run: |
+          echo "✅ Documentation deployed successfully!"
+          echo "🌐 URL: ${{ steps.deployment.outputs.page_url }}"

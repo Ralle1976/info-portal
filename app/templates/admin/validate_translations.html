@@ -1,0 +1,205 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ t('admin.translation_validator.title') }}{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header with Actions -->
+    <div class="mb-8">
+        <div class="flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900 thai-primary">
+                    <i class="fas fa-language mr-3 text-thai-turquoise"></i>
+                    {{ t('admin.translation_validator.title') }}
+                </h1>
+                <p class="mt-2 text-gray-600 en-subtitle">
+                    {{ t('admin.translation_validator.subtitle') }}
+                </p>
+            </div>
+            <div class="flex space-x-4">
+                <button onclick="runValidation()" 
+                        class="btn-enhanced bg-thai-turquoise text-white hover:bg-thai-turquoise-dark">
+                    <i class="fas fa-sync-alt mr-2"></i>
+                    {{ t('admin.translation_validator.refresh') }}
+                </button>
+                <a href="{{ url_for('admin.manage_settings') }}" 
+                   class="btn-enhanced bg-gray-600 text-white hover:bg-gray-700">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    {{ t('admin.translation_validator.back_to_settings') }}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Card -->
+    <div class="mb-8 admin-card bg-gradient-to-r from-blue-50 to-green-50 border-2 
+                {% if results.summary.total_issues == 0 %}border-green-500{% else %}border-red-500{% endif %}">
+        <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="text-center">
+                    <div class="text-4xl font-bold 
+                                {% if results.summary.completion_rate == 100 %}text-green-600{% elif results.summary.completion_rate >= 80 %}text-yellow-600{% else %}text-red-600{% endif %}">
+                        {{ results.summary.completion_rate }}%
+                    </div>
+                    <div class="text-sm text-gray-600 mt-1">{{ t('admin.translation_validator.completion_rate') }}</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-bold text-gray-700">{{ results.summary.total_keys }}</div>
+                    <div class="text-sm text-gray-600 mt-1">{{ t('admin.translation_validator.total_keys') }}</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-bold text-green-600">{{ results.summary.total_valid }}</div>
+                    <div class="text-sm text-gray-600 mt-1">{{ t('admin.translation_validator.valid_translations') }}</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-bold text-red-600">{{ results.summary.total_placeholders }}</div>
+                    <div class="text-sm text-gray-600 mt-1">{{ t('admin.translation_validator.placeholders') }}</div>
+                </div>
+            </div>
+            
+            {% if results.summary.total_issues == 0 %}
+            <div class="mt-6 p-4 bg-green-100 rounded-lg">
+                <p class="text-green-800 font-medium">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    {{ t('admin.translation_validator.all_valid') }}
+                </p>
+            </div>
+            {% else %}
+            <div class="mt-6 p-4 bg-red-100 rounded-lg">
+                <p class="text-red-800 font-medium">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    {{ t('admin.translation_validator.issues_found', count=results.summary.total_issues) }}
+                </p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Language Results -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        {% for lang, data in results.languages.items() %}
+        <div class="admin-card">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold">
+                        {% if lang == 'th' %}
+                            <i class="fas fa-flag mr-2 text-blue-600"></i>ไทย (Thai)
+                        {% elif lang == 'en' %}
+                            <i class="fas fa-flag mr-2 text-red-600"></i>English
+                        {% elif lang == 'de' %}
+                            <i class="fas fa-flag mr-2 text-yellow-600"></i>Deutsch
+                        {% endif %}
+                    </h3>
+                    <span class="text-sm font-medium px-2 py-1 rounded-full
+                               {% if data.valid %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
+                        {% if data.valid %}{{ t('admin.translation_validator.valid') }}{% else %}{{ t('admin.translation_validator.invalid') }}{% endif %}
+                    </span>
+                </div>
+                
+                {% if data.exists %}
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">{{ t('admin.translation_validator.total') }}:</span>
+                            <span class="font-medium">{{ data.stats.total_keys }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">{{ t('admin.translation_validator.valid') }}:</span>
+                            <span class="font-medium text-green-600">{{ data.stats.valid_translations }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">{{ t('admin.translation_validator.placeholders') }}:</span>
+                            <span class="font-medium text-red-600">{{ data.stats.placeholders }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">{{ t('admin.translation_validator.empty') }}:</span>
+                            <span class="font-medium text-yellow-600">{{ data.stats.empty_values }}</span>
+                        </div>
+                    </div>
+                    
+                    {% if data.issues %}
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                        <h4 class="text-sm font-medium text-gray-700 mb-2">{{ t('admin.translation_validator.top_issues') }}:</h4>
+                        <div class="space-y-1">
+                            {% for issue in data.issues[:5] %}
+                            <div class="text-xs">
+                                {% if issue.type == 'placeholder' %}
+                                    <span class="text-red-600">{{ issue.prefix }}*</span>
+                                    <span class="text-gray-500">({{ issue.count }})</span>
+                                {% elif issue.type == 'empty_value' %}
+                                    <span class="text-yellow-600">{{ t('admin.translation_validator.empty_key') }}: {{ issue.path }}</span>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                            {% if data.issues|length > 5 %}
+                            <div class="text-xs text-gray-500">
+                                ... {{ t('admin.translation_validator.and_more', count=data.issues|length - 5) }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                {% else %}
+                    <div class="text-red-600 text-sm">
+                        <i class="fas fa-exclamation-circle mr-1"></i>
+                        {{ t('admin.translation_validator.file_missing') }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Fix Suggestions -->
+    {% if suggestions %}
+    <div class="admin-card">
+        <div class="p-6">
+            <h3 class="text-lg font-semibold mb-4">
+                <i class="fas fa-lightbulb mr-2 text-yellow-500"></i>
+                {{ t('admin.translation_validator.fix_suggestions') }}
+            </h3>
+            
+            <div class="space-y-4">
+                {% for suggestion in suggestions %}
+                <div class="border-l-4 border-blue-500 pl-4">
+                    <h4 class="font-medium text-gray-900">{{ suggestion.issue }}</h4>
+                    <p class="text-sm text-gray-600 mt-1">{{ suggestion.description }}</p>
+                    <p class="text-sm text-gray-700 mt-2">
+                        <strong>{{ t('admin.translation_validator.fix') }}:</strong> {{ suggestion.fix }}
+                    </p>
+                    {% if suggestion.command %}
+                    <div class="mt-2 p-2 bg-gray-100 rounded font-mono text-xs">
+                        {{ suggestion.command }}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Auto-refresh Script -->
+    <script>
+        function runValidation() {
+            // Show loading state
+            const refreshBtn = document.querySelector('button[onclick="runValidation()"]');
+            const originalHtml = refreshBtn.innerHTML;
+            refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>{{ t("admin.translation_validator.validating") }}';
+            refreshBtn.disabled = true;
+            
+            // Reload page to get fresh validation results
+            setTimeout(() => {
+                window.location.reload();
+            }, 500);
+        }
+        
+        // Auto-refresh every 30 seconds if there are issues
+        {% if results.summary.total_issues > 0 %}
+        setTimeout(() => {
+            console.log('Auto-refreshing translation validation...');
+            runValidation();
+        }, 30000);
+        {% endif %}
+    </script>
+</div>
+{% endblock %}

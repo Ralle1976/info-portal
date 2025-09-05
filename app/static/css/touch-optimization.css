@@ -1,0 +1,435 @@
+/**
+ * TOUCH-OPTIMIZATION CSS FOR MEDICAL KIOSK DISPLAYS
+ * Version: 1.0
+ * Target: 24"-55" Medical Touch Displays
+ * Age Groups: 45-75+ years
+ * Medical Environment: Post-COVID hygiene considerations
+ */
+
+:root {
+  /* =================================
+     MEDICAL TOUCH TARGET STANDARDS
+     Based on geriatric usability research
+     ================================= */
+  
+  /* Touch Target Sizes - Medical Grade */
+  --touch-target-small: 60px;    /* Minimum for medical environments */
+  --touch-target-medium: 80px;   /* Recommended for seniors */
+  --touch-target-large: 120px;   /* Primary actions for 65+ users */
+  --touch-target-critical: 150px; /* Emergency/critical actions */
+  
+  /* Touch Spacing - Avoid accidental touches */
+  --touch-spacing-small: 12px;   /* Between small elements */
+  --touch-spacing-medium: 20px;  /* Between medium elements */
+  --touch-spacing-large: 40px;   /* Between large elements */
+  
+  /* Touch Feedback - Visual/Haptic simulation */
+  --touch-feedback-duration: 150ms;
+  --touch-feedback-scale: 1.05;
+  --touch-ripple-duration: 400ms;
+  
+  /* Senior-Friendly Colors - High Contrast */
+  --senior-touch-active: #00A86B;
+  --senior-touch-hover: #20C997;
+  --senior-touch-disabled: #9CA3AF;
+  --senior-touch-error: #EF4444;
+  --senior-touch-warning: #F59E0B;
+}
+
+/* =================================
+   TOUCH TARGET SIZE CORRECTIONS
+   ================================= */
+
+/* Fix critically small touch targets */
+.kiosk-contact-icon,
+.kiosk-section-icon,
+.kiosk-time-icon {
+  min-width: var(--touch-target-medium) !important;
+  min-height: var(--touch-target-medium) !important;
+  width: var(--touch-target-medium) !important;
+  height: var(--touch-target-medium) !important;
+  
+  /* Ensure icon stays centered when target grows */
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Status indicators - make them touch-accessible */
+.kiosk-preview-status,
+.kiosk-status-dot {
+  min-width: var(--touch-target-small) !important;
+  min-height: var(--touch-target-small) !important;
+  width: var(--touch-target-small) !important;
+  height: var(--touch-target-small) !important;
+  
+  /* Visual indicator stays small, but touch area grows */
+  position: relative;
+}
+
+.kiosk-preview-status::before,
+.kiosk-status-dot::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px; /* Visual size stays same */
+  height: 20px;
+  border-radius: 50%;
+  background: inherit;
+}
+
+/* Language switcher - critical for medical environments */
+.language-switcher button,
+.language-switcher a {
+  min-width: var(--touch-target-medium) !important;
+  min-height: var(--touch-target-medium) !important;
+  padding: 12px 16px !important;
+  margin: 0 var(--touch-spacing-small) !important;
+}
+
+/* =================================
+   SENIOR-FRIENDLY TOUCH FEEDBACK
+   ================================= */
+
+/* Enhanced touch feedback for all interactive elements */
+.touch-interactive,
+.kiosk-time-card,
+.kiosk-day-card,
+.kiosk-preview-item,
+.kiosk-contact-icon,
+button,
+[role="button"],
+[tabindex="0"] {
+  /* Immediate visual feedback */
+  transition: 
+    transform var(--touch-feedback-duration) cubic-bezier(0.2, 0, 0.2, 1),
+    background-color var(--touch-feedback-duration) ease-out,
+    box-shadow var(--touch-feedback-duration) ease-out,
+    filter var(--touch-feedback-duration) ease-out;
+  
+  /* Cursor indicates interactivity */
+  cursor: pointer;
+  
+  /* Ensure minimum touch target */
+  min-height: var(--touch-target-small);
+  min-width: var(--touch-target-small);
+  
+  /* Touch area padding if visual element is smaller */
+  position: relative;
+}
+
+/* Touch hover states - immediate feedback */
+.touch-interactive:hover,
+.kiosk-time-card:hover,
+.kiosk-day-card:hover,
+.kiosk-preview-item:hover {
+  transform: translateY(-2px) scale(1.02);
+  filter: brightness(1.1);
+  box-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.15),
+    0 4px 10px rgba(0, 168, 107, 0.2);
+}
+
+/* Active/pressed states - strong visual feedback */
+.touch-interactive:active,
+.kiosk-time-card:active,
+.kiosk-day-card:active,
+.kiosk-preview-item:active,
+button:active,
+[role="button"]:active {
+  transform: translateY(1px) scale(0.98);
+  filter: brightness(0.95);
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.2),
+    inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  
+  /* Quick haptic-style feedback */
+  transition-duration: 50ms;
+}
+
+/* =================================
+   TOUCH RIPPLE EFFECT SYSTEM
+   ================================= */
+
+/* Add ripple effect container to all touch targets */
+.touch-interactive::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(0, 168, 107, 0.3) 0%,
+    rgba(0, 168, 107, 0.1) 70%,
+    transparent 70%
+  );
+  transform: translate(-50%, -50%);
+  transition: width var(--touch-ripple-duration) ease-out,
+              height var(--touch-ripple-duration) ease-out,
+              opacity var(--touch-ripple-duration) ease-out;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Activate ripple on touch/click */
+.touch-interactive:active::after {
+  width: 200px;
+  height: 200px;
+  opacity: 1;
+  transition-duration: 100ms;
+}
+
+/* =================================
+   ACCESSIBILITY TOUCH ENHANCEMENTS
+   ================================= */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .touch-interactive,
+  .kiosk-time-card,
+  .kiosk-day-card {
+    border: 3px solid var(--senior-touch-active);
+    background-color: white;
+    color: black;
+  }
+  
+  .touch-interactive:hover {
+    border-color: var(--senior-touch-hover);
+    background-color: var(--senior-touch-hover);
+    color: white;
+  }
+  
+  .touch-interactive:active {
+    background-color: var(--senior-touch-active);
+    border-color: var(--senior-touch-active);
+  }
+}
+
+/* Reduced motion support - remove animations for sensitive users */
+@media (prefers-reduced-motion: reduce) {
+  .touch-interactive,
+  .touch-interactive::after,
+  .kiosk-time-card,
+  .kiosk-day-card {
+    transition-duration: 0ms !important;
+    animation: none !important;
+    transform: none !important;
+  }
+  
+  /* Still provide static feedback */
+  .touch-interactive:hover {
+    background-color: var(--senior-touch-hover);
+    color: white;
+  }
+  
+  .touch-interactive:active {
+    background-color: var(--senior-touch-active);
+    color: white;
+  }
+}
+
+/* =================================
+   GLOVE-COMPATIBLE TOUCH AREAS
+   ================================= */
+
+/* Medical gloves reduce touch sensitivity - increase areas */
+@media (pointer: coarse) {
+  :root {
+    --touch-target-small: 80px;   /* Larger for gloves */
+    --touch-target-medium: 100px;
+    --touch-target-large: 140px;
+    --touch-spacing-small: 16px;
+    --touch-spacing-medium: 24px;
+  }
+}
+
+/* =================================
+   LARGE DISPLAY TOUCH SCALING
+   ================================= */
+
+/* 32" Displays and above - scale up touch targets */
+@media (min-width: 1920px) {
+  :root {
+    --touch-target-small: 80px;
+    --touch-target-medium: 100px;
+    --touch-target-large: 140px;
+    --touch-target-critical: 180px;
+  }
+  
+  /* Scale up icons inside touch targets */
+  .kiosk-contact-icon i,
+  .kiosk-section-icon i,
+  .kiosk-time-icon i {
+    font-size: 2rem;
+  }
+}
+
+/* 4K Displays - 55" and above */
+@media (min-width: 2560px) {
+  :root {
+    --touch-target-small: 100px;
+    --touch-target-medium: 120px;
+    --touch-target-large: 160px;
+    --touch-target-critical: 200px;
+    --touch-spacing-large: 60px;
+  }
+  
+  .kiosk-contact-icon i,
+  .kiosk-section-icon i,
+  .kiosk-time-icon i {
+    font-size: 2.5rem;
+  }
+}
+
+/* =================================
+   EMERGENCY/CRITICAL ACTION STYLES
+   ================================= */
+
+/* Emergency button styling - maximum touch accessibility */
+.emergency-action,
+.critical-touch-target {
+  min-width: var(--touch-target-critical) !important;
+  min-height: var(--touch-target-critical) !important;
+  border: 4px solid var(--senior-touch-error);
+  border-radius: 12px;
+  background: linear-gradient(135deg, 
+    var(--senior-touch-error) 0%, 
+    #DC2626 100%);
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  box-shadow: 
+    0 8px 20px rgba(239, 68, 68, 0.4),
+    inset 0 2px 4px rgba(255, 255, 255, 0.1);
+}
+
+.emergency-action:hover {
+  transform: scale(1.05);
+  box-shadow: 
+    0 12px 30px rgba(239, 68, 68, 0.6),
+    inset 0 2px 4px rgba(255, 255, 255, 0.2);
+}
+
+.emergency-action:active {
+  transform: scale(0.98);
+  box-shadow: 
+    0 4px 15px rgba(239, 68, 68, 0.8),
+    inset 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* =================================
+   HYGIENE-CONSCIOUS DESIGN
+   ================================= */
+
+/* Visual indicators for recent touch */
+.recently-touched {
+  position: relative;
+}
+
+.recently-touched::before {
+  content: '🦠';
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  font-size: 0.8rem;
+  opacity: 0.7;
+  animation: fade-hygiene-indicator 3s ease-out forwards;
+}
+
+@keyframes fade-hygiene-indicator {
+  0% { opacity: 0.7; }
+  100% { opacity: 0; }
+}
+
+/* Clean surface indicator */
+.sanitized-surface {
+  position: relative;
+}
+
+.sanitized-surface::after {
+  content: '✨';
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  font-size: 0.8rem;
+  color: var(--senior-touch-active);
+  animation: sparkle-clean 2s ease-in-out infinite;
+}
+
+@keyframes sparkle-clean {
+  0%, 100% { opacity: 0.5; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+/* =================================
+   TOUCH-SPECIFIC ANIMATIONS
+   ================================= */
+
+/* Breathing animation for important touch targets */
+.pulse-touch-target {
+  animation: breathe-touch 4s ease-in-out infinite;
+}
+
+@keyframes breathe-touch {
+  0%, 100% { 
+    transform: scale(1);
+    box-shadow: 0 4px 20px rgba(0, 168, 107, 0.2);
+  }
+  50% { 
+    transform: scale(1.02);
+    box-shadow: 0 8px 30px rgba(0, 168, 107, 0.4);
+  }
+}
+
+/* =================================
+   TOUCH ERROR STATES
+   ================================= */
+
+/* Touch target temporarily disabled */
+.touch-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  filter: grayscale(100%);
+  cursor: not-allowed;
+}
+
+/* Touch error feedback */
+.touch-error {
+  animation: shake-error 0.5s ease-in-out;
+  border-color: var(--senior-touch-error);
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+@keyframes shake-error {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* Touch success feedback */
+.touch-success {
+  animation: success-pulse 0.6s ease-out;
+}
+
+@keyframes success-pulse {
+  0% { 
+    transform: scale(1);
+    background-color: inherit;
+  }
+  50% { 
+    transform: scale(1.05);
+    background-color: var(--senior-touch-active);
+    color: white;
+  }
+  100% { 
+    transform: scale(1);
+    background-color: inherit;
+  }
+}

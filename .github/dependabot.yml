@@ -1,0 +1,105 @@
+version: 2
+updates:
+  # Python dependencies
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "daily"  # Daily for security updates
+      time: "09:00"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "@Ralle1976"
+    assignees:
+      - "@Ralle1976"
+    commit-message:
+      prefix: "deps"
+      prefix-development: "deps-dev"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "python"
+    target-branch: "develop"
+    versioning-strategy: increase
+    # Security-first updates
+    allow:
+      - dependency-type: "all"
+    # Group security updates
+    groups:
+      security:
+        patterns:
+          - "cryptography"
+          - "pillow"
+          - "requests"
+          - "flask"
+          - "werkzeug"
+          - "sqlalchemy"
+        update-types:
+          - "security-update"
+        priority: 10
+      dependencies:
+        patterns:
+          - "*"
+        exclude-patterns:
+          - "cryptography"
+          - "pillow" 
+          - "requests"
+          - "flask"
+          - "werkzeug"
+          - "sqlalchemy"
+
+  # Docker dependencies
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "09:00"
+    open-pull-requests-limit: 3
+    reviewers:
+      - "@Ralle1976"
+    commit-message:
+      prefix: "docker"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "docker"
+
+  # GitHub Actions dependencies
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "wednesday"
+      time: "09:00"
+    open-pull-requests-limit: 3
+    reviewers:
+      - "@Ralle1976"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "github-actions"
+    target-branch: "develop"
+
+  # NPM dependencies (if any frontend tooling is added later)
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "thursday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    versioning-strategy: increase
+    reviewers:
+      - "@Ralle1976"
+    commit-message:
+      prefix: "npm"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "javascript"
+    ignore:
+      # Ignore major version updates for breaking changes
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]

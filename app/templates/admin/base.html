@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="{{ current_language }}" x-data="{ mobileMenuOpen: false, languageMenuOpen: false }"
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ get_translation('admin.dashboard.title') }}{% endblock %} - QR-Info-Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Enhanced UI CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/enhanced-ui.css') }}">
+    
+    <!-- Admin Internationalization System -->
+    <script src="{{ url_for('static', filename='js/admin-i18n.js') }}"></script>
+    
+    <style>
+        body { font-family: 'Sarabun', sans-serif; }
+        .nav-active { @apply border-b-2 border-thai-turquoise text-thai-turquoise; }
+        .nav-item { @apply py-4 px-2 text-gray-500 hover:text-gray-700 border-b-2 border-transparent transition-all rounded-t-lg; }
+        .nav-item:hover { @apply bg-gray-50; }
+        .admin-card { 
+            @apply bg-white rounded-lg shadow-md border border-gray-200 transition-all hover:shadow-lg;
+        }
+        .admin-form .form-group { @apply mb-6; }
+        .admin-form label { @apply block text-sm font-medium text-gray-700 mb-2; }
+        .admin-form input, .admin-form select, .admin-form textarea { 
+            @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-thai-turquoise focus:border-thai-turquoise transition-all;
+        }
+        .admin-form input:focus, .admin-form select:focus, .admin-form textarea:focus {
+            @apply outline-none;
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="header-gradient shadow-lg">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-18">
+                    <!-- Logo/Title Enhanced -->
+                    <div class="flex items-center space-x-4">
+                        <div class="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
+                            <i class="fas fa-shield-alt text-white text-2xl"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-bold text-white">
+                                {{ t('admin.dashboard') }}
+                            </h1>
+                            <p class="text-white/80 text-sm">{{ t('admin.portal_management') }}</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Desktop Navigation Enhanced -->
+                    <div class="hidden md:flex items-center space-x-4">
+                        <!-- Language Switcher with Clickable Buttons -->
+                        <div class="bg-white/10 rounded-lg px-4 py-2 backdrop-blur-sm">
+                            <div class="flex items-center space-x-4">
+                                <i class="fas fa-globe text-white/80 mr-2"></i>
+                                
+                                <!-- Thai Button (Default) -->
+                                <a href="?lang=th" class="flex items-center cursor-pointer hover:opacity-80 transition-all group">
+                                    <div class="relative">
+                                        <div class="w-4 h-4 bg-white/20 rounded-full border-2 border-white/40 
+                                                    {% if current_language == 'th' %}bg-thai-turquoise border-white{% endif %}
+                                                    group-hover:border-white transition-all"></div>
+                                        {% if current_language == 'th' %}
+                                        <div class="absolute inset-0 flex items-center justify-center">
+                                            <div class="w-2 h-2 bg-white rounded-full"></div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <span class="ml-2 text-sm text-white/90 font-medium
+                                                 {% if current_language == 'th' %}text-white{% endif %}
+                                                 group-hover:text-white transition-colors">
+                                        ไทย
+                                    </span>
+                                </a>
+                                
+                                <!-- German Button -->
+                                <a href="?lang=de" class="flex items-center cursor-pointer hover:opacity-80 transition-all group">
+                                    <div class="relative">
+                                        <div class="w-4 h-4 bg-white/20 rounded-full border-2 border-white/40 
+                                                    {% if current_language == 'de' %}bg-thai-turquoise border-white{% endif %}
+                                                    group-hover:border-white transition-all"></div>
+                                        {% if current_language == 'de' %}
+                                        <div class="absolute inset-0 flex items-center justify-center">
+                                            <div class="w-2 h-2 bg-white rounded-full"></div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <span class="ml-2 text-sm text-white/80 
+                                                 {% if current_language == 'de' %}text-white font-medium{% endif %}
+                                                 group-hover:text-white transition-colors">
+                                        DE
+                                    </span>
+                                </a>
+                                
+                                <!-- English Button -->
+                                <a href="?lang=en" class="flex items-center cursor-pointer hover:opacity-80 transition-all group">
+                                    <div class="relative">
+                                        <div class="w-4 h-4 bg-white/20 rounded-full border-2 border-white/40 
+                                                    {% if current_language == 'en' %}bg-thai-turquoise border-white{% endif %}
+                                                    group-hover:border-white transition-all"></div>
+                                        {% if current_language == 'en' %}
+                                        <div class="absolute inset-0 flex items-center justify-center">
+                                            <div class="w-2 h-2 bg-white rounded-full"></div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <span class="ml-2 text-sm text-white/80 
+                                                 {% if current_language == 'en' %}text-white font-medium{% endif %}
+                                                 group-hover:text-white transition-colors">
+                                        EN
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white/10 rounded-lg px-3 py-2 backdrop-blur-sm">
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-clock text-white/80"></i>
+                                <span class="text-sm text-white/80">{{ t('admin.bangkok_time') }}</span>
+                                <span class="text-sm font-mono text-white font-bold" id="header-time">--:--:--</span>
+                            </div>
+                        </div>
+                        <a href="{{ url_for('public.home') }}" target="_blank" 
+                           class="btn-enhanced bg-white/20 text-white border border-white/30 hover:bg-white/30 backdrop-blur-sm">
+                            <i class="fas fa-external-link-alt mr-2"></i>
+                            {{ t('admin.portal_open') }}
+                        </a>
+                        <a href="/admin/logout" 
+                           class="btn-enhanced bg-red-500/90 text-white hover:bg-red-600 backdrop-blur-sm">
+                            <i class="fas fa-sign-out-alt mr-2"></i>
+                            {{ t('admin.logout') }}
+                        </a>
+                    </div>
+                    
+                    <!-- Mobile Language Switcher -->
+                    <div class="md:hidden bg-white/10 rounded-lg px-3 py-2 backdrop-blur-sm mr-2">
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-globe text-white/80 text-sm"></i>
+                            <div class="flex space-x-2">
+                                <a href="?lang=th" class="text-xs text-white/80 px-2 py-1 rounded 
+                                         {% if current_language == 'th' %}bg-white/20 text-white font-medium{% endif %}">
+                                    ไทย
+                                </a>
+                                <a href="?lang=de" class="text-xs text-white/80 px-2 py-1 rounded 
+                                         {% if current_language == 'de' %}bg-white/20 text-white font-medium{% endif %}">
+                                    DE
+                                </a>
+                                <a href="?lang=en" class="text-xs text-white/80 px-2 py-1 rounded 
+                                         {% if current_language == 'en' %}bg-white/20 text-white font-medium{% endif %}">
+                                    EN
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Mobile menu button -->
+                    <div class="md:hidden">
+                        <button @click="mobileMenuOpen = !mobileMenuOpen" 
+                                class="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100">
+                            <i class="fas fa-bars" x-show="!mobileMenuOpen"></i>
+                            <i class="fas fa-times" x-show="mobileMenuOpen"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Navigation -->
+        <nav class="bg-white border-b border-gray-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex space-x-8">
+                    <a href="{{ url_for('admin.dashboard') }}" 
+                       class="nav-item {% if request.endpoint == 'admin.dashboard' %}nav-active{% endif %}">
+                        <i class="fas fa-tachometer-alt mr-2"></i>{{ t('admin.navigation.dashboard') }}
+                    </a>
+                    <a href="{{ url_for('admin.manage_status') }}" 
+                       class="nav-item {% if request.endpoint == 'admin.manage_status' %}nav-active{% endif %}">
+                        <i class="fas fa-info-circle mr-2"></i>{{ t('admin.navigation.status') }}
+                    </a>
+                    <a href="{{ url_for('admin.manage_hours') }}" 
+                       class="nav-item {% if request.endpoint == 'admin.manage_hours' %}nav-active{% endif %}">
+                        <i class="fas fa-clock mr-2"></i>{{ t('admin.navigation.opening_hours') }}
+                    </a>
+                    <a href="{{ url_for('admin.manage_announcements') }}" 
+                       class="nav-item {% if request.endpoint == 'admin.manage_announcements' %}nav-active{% endif %}">
+                        <i class="fas fa-bullhorn mr-2"></i>{{ t('admin.navigation.announcements') }}
+                    </a>
+                    <a href="{{ url_for('admin.manage_availability') }}" 
+                       class="nav-item {% if request.endpoint == 'admin.manage_availability' %}nav-active{% endif %}">
+                        <i class="fas fa-calendar-check mr-2"></i>{{ t('admin.navigation.availability') }}
+                    </a>
+                    <a href="{{ url_for('admin.manage_settings') }}" 
+                       class="nav-item {% if request.endpoint == 'admin.manage_settings' %}nav-active{% endif %}">
+                        <i class="fas fa-cogs mr-2"></i>{{ t('admin.navigation.settings') }}
+                    </a>
+                    <a href="{{ url_for('admin.analytics_dashboard') }}" 
+                       class="nav-item {% if request.endpoint == 'admin.analytics_dashboard' %}nav-active{% endif %}">
+                        <i class="fas fa-chart-bar mr-2"></i>Analytics
+                    </a>
+                    <a href="{{ url_for('admin.change_password') }}" 
+                       class="nav-item {% if request.endpoint == 'admin.change_password' %}nav-active{% endif %}">
+                        <i class="fas fa-key mr-2"></i>{{ t('admin.navigation.change_password') }}
+                    </a>
+                    
+                    <!-- Legal Compliance Dropdown -->
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open" 
+                                class="nav-item flex items-center {% if request.endpoint and 'legal' in request.endpoint %}nav-active{% endif %}">
+                            <i class="fas fa-shield-alt mr-2"></i>{{ t('admin.navigation.legal_compliance') }}
+                            <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                        </button>
+                        
+                        <div x-show="open" 
+                             @click.away="open = false"
+                             x-transition
+                             class="absolute top-full left-0 mt-1 w-64 bg-white rounded-md shadow-lg border border-gray-200 z-50">
+                            <div class="py-2">
+                                <!-- Legal Dashboard temporarily disabled -->
+                                <div class="block px-4 py-2 text-sm text-gray-400">
+                                    <i class="fas fa-tachometer-alt mr-2"></i>Compliance Dashboard (coming soon)
+                                </div>
+                                <!-- Legal features temporarily disabled -->
+                                <div class="block px-4 py-2 text-sm text-gray-400">
+                                    <i class="fas fa-language mr-2"></i>Labels & Sprachen (coming soon)
+                                </div>
+                                <div class="block px-4 py-2 text-sm text-gray-400">
+                                    <i class="fas fa-file-contract mr-2"></i>Rechtsdokumente (coming soon)
+                                </div>
+                                <div class="block px-4 py-2 text-sm text-gray-400">
+                                    <i class="fas fa-user-shield mr-2"></i>Datenanfragen (coming soon)
+                                </div>
+                                <div class="block px-4 py-2 text-sm text-gray-400">
+                                    <i class="fas fa-list-alt mr-2"></i>Compliance Logs (coming soon)
+                                </div>
+                                <div class="border-t border-gray-100 my-1"></div>
+                                <!-- Privacy policy temporarily disabled -->
+                                <div class="block px-4 py-2 text-sm text-gray-400">
+                                    <i class="fas fa-external-link-alt mr-2"></i>Datenschutzerklärung (coming soon)
+                                </div>
+                                <!-- Cookie settings temporarily disabled -->
+                                <div class="block px-4 py-2 text-sm text-gray-400">
+                                    <i class="fas fa-cookie-bite mr-2"></i>Cookie-Einstellungen (coming soon)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mobile Navigation -->
+                <div x-show="mobileMenuOpen" x-transition class="md:hidden py-2 space-y-1">
+                    <!-- Mobile Language Switcher First -->
+                    <div class="px-3 py-2">
+                        <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                            {{ t('admin.language_switcher.current_language') }}
+                        </div>
+                        <div class="flex space-x-2">
+                            <a href="?lang=th" 
+                               class="px-3 py-1 rounded text-sm {% if current_language == 'th' %}bg-thai-turquoise text-white{% else %}bg-gray-200 text-gray-700 hover:bg-gray-300{% endif %}">
+                                ไทย
+                            </a>
+                            <a href="?lang=de" 
+                               class="px-3 py-1 rounded text-sm {% if current_language == 'de' %}bg-thai-turquoise text-white{% else %}bg-gray-200 text-gray-700 hover:bg-gray-300{% endif %}">
+                                DE
+                            </a>
+                            <a href="?lang=en" 
+                               class="px-3 py-1 rounded text-sm {% if current_language == 'en' %}bg-thai-turquoise text-white{% else %}bg-gray-200 text-gray-700 hover:bg-gray-300{% endif %}">
+                                EN
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="border-t border-gray-200 my-2"></div>
+                    
+                    <a href="{{ url_for('admin.dashboard') }}" 
+                       class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                        <i class="fas fa-tachometer-alt mr-2"></i>{{ t('admin.navigation.dashboard') }}
+                    </a>
+                    <a href="{{ url_for('admin.manage_status') }}" 
+                       class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                        <i class="fas fa-info-circle mr-2"></i>{{ t('admin.navigation.status') }}
+                    </a>
+                    <a href="{{ url_for('admin.manage_hours') }}" 
+                       class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                        <i class="fas fa-clock mr-2"></i>{{ t('admin.navigation.opening_hours') }}
+                    </a>
+                    <a href="{{ url_for('admin.manage_announcements') }}" 
+                       class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                        <i class="fas fa-bullhorn mr-2"></i>{{ t('admin.navigation.announcements') }}
+                    </a>
+                    <a href="{{ url_for('admin.manage_availability') }}" 
+                       class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                        <i class="fas fa-calendar-check mr-2"></i>{{ t('admin.navigation.availability') }}
+                    </a>
+                    <a href="{{ url_for('admin.manage_settings') }}" 
+                       class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                        <i class="fas fa-cogs mr-2"></i>{{ t('admin.navigation.settings') }}
+                    </a>
+                    <a href="{{ url_for('admin.change_password') }}" 
+                       class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                        <i class="fas fa-key mr-2"></i>{{ t('admin.navigation.change_password') }}
+                    </a>
+                    
+                    <!-- Mobile Legal Compliance Menu -->
+                    <div class="border-t border-gray-200 pt-2 mt-2">
+                        <div class="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                            Legal Compliance
+                        </div>
+                        <!-- Legal admin features temporarily disabled -->
+                        <div class="block px-3 py-2 rounded-md text-base font-medium text-gray-400">
+                            <i class="fas fa-tachometer-alt mr-2"></i>Legal Dashboard (coming soon)
+                        </div>
+                        <div class="block px-3 py-2 rounded-md text-base font-medium text-gray-400">
+                            <i class="fas fa-language mr-2"></i>Labels & Sprachen (coming soon)
+                        </div>
+                        <div class="block px-3 py-2 rounded-md text-base font-medium text-gray-400">
+                            <i class="fas fa-file-contract mr-2"></i>Rechtsdokumente (coming soon)
+                        </div>
+                        <div class="block px-3 py-2 rounded-md text-base font-medium text-gray-400">
+                            <i class="fas fa-user-shield mr-2"></i>Datenanfragen (coming soon)
+                        </div>
+                    </div>
+                    
+                    <div class="border-t border-gray-200 pt-4 pb-3">
+                        <a href="{{ url_for('public.home') }}" target="_blank" 
+                           class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                            <i class="fas fa-external-link-alt mr-2"></i>{{ t('admin.portal_open') }}
+                        </a>
+                        <a href="/admin/logout" 
+                           class="block px-3 py-2 rounded-md text-base font-medium text-red-600 hover:text-red-900 hover:bg-red-50">
+                            <i class="fas fa-sign-out-alt mr-2"></i>{{ t('admin.logout') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+                    {% for category, message in messages %}
+                        <div class="mb-4 p-4 rounded-md {% if category == 'error' %}bg-red-50 border border-red-200 text-red-700{% elif category == 'success' %}bg-green-50 border border-green-200 text-green-700{% else %}bg-blue-50 border border-blue-200 text-blue-700{% endif %}" 
+                             x-data="{ show: true }" x-show="show" x-transition>
+                            <div class="flex justify-between items-center">
+                                <div class="flex">
+                                    <div class="flex-shrink-0">
+                                        {% if category == 'error' %}
+                                            <i class="fas fa-exclamation-circle"></i>
+                                        {% elif category == 'success' %}
+                                            <i class="fas fa-check-circle"></i>
+                                        {% else %}
+                                            <i class="fas fa-info-circle"></i>
+                                        {% endif %}
+                                    </div>
+                                    <div class="ml-3">
+                                        <p class="text-sm font-medium">{{ message }}</p>
+                                    </div>
+                                </div>
+                                <div class="ml-auto pl-3">
+                                    <button @click="show = false" class="inline-flex rounded-md text-sm hover:opacity-75">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        <!-- Main Content -->
+        <main class="flex-1">
+            {% block content %}{% endblock %}
+        </main>
+        
+        <!-- Footer -->
+        <footer class="bg-white border-t border-gray-200 py-4">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center text-sm text-gray-500">
+                    <div>
+                        QR-Info-Portal Admin • Version 1.0
+                    </div>
+                    <div>
+                        <span id="footer-status" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            <span class="w-2 h-2 bg-green-400 rounded-full mr-1"></span>
+                            {{ t('admin.system_online') }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+    <!-- Global JavaScript -->
+    <script>
+        // Initialize Admin I18n System
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize with current language from Flask session
+            const currentLang = '{{ current_language }}' || 'de';
+            console.log('Initializing AdminI18n with language:', currentLang);
+            
+            if (window.adminI18n) {
+                window.adminI18n.init(currentLang).then(() => {
+                    console.log('AdminI18n initialized successfully');
+                    
+                    // Trigger custom event for other scripts
+                    const event = new CustomEvent('adminI18nReady', { 
+                        detail: { language: currentLang } 
+                    });
+                    document.dispatchEvent(event);
+                }).catch(error => {
+                    console.error('AdminI18n initialization failed:', error);
+                });
+            } else {
+                console.error('AdminI18n not available');
+            }
+        });
+        
+        // Global time update function
+        function updateHeaderTime() {
+            fetch('/admin/api/current-time')
+                .then(response => response.json())
+                .then(data => {
+                    const timeElement = document.getElementById('header-time');
+                    if (timeElement) {
+                        timeElement.textContent = data.time;
+                    }
+                })
+                .catch(error => {
+                    console.error('Time update failed:', error);
+                    const statusElement = document.getElementById('footer-status');
+                    if (statusElement) {
+                        statusElement.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800';
+                        statusElement.innerHTML = '<span class="w-2 h-2 bg-red-400 rounded-full mr-1"></span>{{ t("admin.system_offline") }}';
+                    }
+                });
+        }
+        
+        // Update time every second
+        setInterval(updateHeaderTime, 1000);
+        updateHeaderTime(); // Initial call
+        
+        // Global utility functions
+        window.adminUtils = {
+            showNotification: function(message, type = 'info') {
+                // Simple notification system
+                const notification = document.createElement('div');
+                notification.className = `fixed top-4 right-4 z-50 p-4 rounded-md shadow-lg max-w-sm ${
+                    type === 'success' ? 'bg-green-50 border border-green-200 text-green-700' :
+                    type === 'error' ? 'bg-red-50 border border-red-200 text-red-700' :
+                    'bg-blue-50 border border-blue-200 text-blue-700'
+                }`;
+                notification.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <p class="text-sm font-medium">${message}</p>
+                        <button onclick="this.parentElement.parentElement.remove()" class="ml-3 text-sm hover:opacity-75">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+                document.body.appendChild(notification);
+                
+                // Auto-remove after 5 seconds
+                setTimeout(() => {
+                    if (notification.parentElement) {
+                        notification.remove();
+                    }
+                }, 5000);
+            },
+            
+            confirmAction: function(message, callback) {
+                if (confirm(message)) {
+                    callback();
+                }
+            },
+            
+            formatDate: function(dateString) {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('de-DE', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit'
+                });
+            },
+            
+            formatDateTime: function(dateString) {
+                const date = new Date(dateString);
+                return date.toLocaleString('de-DE', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            }
+        };
+
+        // Global translation function to prevent raw keys
+        window.t = function(key) {
+            // Simple translation mapping for common admin keys
+            const translations = {
+                'admin.availability_management.messages.load_error': 'Fehler beim Laden der Verfügbarkeitsdaten',
+                'admin.availability_management.list_view.no_availability': 'Keine Verfügbarkeit',
+                'admin.announcements_management.messages.save_success': 'Ankündigung erfolgreich gespeichert',
+                'admin.announcements_management.messages.save_error': 'Fehler beim Speichern',
+                'admin.status.messages.update_success': 'Status erfolgreich aktualisiert',
+                'admin.status.messages.update_error': 'Fehler beim Aktualisieren des Status'
+            };
+            
+            return translations[key] || key.split('.').pop().replace(/_/g, ' ');
+        };
+    </script>
+    
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

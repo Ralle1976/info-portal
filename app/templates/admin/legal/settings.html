@@ -1,0 +1,547 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Legal Settings - Admin{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="bg-white shadow rounded-lg p-6">
+        <h1 class="text-2xl font-bold text-gray-900 mb-2">Legal Compliance Einstellungen</h1>
+        <p class="text-gray-600">Konfiguration aller rechtlichen Texte, Labels und Datumsformate</p>
+    </div>
+
+    <!-- Language Tabs -->
+    <div class="bg-white shadow rounded-lg">
+        <div class="border-b border-gray-200">
+            <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+                <button onclick="switchLanguage('th')" 
+                        class="language-tab border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm"
+                        data-lang="th">
+                    🇹🇭 ไทย (Thailand)
+                </button>
+                <button onclick="switchLanguage('de')" 
+                        class="language-tab border-blue-500 text-blue-600 whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm"
+                        data-lang="de">
+                    🇩🇪 Deutsch (Germany)
+                </button>
+                <button onclick="switchLanguage('en')" 
+                        class="language-tab border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm"
+                        data-lang="en">
+                    🇬🇧 English (International)
+                </button>
+            </nav>
+        </div>
+
+        <!-- Language Content Panels -->
+        <div class="p-6">
+            <!-- Thai Configuration -->
+            <div id="config-th" class="language-panel" style="display: none;">
+                <form id="form-th" onsubmit="saveConfig('th', event)">
+                    <div class="space-y-8">
+                        <!-- Site Title -->
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">🏥 ชื่อเว็บไซต์และหัวข้อหลัก</h3>
+                            <div class="grid grid-cols-1 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">ชื่อเว็บไซต์หลัก</label>
+                                    <input type="text" name="site_title" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="ห้องปฏิบัติการพัทยา">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Dashboard Labels -->
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">📊 แดชบอร์ด Compliance</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">หัวข้อแดชบอร์ด</label>
+                                    <input type="text" name="compliance.dashboard.title" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="แดชบอร์ดการปฏิบัติตามกฎหมาย">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">คำอธิบายแดชบอร์ด</label>
+                                    <textarea name="compliance.dashboard.description" rows="2" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="การจัดการความปฏิบัติตาม PDPA ประเทศไทยและ GDPR สหภาพยุโรป"></textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">คะแนนการปฏิบัติตาม</label>
+                                    <input type="text" name="compliance.dashboard.compliance_score" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="คะแนนการปฏิบัติตาม">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">การยินยอมที่ใช้งานอยู่</label>
+                                    <input type="text" name="compliance.dashboard.active_consents" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="การยินยอมที่ใช้งานอยู่">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Document Labels -->
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">📄 เอกสารทางกฎหมาย</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">นโยบายความเป็นส่วนตัว</label>
+                                    <input type="text" name="compliance.documents.privacy_policy" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="นโยบายความเป็นส่วนตัว">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">ข้อกำหนดการให้บริการ</label>
+                                    <input type="text" name="compliance.documents.terms_of_service" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="ข้อกำหนดการให้บริการ">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">ข้อมูลทางกฎหมาย</label>
+                                    <input type="text" name="compliance.documents.impressum" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="ข้อมูลทางกฎหมาย">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">ข้อปฏิเสธทางการแพทย์</label>
+                                    <input type="text" name="compliance.documents.medical_disclaimer" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="ข้อความปฏิเสธความรับผิดชอบทางการแพทย์">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Date Formats -->
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">📅 รูปแบบวันที่และเวลา (พุทธศักราช)</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">รูปแบบวันที่</label>
+                                    <input type="text" name="date_formats.date" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="%d/%m/%Y">
+                                    <p class="text-xs text-gray-500 mt-1">ตัวอย่าง: 22/08/2567</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">รูปแบบวันที่และเวลา</label>
+                                    <input type="text" name="date_formats.datetime" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="%d/%m/%Y %H:%M น.">
+                                    <p class="text-xs text-gray-500 mt-1">ตัวอย่าง: 22/08/2567 14:30 น.</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">รูปแบบเวลา</label>
+                                    <input type="text" name="date_formats.time" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="%H:%M น.">
+                                    <p class="text-xs text-gray-500 mt-1">ตัวอย่าง: 14:30 น.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Legal Contact -->
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">👨‍💼 ข้อมูลติดต่อทางกฎหมาย</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">ตำแหน่ง</label>
+                                    <input type="text" name="legal_contact.title" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="เจ้าหน้าที่คุ้มครองข้อมูล">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">ชื่อ/หน่วยงาน</label>
+                                    <input type="text" name="legal_contact.name" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="ฝ่ายกฎหมาย ห้องปฏิบัติการพัทยา">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">อีเมล</label>
+                                    <input type="email" name="legal_contact.email" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="privacy@laborpattaya.com">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">โทรศัพท์</label>
+                                    <input type="text" name="legal_contact.phone" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="+66 38 123 456">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 flex justify-end space-x-4">
+                        <button type="button" onclick="loadConfig('th')" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors">
+                            รีเซ็ต
+                        </button>
+                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                            บันทึกการตั้งค่า ไทย
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- German Configuration -->
+            <div id="config-de" class="language-panel">
+                <form id="form-de" onsubmit="saveConfig('de', event)">
+                    <div class="space-y-8">
+                        <!-- Site Title -->
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">🏥 Website-Titel und Hauptüberschriften</h3>
+                            <div class="grid grid-cols-1 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Haupt-Website-Titel</label>
+                                    <input type="text" name="site_title" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Labor Pattaya">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Dashboard Labels -->
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">📊 Compliance Dashboard</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Dashboard-Titel</label>
+                                    <input type="text" name="compliance.dashboard.title" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Legal Compliance Dashboard">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Dashboard-Beschreibung</label>
+                                    <textarea name="compliance.dashboard.description" rows="2" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Verwaltung der Thailand PDPA und EU DSGVO Compliance"></textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Compliance-Score</label>
+                                    <input type="text" name="compliance.dashboard.compliance_score" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Compliance-Score">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Aktive Einwilligungen</label>
+                                    <input type="text" name="compliance.dashboard.active_consents" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Aktive Einwilligungen">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Document Labels -->
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">📄 Rechtsdokumente</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Datenschutzerklärung</label>
+                                    <input type="text" name="compliance.documents.privacy_policy" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Datenschutzerklärung">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Nutzungsbedingungen</label>
+                                    <input type="text" name="compliance.documents.terms_of_service" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Nutzungsbedingungen">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Impressum</label>
+                                    <input type="text" name="compliance.documents.impressum" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Impressum">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Medizinischer Haftungsausschluss</label>
+                                    <input type="text" name="compliance.documents.medical_disclaimer" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Medizinischer Haftungsausschluss">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Date Formats -->
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">📅 Datums- und Zeitformate (Deutschland)</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Datumsformat</label>
+                                    <input type="text" name="date_formats.date" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="%d.%m.%Y">
+                                    <p class="text-xs text-gray-500 mt-1">Beispiel: 22.08.2024</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Datum-Zeit-Format</label>
+                                    <input type="text" name="date_formats.datetime" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="%d.%m.%Y %H:%M">
+                                    <p class="text-xs text-gray-500 mt-1">Beispiel: 22.08.2024 14:30</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Zeitformat</label>
+                                    <input type="text" name="date_formats.time" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="%H:%M">
+                                    <p class="text-xs text-gray-500 mt-1">Beispiel: 14:30</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Legal Contact -->
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">👨‍💼 Rechtliche Kontaktdaten</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Position/Titel</label>
+                                    <input type="text" name="legal_contact.title" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Datenschutzbeauftragter">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Name/Abteilung</label>
+                                    <input type="text" name="legal_contact.name" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Rechtsabteilung Labor Pattaya">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">E-Mail</label>
+                                    <input type="email" name="legal_contact.email" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="privacy@laborpattaya.com">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Telefon</label>
+                                    <input type="text" name="legal_contact.phone" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="+66 38 123 456">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 flex justify-end space-x-4">
+                        <button type="button" onclick="loadConfig('de')" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors">
+                            Zurücksetzen
+                        </button>
+                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                            Deutsche Einstellungen speichern
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- English Configuration -->
+            <div id="config-en" class="language-panel" style="display: none;">
+                <form id="form-en" onsubmit="saveConfig('en', event)">
+                    <div class="space-y-8">
+                        <!-- Site Title -->
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">🏥 Website Title and Main Headings</h3>
+                            <div class="grid grid-cols-1 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Main Website Title</label>
+                                    <input type="text" name="site_title" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Laboratory Pattaya">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Dashboard Labels -->
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">📊 Compliance Dashboard</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Dashboard Title</label>
+                                    <input type="text" name="compliance.dashboard.title" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Legal Compliance Dashboard">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Dashboard Description</label>
+                                    <textarea name="compliance.dashboard.description" rows="2" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Management of Thailand PDPA and EU GDPR Compliance"></textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Compliance Score</label>
+                                    <input type="text" name="compliance.dashboard.compliance_score" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Compliance Score">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Active Consents</label>
+                                    <input type="text" name="compliance.dashboard.active_consents" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Active Consents">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Date Formats -->
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">📅 Date and Time Formats (International)</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Date Format</label>
+                                    <input type="text" name="date_formats.date" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="%m/%d/%Y">
+                                    <p class="text-xs text-gray-500 mt-1">Example: 08/22/2024</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">DateTime Format</label>
+                                    <input type="text" name="date_formats.datetime" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="%m/%d/%Y %I:%M %p">
+                                    <p class="text-xs text-gray-500 mt-1">Example: 08/22/2024 2:30 PM</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Time Format</label>
+                                    <input type="text" name="date_formats.time" class="config-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="%I:%M %p">
+                                    <p class="text-xs text-gray-500 mt-1">Example: 2:30 PM</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 flex justify-end space-x-4">
+                        <button type="button" onclick="loadConfig('en')" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors">
+                            Reset
+                        </button>
+                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                            Save English Settings
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export/Import -->
+    <div class="bg-white shadow rounded-lg p-6">
+        <h2 class="text-lg font-medium text-gray-900 mb-4">Export/Import Konfiguration</h2>
+        <div class="flex flex-wrap gap-4">
+            <button onclick="exportConfig()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                🔽 Alle Konfigurationen exportieren
+            </button>
+            <label class="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors cursor-pointer">
+                🔼 Konfiguration importieren
+                <input type="file" accept=".json" onchange="importConfig(event)" class="hidden">
+            </label>
+            <button onclick="resetToDefaults()" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors" onclick="return confirm('Alle Einstellungen auf Standard zurücksetzen?')">
+                🔄 Alle auf Standard zurücksetzen
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript für Label-Management -->
+<script>
+let currentLanguage = 'de';
+let configs = {};
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    loadAllConfigs();
+});
+
+function switchLanguage(lang) {
+    // Update tabs
+    document.querySelectorAll('.language-tab').forEach(tab => {
+        if (tab.dataset.lang === lang) {
+            tab.className = 'language-tab border-blue-500 text-blue-600 whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm';
+        } else {
+            tab.className = 'language-tab border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm';
+        }
+    });
+
+    // Update panels
+    document.querySelectorAll('.language-panel').forEach(panel => {
+        panel.style.display = 'none';
+    });
+    document.getElementById('config-' + lang).style.display = 'block';
+
+    currentLanguage = lang;
+    loadConfig(lang);
+}
+
+async function loadAllConfigs() {
+    try {
+        const response = await fetch('/admin/legal/get-configs');
+        const data = await response.json();
+        configs = data;
+        loadConfig(currentLanguage);
+    } catch (error) {
+        console.error('Error loading configs:', error);
+    }
+}
+
+function loadConfig(lang) {
+    const config = configs[lang] || {};
+    const form = document.getElementById('form-' + lang);
+    
+    // Fill form fields from config
+    form.querySelectorAll('.config-input').forEach(input => {
+        const path = input.name.split('.');
+        let value = config;
+        
+        for (const key of path) {
+            value = value && value[key];
+        }
+        
+        if (value !== undefined) {
+            input.value = value;
+        }
+    });
+}
+
+async function saveConfig(lang, event) {
+    event.preventDefault();
+    
+    const form = document.getElementById('form-' + lang);
+    const formData = new FormData(form);
+    const config = {};
+    
+    // Build nested config object
+    for (const [name, value] of formData.entries()) {
+        const path = name.split('.');
+        let current = config;
+        
+        for (let i = 0; i < path.length - 1; i++) {
+            if (!current[path[i]]) {
+                current[path[i]] = {};
+            }
+            current = current[path[i]];
+        }
+        
+        current[path[path.length - 1]] = value;
+    }
+    
+    try {
+        const response = await fetch('/admin/legal/save-config', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                language: lang,
+                config: config
+            })
+        });
+        
+        if (response.ok) {
+            configs[lang] = config;
+            alert('Konfiguration erfolgreich gespeichert!');
+        } else {
+            alert('Fehler beim Speichern der Konfiguration');
+        }
+    } catch (error) {
+        console.error('Error saving config:', error);
+        alert('Fehler beim Speichern der Konfiguration');
+    }
+}
+
+async function exportConfig() {
+    try {
+        const response = await fetch('/admin/legal/export-configs');
+        const blob = await response.blob();
+        
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'legal-configs-' + new Date().toISOString().split('T')[0] + '.json';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+    } catch (error) {
+        console.error('Error exporting configs:', error);
+        alert('Fehler beim Exportieren der Konfiguration');
+    }
+}
+
+function importConfig(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const importedConfigs = JSON.parse(e.target.result);
+            
+            if (confirm('Möchten Sie alle aktuellen Einstellungen mit den importierten ersetzen?')) {
+                fetch('/admin/legal/import-configs', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(importedConfigs)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        configs = importedConfigs;
+                        loadConfig(currentLanguage);
+                        alert('Konfiguration erfolgreich importiert!');
+                    } else {
+                        alert('Fehler beim Importieren: ' + (data.error || 'Unbekannter Fehler'));
+                    }
+                });
+            }
+        } catch (error) {
+            alert('Ungültige JSON-Datei');
+        }
+    };
+    reader.readAsText(file);
+}
+
+async function resetToDefaults() {
+    if (!confirm('Alle Einstellungen auf Standard zurücksetzen? Dies kann nicht rückgängig gemacht werden!')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch('/admin/legal/reset-defaults', {
+            method: 'POST'
+        });
+        
+        if (response.ok) {
+            await loadAllConfigs();
+            alert('Alle Einstellungen wurden auf Standard zurückgesetzt');
+        } else {
+            alert('Fehler beim Zurücksetzen');
+        }
+    } catch (error) {
+        console.error('Error resetting:', error);
+        alert('Fehler beim Zurücksetzen');
+    }
+}
+</script>
+{% endblock %}

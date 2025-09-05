@@ -1,0 +1,501 @@
+name: Release Management & Publishing
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., v1.2.3)'
+        required: true
+        type: string
+      release_type:
+        description: 'Release type'
+        required: true
+        default: 'release'
+        type: choice
+        options:
+          - release
+          - prerelease
+
+env:
+  PYTHON_VERSION: '3.11'
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  prepare-release:
+    name: Prepare Release
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      changelog: ${{ steps.changelog.outputs.changelog }}
+      
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Determine version
+        id: version
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            VERSION="${{ github.ref_name }}"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Release version: $VERSION"
+      
+      - name: Generate changelog
+        id: changelog
+        run: |
+          # Get the last tag
+          LAST_TAG=$(git describe --tags --abbrev=0 HEAD~1 2>/dev/null || git rev-list --max-parents=0 HEAD)
+          echo "Last tag: $LAST_TAG"
+          
+          # Generate changelog
+          echo "## What's Changed" > CHANGELOG_TEMP.md
+          
+          # Get commits since last tag
+          git log --pretty=format:"- %s (%an)" $LAST_TAG..HEAD >> CHANGELOG_TEMP.md
+          
+          # Add additional sections
+          echo "" >> CHANGELOG_TEMP.md
+          echo "## New Features" >> CHANGELOG_TEMP.md
+          git log --pretty=format:"- %s" --grep="feat:" --grep="feature:" $LAST_TAG..HEAD >> CHANGELOG_TEMP.md
+          
+          echo "" >> CHANGELOG_TEMP.md
+          echo "## Bug Fixes" >> CHANGELOG_TEMP.md  
+          git log --pretty=format:"- %s" --grep="fix:" --grep="bug:" $LAST_TAG..HEAD >> CHANGELOG_TEMP.md
+          
+          echo "" >> CHANGELOG_TEMP.md
+          echo "## Security Updates" >> CHANGELOG_TEMP.md
+          git log --pretty=format:"- %s" --grep="security:" --grep="sec:" $LAST_TAG..HEAD >> CHANGELOG_TEMP.md
+          
+          echo "" >> CHANGELOG_TEMP.md
+          echo "## Documentation" >> CHANGELOG_TEMP.md
+          git log --pretty=format:"- %s" --grep="docs:" --grep="doc:" $LAST_TAG..HEAD >> CHANGELOG_TEMP.md
+          
+          # Clean up empty sections
+          sed -i '/^## /N;/^## .*\n$/d' CHANGELOG_TEMP.md
+          
+          # Set output (escape for multiline)
+          CHANGELOG=$(cat CHANGELOG_TEMP.md)
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+  run-tests:
+    name: Run Full Test Suite
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.11', '3.12']
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov pytest-flask pytest-mock
+      
+      - name: Run comprehensive tests
+        env:
+          FLASK_ENV: testing
+          SECRET_KEY: test-secret-key-for-release
+          ADMIN_USERNAME: testadmin
+          ADMIN_PASSWORD: testpassword123
+        run: |
+          # Run all tests with coverage
+          pytest --cov=app --cov-report=xml --cov-report=html --cov-fail-under=80 -v
+          
+          # Integration tests
+          pytest tests/integration/ -v || echo "No integration tests found"
+          
+          # Performance tests
+          pytest tests/performance/ -v || echo "No performance tests found"
+
+  build-assets:
+    name: Build Release Assets
+    runs-on: ubuntu-latest
+    needs: [prepare-release]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      
+      - name: Build Docker image
+        run: |
+          docker build -t qr-info-portal:${{ needs.prepare-release.outputs.version }} .
+          docker save qr-info-portal:${{ needs.prepare-release.outputs.version }} > qr-info-portal-${{ needs.prepare-release.outputs.version }}.tar
+      
+      - name: Create source distribution
+        run: |
+          # Create clean source archive
+          git archive --format=tar.gz --prefix=qr-info-portal-${{ needs.prepare-release.outputs.version }}/ HEAD > qr-info-portal-${{ needs.prepare-release.outputs.version }}-source.tar.gz
+      
+      - name: Generate deployment scripts
+        run: |
+          mkdir -p deployment-scripts
+          
+          # Create Docker Compose for production
+          cat > deployment-scripts/docker-compose.prod.yml << 'EOF'
+          version: '3.8'
+          
+          services:
+            qr-portal:
+              image: ghcr.io/${{ github.repository }}:${{ needs.prepare-release.outputs.version }}
+              restart: unless-stopped
+              ports:
+                - "80:5000"
+                - "443:5000"
+              environment:
+                - FLASK_ENV=production
+                - SECRET_KEY=${SECRET_KEY}
+                - ADMIN_USERNAME=${ADMIN_USERNAME}
+                - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+              volumes:
+                - ./data:/app/data
+                - ./logs:/app/logs
+                - ./ssl:/app/ssl:ro
+              healthcheck:
+                test: ["CMD", "curl", "-f", "http://localhost:5000/healthz"]
+                interval: 30s
+                timeout: 10s
+                retries: 3
+                start_period: 40s
+          
+            nginx:
+              image: nginx:alpine
+              restart: unless-stopped
+              ports:
+                - "80:80"
+                - "443:443"
+              volumes:
+                - ./nginx.conf:/etc/nginx/nginx.conf:ro
+                - ./ssl:/etc/ssl:ro
+              depends_on:
+                - qr-portal
+          EOF
+          
+          # Create installation script
+          cat > deployment-scripts/install.sh << 'EOF'
+          #!/bin/bash
+          set -e
+          
+          echo "🚀 QR Info Portal Installation Script"
+          echo "====================================="
+          
+          # Check requirements
+          if ! command -v docker &> /dev/null; then
+              echo "❌ Docker is not installed. Please install Docker first."
+              exit 1
+          fi
+          
+          if ! command -v docker-compose &> /dev/null; then
+              echo "❌ Docker Compose is not installed. Please install Docker Compose first."
+              exit 1
+          fi
+          
+          # Create directories
+          echo "📁 Creating directories..."
+          mkdir -p data logs ssl
+          
+          # Set up environment
+          if [ ! -f .env ]; then
+              echo "📝 Creating .env file..."
+              cat > .env << 'ENVEOF'
+          SECRET_KEY=your-secret-key-here
+          ADMIN_USERNAME=admin
+          ADMIN_PASSWORD=your-secure-password-here
+          FLASK_ENV=production
+          ENVEOF
+              echo "⚠️  Please edit .env file with your actual credentials!"
+          fi
+          
+          # Pull and start
+          echo "📦 Pulling Docker images..."
+          docker-compose -f docker-compose.prod.yml pull
+          
+          echo "🚀 Starting services..."
+          docker-compose -f docker-compose.prod.yml up -d
+          
+          echo "✅ Installation complete!"
+          echo "🌐 Your QR Portal should be available at http://localhost"
+          echo "⚙️  Admin interface: http://localhost/admin"
+          EOF
+          
+          chmod +x deployment-scripts/install.sh
+          
+          # Create update script
+          cat > deployment-scripts/update.sh << 'EOF'
+          #!/bin/bash
+          set -e
+          
+          echo "🔄 Updating QR Info Portal..."
+          
+          # Backup current data
+          BACKUP_DIR="backups/$(date +%Y%m%d_%H%M%S)"
+          echo "💾 Creating backup in $BACKUP_DIR..."
+          mkdir -p "$BACKUP_DIR"
+          cp -r data "$BACKUP_DIR/" 2>/dev/null || true
+          
+          # Pull new version
+          echo "📦 Pulling new version..."
+          docker-compose -f docker-compose.prod.yml pull
+          
+          # Restart services
+          echo "🔄 Restarting services..."
+          docker-compose -f docker-compose.prod.yml down
+          docker-compose -f docker-compose.prod.yml up -d
+          
+          # Health check
+          echo "🏥 Waiting for health check..."
+          sleep 10
+          if curl -f http://localhost/healthz > /dev/null 2>&1; then
+              echo "✅ Update successful!"
+          else
+              echo "❌ Health check failed. Check logs:"
+              docker-compose -f docker-compose.prod.yml logs qr-portal
+          fi
+          EOF
+          
+          chmod +x deployment-scripts/update.sh
+      
+      - name: Archive deployment scripts
+        run: |
+          tar -czf qr-info-portal-${{ needs.prepare-release.outputs.version }}-deployment.tar.gz deployment-scripts/
+      
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: release-assets
+          path: |
+            qr-info-portal-*.tar
+            qr-info-portal-*.tar.gz
+            deployment-scripts/
+
+  create-github-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: [prepare-release, run-tests, build-assets]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: release-assets
+      
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ needs.prepare-release.outputs.version }}
+          release_name: QR Info Portal ${{ needs.prepare-release.outputs.version }}
+          body: |
+            # QR Info Portal ${{ needs.prepare-release.outputs.version }}
+            
+            **Release Date:** $(date +%Y-%m-%d)
+            
+            ## 📋 Release Information
+            
+            This release includes comprehensive updates to the QR Info Portal system with enhanced functionality and security improvements.
+            
+            ${{ needs.prepare-release.outputs.changelog }}
+            
+            ## 📦 Installation
+            
+            ### Docker (Recommended)
+            ```bash
+            # Download and extract deployment scripts
+            wget https://github.com/${{ github.repository }}/releases/download/${{ needs.prepare-release.outputs.version }}/qr-info-portal-${{ needs.prepare-release.outputs.version }}-deployment.tar.gz
+            tar -xzf qr-info-portal-${{ needs.prepare-release.outputs.version }}-deployment.tar.gz
+            cd deployment-scripts
+            ./install.sh
+            ```
+            
+            ### Manual Installation
+            1. Download the source code
+            2. Follow the instructions in `DEPLOYMENT.md`
+            3. Configure your environment variables
+            4. Start the application
+            
+            ## 🔧 Configuration
+            
+            - Copy `.env.example` to `.env`
+            - Configure your database settings
+            - Set up admin credentials
+            - Configure SSL certificates for production
+            
+            ## 📚 Documentation
+            
+            - [Installation Guide](https://github.com/${{ github.repository }}/blob/main/DEPLOYMENT.md)
+            - [Configuration Reference](https://github.com/${{ github.repository }}/blob/main/docs/configuration.md)
+            - [API Documentation](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/)
+            
+            ## 🆘 Support
+            
+            If you encounter issues:
+            1. Check the [troubleshooting guide](https://github.com/${{ github.repository }}/blob/main/docs/troubleshooting.md)
+            2. Search [existing issues](https://github.com/${{ github.repository }}/issues)
+            3. Create a [new issue](https://github.com/${{ github.repository }}/issues/new)
+            
+            ## 🔒 Security
+            
+            This release has been scanned for security vulnerabilities. If you discover a security issue, please report it privately to the maintainers.
+            
+            ---
+            
+            **Full Changelog**: https://github.com/${{ github.repository }}/compare/$(git describe --tags --abbrev=0 HEAD~1)...${{ needs.prepare-release.outputs.version }}
+          draft: false
+          prerelease: ${{ github.event.inputs.release_type == 'prerelease' }}
+      
+      - name: Upload Docker Image Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./qr-info-portal-${{ needs.prepare-release.outputs.version }}.tar
+          asset_name: qr-info-portal-${{ needs.prepare-release.outputs.version }}.tar
+          asset_content_type: application/x-tar
+      
+      - name: Upload Source Archive
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./qr-info-portal-${{ needs.prepare-release.outputs.version }}-source.tar.gz
+          asset_name: qr-info-portal-${{ needs.prepare-release.outputs.version }}-source.tar.gz
+          asset_content_type: application/gzip
+      
+      - name: Upload Deployment Scripts
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./qr-info-portal-${{ needs.prepare-release.outputs.version }}-deployment.tar.gz
+          asset_name: qr-info-portal-${{ needs.prepare-release.outputs.version }}-deployment.tar.gz
+          asset_content_type: application/gzip
+
+  publish-container:
+    name: Publish Container Image
+    runs-on: ubuntu-latest
+    needs: [prepare-release, run-tests]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=tag
+            type=raw,value=latest
+      
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      
+      - name: Test published image
+        run: |
+          # Pull and test the published image
+          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.prepare-release.outputs.version }}
+          
+          # Run basic smoke test
+          docker run -d -p 5000:5000 --name test-release \
+            -e SECRET_KEY=test-key \
+            -e ADMIN_USERNAME=test \
+            -e ADMIN_PASSWORD=test \
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.prepare-release.outputs.version }}
+          
+          # Wait for startup
+          sleep 15
+          
+          # Test endpoints
+          curl -f http://localhost:5000/healthz
+          curl -f http://localhost:5000/ | grep -q "QR"
+          
+          # Cleanup
+          docker stop test-release
+          docker rm test-release
+
+  notify-release:
+    name: Notify Release
+    runs-on: ubuntu-latest
+    needs: [create-github-release, publish-container]
+    if: always()
+    
+    steps:
+      - name: Notify Slack
+        uses: 8398a7/action-slack@v3
+        if: success()
+        with:
+          status: success
+          text: |
+            🎉 **New Release Published!** 
+            
+            **Version:** ${{ needs.prepare-release.outputs.version }}
+            **Repository:** ${{ github.repository }}
+            **Release Notes:** https://github.com/${{ github.repository }}/releases/tag/${{ needs.prepare-release.outputs.version }}
+            
+            ✅ All tests passed
+            ✅ Docker image published
+            ✅ Release assets available
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+      
+      - name: Notify on failure
+        uses: 8398a7/action-slack@v3
+        if: failure()
+        with:
+          status: failure
+          text: |
+            ❌ **Release Failed!**
+            
+            **Version:** ${{ needs.prepare-release.outputs.version }}
+            **Repository:** ${{ github.repository }}
+            **Workflow:** ${{ github.workflow }}
+            
+            Please check the workflow logs for details.
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}

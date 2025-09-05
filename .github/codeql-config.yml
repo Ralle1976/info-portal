@@ -1,0 +1,33 @@
+name: "QR Info Portal CodeQL Config"
+
+disable-default-queries: false
+
+queries:
+  - name: security-and-quality
+    uses: security-and-quality
+  - name: security-experimental  
+    uses: security-experimental
+
+paths-ignore:
+  - "venv/**"
+  - "**/*.min.js"
+  - "**/migrations/**"
+  - "docs/_build/**"
+  - "**/__pycache__/**"
+  - "*.pyc"
+
+paths:
+  - "app/**"
+  - "tests/**"
+  - "*.py"
+
+# Custom Python security queries
+packs:
+  # Include security-focused query packs
+  python:
+    - codeql/python-queries
+    - codeql/python-queries:Security
+    - codeql/python-queries:Maintainability
+  javascript:
+    - codeql/javascript-queries
+    - codeql/javascript-queries:Security

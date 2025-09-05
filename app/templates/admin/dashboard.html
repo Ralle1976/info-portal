@@ -1,0 +1,295 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Admin Dashboard - {{ get_translation('site_title') }}{% endblock %}
+
+{% block content %}
+<!-- Dashboard Content -->
+<div class="max-w-7xl mx-auto py-6 px-4">
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <!-- Current Status -->
+        <div class="bg-white p-6 rounded-lg shadow status-card" 
+             data-help-tooltip="{{ get_tooltip_text('status_card', 'admin_dashboard') }}">
+            <h3 class="text-lg font-semibold text-gray-700 mb-2">
+                <i class="fas fa-info-circle mr-2 text-thai-turquoise"></i>
+                {{ t('admin.current_status') }}
+            </h3>
+            <div class="flex items-center">
+                <div class="flex-1">
+                    <p class="text-2xl font-bold {% if status.type == 'ANWESEND' %}text-green-600{% else %}text-yellow-600{% endif %}">
+                        {{ status.type|smart_translate }}
+                    </p>
+                    {% if status.description %}
+                        <p class="text-sm text-gray-500">{{ status.description }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Today's Hours -->
+        <div class="bg-white p-6 rounded-lg shadow hours-card" 
+             data-help-tooltip="{{ get_tooltip_text('hours_card', 'admin_dashboard') }}">
+            <h3 class="text-lg font-semibold text-gray-700 mb-2">
+                <i class="fas fa-clock mr-2 text-thai-turquoise"></i>
+                {{ t('admin.todays_hours') }}
+            </h3>
+            {% if today_hours.closed %}
+                <p class="text-2xl font-bold text-red-600">{{ t('admin.closed') }}</p>
+                {% if today_hours.note %}
+                    <p class="text-sm text-gray-500">{{ today_hours.note }}</p>
+                {% endif %}
+            {% else %}
+                {% for time_range in today_hours.time_ranges %}
+                    <p class="text-lg font-medium text-green-600">{{ time_range }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+        
+        <!-- Live Time -->
+        <div class="bg-white p-6 rounded-lg shadow time-card" 
+             data-help-tooltip="Aktuelle Zeit in Bangkok (Asia/Bangkok Zeitzone) - wird automatisch aktualisiert">
+            <h3 class="text-lg font-semibold text-gray-700 mb-2">
+                <i class="fas fa-globe-asia mr-2 text-thai-turquoise"></i>
+                {{ t('admin.bangkok_time_label') }}
+            </h3>
+            <p class="text-2xl font-bold text-blue-600" id="live-time">
+                --:--:--
+            </p>
+            <p class="text-sm text-gray-500" id="live-date">
+                {{ today.strftime('%d.%m.%Y') }}
+            </p>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="bg-white rounded-lg shadow p-6 mb-6 quick-actions-section" 
+         data-help-tooltip="Häufig verwendete Admin-Funktionen für schnellen Zugriff">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">
+            <i class="fas fa-bolt mr-2 text-thai-turquoise"></i>
+            {{ t('admin.quick_actions') }}
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <a href="{{ url_for('admin.manage_status') }}" 
+               class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-3 rounded-lg text-center transition"
+               data-help-tooltip="Status der Praxis ändern (geöffnet, geschlossen, Urlaub, etc.)">
+                <i class="fas fa-info-circle mr-2"></i>
+                {{ t('admin.change_status') }}
+            </a>
+            <button onclick="generateQR()" 
+                    class="bg-green-500 hover:bg-green-600 text-white px-4 py-3 rounded-lg transition"
+                    data-help-tooltip="QR-Codes für verschiedene Verwendungszwecke erstellen">
+                <i class="fas fa-qrcode mr-2"></i>
+                {{ t('admin.generate_qr') }}
+            </button>
+            <a href="{{ url_for('public.home') }}" target="_blank" 
+               class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-3 rounded-lg text-center transition portal-link"
+               data-help-tooltip="Öffentliche Seite in neuem Tab öffnen - so sehen es Ihre Besucher">
+                <i class="fas fa-external-link-alt mr-2"></i>
+                {{ t('admin.open_portal') }}
+            </a>
+            <a href="{{ url_for('admin.manage_rollback') }}" 
+               class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-3 rounded-lg text-center transition"
+               data-help-tooltip="Letzte Änderungen rückgängig machen (Sicherheitsfunktion)">
+                <i class="fas fa-undo mr-2"></i>
+                {{ t('admin.rollback_changes') }}
+            </a>
+        </div>
+        
+        <!-- Second row of actions -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
+            <button onclick="exportData()" class="bg-teal-500 hover:bg-teal-600 text-white px-4 py-3 rounded-lg transition">
+                <i class="fas fa-download mr-2"></i>
+                {{ t('admin.export_data') }}
+            </button>
+            <button onclick="showSystemInfo()" class="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-3 rounded-lg transition">
+                <i class="fas fa-info mr-2"></i>
+                {{ t('admin.system_info') }}
+            </button>
+            <button onclick="refreshData()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-3 rounded-lg transition">
+                <i class="fas fa-sync mr-2"></i>
+                {{ t('admin.refresh_data') }}
+            </button>
+            <button onclick="restartServer()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-lg transition"
+                    data-help-tooltip="Server neustarten - alle Verbindungen werden kurz unterbrochen">
+                <i class="fas fa-power-off mr-2"></i>
+                {{ t('admin.restart_server') }}
+            </button>
+        </div>
+    </div>
+    
+    <!-- Recent Announcements -->
+    {% if announcements %}
+    <div class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">
+            <i class="fas fa-bullhorn mr-2 text-thai-turquoise"></i>
+            {{ t('admin.current_announcements') }}
+        </h2>
+        <div class="space-y-3">
+            {% for announcement in announcements %}
+            <div class="border-l-4 border-blue-400 pl-4">
+                <h4 class="font-semibold">{{ announcement.title }} ({{ announcement.lang.upper() }})</h4>
+                <p class="text-gray-600">{{ announcement.body }}</p>
+                <p class="text-sm text-gray-400">{{ announcement.created_at.strftime('%d.%m.%Y %H:%M') }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+    
+<script>
+    // Live time update
+    function updateTime() {
+        fetch('/admin/api/current-time')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('live-time').textContent = data.time;
+                document.getElementById('live-date').textContent = data.date;
+            })
+            .catch(console.error);
+    }
+    
+    // Update time every second
+    setInterval(updateTime, 1000);
+    updateTime(); // Initial call
+    
+    function generateQR() {
+        window.open('/qr?target=' + encodeURIComponent(window.location.origin), '_blank');
+    }
+    
+    function refreshData() {
+        location.reload();
+    }
+    
+    async function exportData() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = now.getMonth() + 1;
+        
+        try {
+            const response = await fetch(`/admin/api/export-availability?year=${year}&month=${month}`);
+            if (response.ok) {
+                // Create a download link
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `availability-${year}-${month.toString().padStart(2, '0')}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                
+                showMessage('CSV Export erfolgreich heruntergeladen', 'success');
+            } else {
+                throw new Error('Export fehlgeschlagen');
+            }
+        } catch (error) {
+            console.error('Export error:', error);
+            showMessage('Fehler beim CSV Export', 'error');
+        }
+    }
+    
+    async function showSystemInfo() {
+        try {
+            const response = await fetch('/admin/api/system-info');
+            const data = await response.json();
+            
+            if (data.success) {
+                const info = `
+                    Version: ${data.version}
+                    Uptime: ${data.uptime || 'Unbekannt'}
+                    Python: ${data.python_version || 'Unbekannt'}
+                    Database: ${data.db_status}
+                    Memory: ${data.memory_usage || 'Unbekannt'}
+                    Disk: ${data.disk_usage || 'Unbekannt'}
+                `;
+                
+                alert('System Information:\n\n' + info);
+            } else {
+                throw new Error(data.error || 'Unbekannter Fehler');
+            }
+        } catch (error) {
+            console.error('System info error:', error);
+            showMessage('Fehler beim Abrufen der System-Informationen', 'error');
+        }
+    }
+    
+    async function restartServer() {
+        if (!confirm('Möchten Sie den Server wirklich neustarten?\n\nAlle aktiven Verbindungen werden kurz unterbrochen.')) {
+            return;
+        }
+        
+        // Get CSRF token
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || 
+                         document.querySelector('input[name="csrf_token"]')?.value || '';
+        
+        try {
+            showMessage('Server-Neustart wird eingeleitet...', 'info');
+            
+            const response = await fetch('/admin/api/server/restart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-Token': csrfToken
+                },
+                body: JSON.stringify({ csrf_token: csrfToken })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                showMessage('Server wird neu gestartet. Die Seite lädt in 5 Sekunden neu...', 'success');
+                
+                // Reload page after 5 seconds
+                setTimeout(() => {
+                    location.reload();
+                }, 5000);
+            } else {
+                throw new Error(data.error || 'Server-Neustart fehlgeschlagen');
+            }
+        } catch (error) {
+            console.error('Server restart error:', error);
+            showMessage('Fehler beim Server-Neustart: ' + error.message, 'error');
+        }
+    }
+    
+    function showMessage(message, type = 'info') {
+        // Create a simple toast notification
+        const toast = document.createElement('div');
+        const colorClasses = {
+            success: 'bg-green-500 text-white',
+            error: 'bg-red-500 text-white',
+            warning: 'bg-yellow-500 text-white',
+            info: 'bg-blue-500 text-white'
+        };
+        
+        toast.className = `fixed top-4 right-4 px-6 py-4 rounded-lg shadow-lg z-50 ${colorClasses[type]} transition-all duration-300 transform translate-x-full`;
+        toast.innerHTML = `
+            <div class="flex items-center">
+                <span>${message}</span>
+                <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-white hover:text-gray-200">×</button>
+            </div>
+        `;
+        
+        document.body.appendChild(toast);
+        
+        // Slide in
+        setTimeout(() => {
+            toast.classList.remove('translate-x-full');
+        }, 100);
+        
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.remove();
+                    }
+                }, 300);
+            }
+        }, 5000);
+    }
+</script>
+{% endblock %}

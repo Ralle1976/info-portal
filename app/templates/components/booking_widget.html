@@ -1,0 +1,489 @@
+<!-- Booking Widget - Thai Medical Laboratory -->
+<div id="booking-widget" class="bg-white rounded-lg shadow-lg border border-gray-200 max-w-2xl mx-auto">
+    <!-- Widget Header -->
+    <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-teal-50 to-blue-50">
+        <div class="flex items-center justify-between">
+            <div>
+                <h3 class="text-lg font-semibold text-gray-800">
+                    <svg class="inline-block w-5 h-5 mr-2 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    {% if lang == 'th' %}
+                        จองนัดหมาย
+                    {% elif lang == 'de' %}
+                        Terminbuchung
+                    {% else %}
+                        Book Appointment
+                    {% endif %}
+                </h3>
+                <p class="text-sm text-gray-600">
+                    {% if lang == 'th' %}
+                        จองนัดหมายล่วงหน้าเพื่อประหยัดเวลารอ
+                    {% elif lang == 'de' %}
+                        Termin im Voraus buchen um Wartezeit zu sparen
+                    {% else %}
+                        Book in advance to save waiting time
+                    {% endif %}
+                </p>
+            </div>
+            
+            <!-- Feature Status Indicator -->
+            <div id="feature-status" class="hidden">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                    <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                    </svg>
+                    {% if lang == 'th' %}ปิดใช้งาน{% elif lang == 'de' %}Deaktiviert{% else %}Disabled{% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Widget Content -->
+    <div class="p-6">
+        <!-- Step Indicator -->
+        <div class="flex items-center justify-center mb-6">
+            <div class="flex items-center">
+                <div id="step-1-indicator" class="flex items-center justify-center w-8 h-8 bg-teal-600 text-white rounded-full text-sm font-medium">1</div>
+                <div class="w-16 h-0.5 bg-gray-300 mx-2"></div>
+                <div id="step-2-indicator" class="flex items-center justify-center w-8 h-8 bg-gray-300 text-gray-600 rounded-full text-sm font-medium">2</div>
+                <div class="w-16 h-0.5 bg-gray-300 mx-2"></div>
+                <div id="step-3-indicator" class="flex items-center justify-center w-8 h-8 bg-gray-300 text-gray-600 rounded-full text-sm font-medium">3</div>
+            </div>
+        </div>
+
+        <!-- Step 1: Service Selection -->
+        <div id="step-1" class="booking-step">
+            <h4 class="text-md font-semibold text-gray-800 mb-3">
+                {% if lang == 'th' %}
+                    เลือกบริการที่ต้องการ
+                {% elif lang == 'de' %}
+                    Service auswählen
+                {% else %}
+                    Select Service
+                {% endif %}
+            </h4>
+            
+            <div class="space-y-3">
+                {% for service in services %}
+                <label class="flex items-start p-4 border border-gray-200 rounded-lg hover:border-teal-300 hover:bg-teal-50 cursor-pointer transition-colors service-option">
+                    <input type="radio" name="service" value="{{ service.id }}" class="mt-1 h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300">
+                    <div class="ml-3 flex-1">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-medium text-gray-900">
+                                {{ service.name.get(lang, service.name.get('th', 'บริการ')) }}
+                            </span>
+                            {% if service.price_thb %}
+                            <span class="text-sm text-gray-600">{{ service.price_thb }} บาท</span>
+                            {% endif %}
+                        </div>
+                        <p class="text-xs text-gray-600 mt-1">
+                            {{ service.description.get(lang, service.description.get('th', '')) }}
+                        </p>
+                        <div class="flex items-center text-xs text-gray-500 mt-2 space-x-4">
+                            <span class="flex items-center">
+                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                {{ service.duration_minutes }} 
+                                {% if lang == 'th' %}นาที{% elif lang == 'de' %}Min{% else %}min{% endif %}
+                            </span>
+                            {% if service.requires_fasting %}
+                            <span class="text-orange-600 flex items-center">
+                                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                </svg>
+                                {% if lang == 'th' %}ต้องอดอาหาร{% elif lang == 'de' %}Nüchtern{% else %}Fasting Required{% endif %}
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </label>
+                {% endfor %}
+            </div>
+            
+            <div class="mt-6 flex justify-end">
+                <button id="next-to-step-2" class="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed" disabled onclick="goToStep(2)">
+                    {% if lang == 'th' %}ถัดไป{% elif lang == 'de' %}Weiter{% else %}Next{% endif %}
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 2: Date & Time Selection -->
+        <div id="step-2" class="booking-step hidden">
+            <h4 class="text-md font-semibold text-gray-800 mb-3">
+                {% if lang == 'th' %}
+                    เลือกวันที่และเวลา
+                {% elif lang == 'de' %}
+                    Datum und Zeit wählen
+                {% else %}
+                    Select Date & Time
+                {% endif %}
+            </h4>
+            
+            <!-- Date Selection -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    {% if lang == 'th' %}วันที่{% elif lang == 'de' %}Datum{% else %}Date{% endif %}
+                </label>
+                <input type="date" id="booking-date" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500" min="{{ today }}">
+            </div>
+            
+            <!-- Time Slots -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    {% if lang == 'th' %}เวลาที่สะดวก{% elif lang == 'de' %}Bevorzugte Zeit{% else %}Available Time{% endif %}
+                </label>
+                <div id="time-slots" class="grid grid-cols-2 md:grid-cols-3 gap-2">
+                    <!-- Time slots will be loaded dynamically -->
+                </div>
+            </div>
+            
+            <!-- Loading indicator -->
+            <div id="slots-loading" class="hidden text-center py-4">
+                <div class="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-teal-600"></div>
+                <p class="text-sm text-gray-600 mt-2">
+                    {% if lang == 'th' %}กำลังโหลดช่วงเวลาที่ว่าง...{% elif lang == 'de' %}Lade verfügbare Zeiten...{% else %}Loading available times...{% endif %}
+                </p>
+            </div>
+            
+            <div class="mt-6 flex justify-between">
+                <button onclick="goToStep(1)" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50">
+                    {% if lang == 'th' %}กลับ{% elif lang == 'de' %}Zurück{% else %}Back{% endif %}
+                </button>
+                <button id="next-to-step-3" class="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed" disabled onclick="goToStep(3)">
+                    {% if lang == 'th' %}ถัดไป{% elif lang == 'de' %}Weiter{% else %}Next{% endif %}
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 3: Contact Information -->
+        <div id="step-3" class="booking-step hidden">
+            <h4 class="text-md font-semibold text-gray-800 mb-3">
+                {% if lang == 'th' %}
+                    ข้อมูลการติดต่อ
+                {% elif lang == 'de' %}
+                    Kontaktdaten
+                {% else %}
+                    Contact Information
+                {% endif %}
+            </h4>
+            
+            <form id="booking-form" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            {% if lang == 'th' %}ชื่อ{% elif lang == 'de' %}Vorname{% else %}First Name{% endif %} *
+                        </label>
+                        <input type="text" id="first-name" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            {% if lang == 'th' %}นามสกุล{% elif lang == 'de' %}Nachname{% else %}Last Name{% endif %} *
+                        </label>
+                        <input type="text" id="last-name" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        {% if lang == 'th' %}เบอร์โทรศัพท์{% elif lang == 'de' %}Telefonnummer{% else %}Phone Number{% endif %} *
+                    </label>
+                    <input type="tel" id="contact-phone" required placeholder="+66 8X XXX XXXX" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        {% if lang == 'th' %}LINE ID (เพื่อรับการแจ้งเตือน){% elif lang == 'de' %}LINE ID (für Benachrichtigungen){% else %}LINE ID (for notifications){% endif %}
+                    </label>
+                    <input type="text" id="line-user-id" placeholder="@username" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                    <p class="text-xs text-gray-500 mt-1">
+                        {% if lang == 'th' %}แนะนำสำหรับลูกค้าในไทย{% elif lang == 'de' %}Empfohlen für Kunden in Thailand{% else %}Recommended for customers in Thailand{% endif %}
+                    </p>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        {% if lang == 'th' %}อีเมล (ไม่จำเป็น){% elif lang == 'de' %}E-Mail (optional){% else %}Email (optional){% endif %}
+                    </label>
+                    <input type="email" id="email" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        {% if lang == 'th' %}หมายเหตุเพิ่มเติม{% elif lang == 'de' %}Zusätzliche Anmerkungen{% else %}Additional Notes{% endif %}
+                    </label>
+                    <textarea id="patient-notes" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500" placeholder="{% if lang == 'th' %}ข้อมูลเพิ่มเติมที่ต้องการแจ้ง...{% elif lang == 'de' %}Zusätzliche Informationen...{% else %}Any additional information...{% endif %}"></textarea>
+                </div>
+            </form>
+            
+            <div class="mt-6 flex justify-between">
+                <button onclick="goToStep(2)" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50">
+                    {% if lang == 'th' %}กลับ{% elif lang == 'de' %}Zurück{% else %}Back{% endif %}
+                </button>
+                <button id="submit-booking" class="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed" onclick="submitBooking()">
+                    {% if lang == 'th' %}จองนัดหมาย{% elif lang == 'de' %}Termin buchen{% else %}Book Appointment{% endif %}
+                </button>
+            </div>
+        </div>
+        
+        <!-- Success Message -->
+        <div id="booking-success" class="booking-step hidden text-center">
+            <div class="mb-4">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
+                    <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                </div>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">
+                {% if lang == 'th' %}จองนัดหมายสำเร็จ!{% elif lang == 'de' %}Termin erfolgreich gebucht!{% else %}Booking Successful!{% endif %}
+            </h3>
+            <div id="booking-details" class="bg-gray-50 rounded-lg p-4 text-left">
+                <!-- Booking details will be inserted here -->
+            </div>
+            <p class="text-sm text-gray-600 mt-4">
+                {% if lang == 'th' %}
+                    กรุณาเก็บรหัสยืนยันไว้ และจะได้รับการแจ้งเตือนผ่าน LINE หรือ SMS
+                {% elif lang == 'de' %}
+                    Bitte bewahren Sie den Bestätigungscode auf. Sie erhalten eine Benachrichtigung via LINE oder SMS
+                {% else %}
+                    Please keep your confirmation code. You will receive a notification via LINE or SMS
+                {% endif %}
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Booking Widget JavaScript -->
+<script>
+let currentStep = 1;
+let selectedService = null;
+let selectedDate = null;
+let selectedTime = null;
+let availableSlots = [];
+
+// Check if booking feature is enabled
+const FEATURE_BOOKING = typeof window.FEATURE_BOOKING !== 'undefined' ? window.FEATURE_BOOKING : true;
+
+if (!FEATURE_BOOKING) {
+    document.getElementById('feature-status').classList.remove('hidden');
+    document.getElementById('booking-widget').classList.add('opacity-50');
+}
+
+// Initialize widget
+document.addEventListener('DOMContentLoaded', function() {
+    // Set minimum date to today
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('booking-date').min = today;
+    document.getElementById('booking-date').value = today;
+    
+    // Service selection event
+    document.querySelectorAll('input[name="service"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            selectedService = parseInt(this.value);
+            document.getElementById('next-to-step-2').disabled = false;
+        });
+    });
+    
+    // Date change event
+    document.getElementById('booking-date').addEventListener('change', function() {
+        selectedDate = this.value;
+        loadTimeSlots();
+    });
+    
+    // Load initial time slots for today
+    selectedDate = today;
+    if (selectedService) {
+        loadTimeSlots();
+    }
+});
+
+function goToStep(stepNumber) {
+    // Hide current step
+    document.querySelectorAll('.booking-step').forEach(step => step.classList.add('hidden'));
+    
+    // Update step indicators
+    for (let i = 1; i <= 3; i++) {
+        const indicator = document.getElementById(`step-${i}-indicator`);
+        if (i === stepNumber) {
+            indicator.classList.remove('bg-gray-300', 'text-gray-600');
+            indicator.classList.add('bg-teal-600', 'text-white');
+        } else if (i < stepNumber) {
+            indicator.classList.remove('bg-gray-300', 'text-gray-600', 'bg-teal-600');
+            indicator.classList.add('bg-green-500', 'text-white');
+        } else {
+            indicator.classList.remove('bg-teal-600', 'text-white', 'bg-green-500');
+            indicator.classList.add('bg-gray-300', 'text-gray-600');
+        }
+    }
+    
+    // Show target step
+    document.getElementById(`step-${stepNumber}`).classList.remove('hidden');
+    currentStep = stepNumber;
+    
+    // Load time slots when going to step 2
+    if (stepNumber === 2 && selectedService && selectedDate) {
+        loadTimeSlots();
+    }
+}
+
+async function loadTimeSlots() {
+    if (!FEATURE_BOOKING || !selectedService || !selectedDate) return;
+    
+    const slotsContainer = document.getElementById('time-slots');
+    const loadingIndicator = document.getElementById('slots-loading');
+    
+    // Show loading
+    slotsContainer.innerHTML = '';
+    loadingIndicator.classList.remove('hidden');
+    
+    try {
+        const response = await fetch(`/api/appointments/slots?service_id=${selectedService}&start_date=${selectedDate}`);
+        const data = await response.json();
+        
+        loadingIndicator.classList.add('hidden');
+        
+        if (data.success && data.slots.length > 0) {
+            availableSlots = data.slots;
+            renderTimeSlots(data.slots);
+        } else {
+            slotsContainer.innerHTML = `
+                <div class="col-span-full text-center py-4 text-gray-500">
+                    <svg class="mx-auto h-8 w-8 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    {% if lang == 'th' %}ไม่มีช่วงเวลาที่ว่างในวันนี้{% elif lang == 'de' %}Keine freien Zeiten verfügbar{% else %}No available time slots{% endif %}
+                </div>
+            `;
+        }
+    } catch (error) {
+        loadingIndicator.classList.add('hidden');
+        slotsContainer.innerHTML = `
+            <div class="col-span-full text-center py-4 text-red-500">
+                <svg class="mx-auto h-8 w-8 mb-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                </svg>
+                {% if lang == 'th' %}เกิดข้อผิดพลาดในการโหลดข้อมูล{% elif lang == 'de' %}Fehler beim Laden{% else %}Error loading slots{% endif %}
+            </div>
+        `;
+    }
+}
+
+function renderTimeSlots(slots) {
+    const container = document.getElementById('time-slots');
+    
+    container.innerHTML = slots.map(slot => `
+        <button type="button" class="time-slot-btn p-2 text-sm border border-gray-300 rounded-md hover:border-teal-300 hover:bg-teal-50 focus:outline-none focus:ring-2 focus:ring-teal-500" 
+                data-time="${slot.start_time}" onclick="selectTimeSlot('${slot.start_time}', this)">
+            <div class="font-medium">${slot.start_time}</div>
+            <div class="text-xs text-gray-500">${slot.available_capacity} {% if lang == 'th' %}ที่ว่าง{% elif lang == 'de' %}frei{% else %}available{% endif %}</div>
+        </button>
+    `).join('');
+}
+
+function selectTimeSlot(time, button) {
+    // Remove selection from other buttons
+    document.querySelectorAll('.time-slot-btn').forEach(btn => {
+        btn.classList.remove('bg-teal-100', 'border-teal-500', 'text-teal-700');
+    });
+    
+    // Select this button
+    button.classList.add('bg-teal-100', 'border-teal-500', 'text-teal-700');
+    selectedTime = time;
+    
+    // Enable next button
+    document.getElementById('next-to-step-3').disabled = false;
+}
+
+async function submitBooking() {
+    if (!FEATURE_BOOKING) {
+        alert('Booking feature is currently disabled');
+        return;
+    }
+    
+    const submitBtn = document.getElementById('submit-booking');
+    const originalText = submitBtn.textContent;
+    
+    // Disable button and show loading
+    submitBtn.disabled = true;
+    submitBtn.textContent = '{% if lang == "th" %}กำลังจอง...{% elif lang == "de" %}Wird gebucht...{% else %}Booking...{% endif %}';
+    
+    // Collect form data
+    const formData = {
+        service_id: selectedService,
+        booking_date: selectedDate,
+        booking_time: selectedTime,
+        first_name: document.getElementById('first-name').value,
+        last_name: document.getElementById('last-name').value,
+        contact_phone: document.getElementById('contact-phone').value,
+        line_user_id: document.getElementById('line-user-id').value || null,
+        email: document.getElementById('email').value || null,
+        patient_notes: document.getElementById('patient-notes').value || null,
+        preferred_language: '{{ lang }}'
+    };
+    
+    try {
+        const response = await fetch('/api/appointments', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            // Show success step
+            showBookingSuccess(result.booking);
+        } else {
+            throw new Error(result.message || 'Booking failed');
+        }
+        
+    } catch (error) {
+        alert(`{% if lang == 'th' %}เกิดข้อผิดพลาด: {% elif lang == 'de' %}Fehler: {% else %}Error: {% endif %}${error.message}`);
+        
+        // Re-enable button
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+    }
+}
+
+function showBookingSuccess(booking) {
+    // Hide current step
+    document.querySelectorAll('.booking-step').forEach(step => step.classList.add('hidden'));
+    
+    // Update all indicators to success
+    for (let i = 1; i <= 3; i++) {
+        const indicator = document.getElementById(`step-${i}-indicator`);
+        indicator.classList.remove('bg-gray-300', 'text-gray-600', 'bg-teal-600');
+        indicator.classList.add('bg-green-500', 'text-white');
+    }
+    
+    // Show success message
+    document.getElementById('booking-success').classList.remove('hidden');
+    
+    // Populate booking details
+    document.getElementById('booking-details').innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <div>
+                <span class="font-medium">{% if lang == 'th' %}หมายเลขการจอง:{% elif lang == 'de' %}Buchungsnummer:{% else %}Booking Reference:{% endif %}</span>
+                <br><span class="font-mono text-lg">${booking.reference}</span>
+            </div>
+            <div>
+                <span class="font-medium">{% if lang == 'th' %}รหัสยืนยัน:{% elif lang == 'de' %}Bestätigungscode:{% else %}Confirmation Code:{% endif %}</span>
+                <br><span class="font-mono text-lg text-teal-600">${booking.confirmation_code}</span>
+            </div>
+            <div>
+                <span class="font-medium">{% if lang == 'th' %}วันที่:{% elif lang == 'de' %}Datum:{% else %}Date:{% endif %}</span>
+                <br>${booking.buddhist_date || booking.booking_date}
+            </div>
+            <div>
+                <span class="font-medium">{% if lang == 'th' %}เวลา:{% elif lang == 'de' %}Zeit:{% else %}Time:{% endif %}</span>
+                <br>${booking.booking_time}
+            </div>
+        </div>
+    `;
+}
+</script>

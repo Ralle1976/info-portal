@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('social_media') }} - {{ super() }}{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <!-- Header -->
+    <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold text-thai-turquoise mb-4">{{ t('social_media') }}</h1>
+        <p class="text-lg text-gray-600">{{ t('follow_for_updates') }}</p>
+    </div>
+
+    <!-- Check if social media is enabled and has platforms -->
+    {% if platforms and platforms|length > 0 %}
+    <!-- Platforms Grid -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        {% for platform in platforms %}
+        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+            <!-- Platform Header -->
+            <div class="p-4 text-white" style="background: linear-gradient(135deg, {{ platform.color }}, {{ platform.color }}dd);">
+                <div class="flex items-center">
+                    <i class="{{ platform.icon }} text-2xl mr-3"></i>
+                    <div>
+                        <h3 class="font-bold text-lg">{{ platform.display_name }}</h3>
+                        {% if platform.username %}
+                            <p class="text-sm opacity-90">{{ platform.username }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Platform Content -->
+            <div class="p-4">
+                <!-- Platform Description -->
+                <div class="mb-4">
+                    {% if platform.name == 'line' %}
+                        <p class="text-sm text-gray-600">{{ t('line_official') }} - {{ t('chat_with_us') }}</p>
+                        <div class="mt-2 text-xs text-green-600 bg-green-50 rounded px-2 py-1 inline-block">
+                            🇹🇭 {{ t('follow_for_updates') }}
+                        </div>
+                    {% elif platform.name == 'facebook' %}
+                        <p class="text-sm text-gray-600">{{ t('facebook_page') }} - {{ t('like_and_follow') }}</p>
+                        <div class="mt-2 text-xs text-blue-600 bg-blue-50 rounded px-2 py-1 inline-block">
+                            👍 {{ t('health_tips') }}
+                        </div>
+                    {% elif platform.name == 'instagram' %}
+                        <p class="text-sm text-gray-600">{{ t('instagram_account') }} - {{ t('educational_content') }}</p>
+                        <div class="mt-2 text-xs text-pink-600 bg-pink-50 rounded px-2 py-1 inline-block">
+                            📸 {{ t('laboratory_updates') }}
+                        </div>
+                    {% elif platform.name == 'whatsapp' %}
+                        <p class="text-sm text-gray-600">{{ t('whatsapp_business') }} - {{ t('quick_contact') }}</p>
+                        <div class="mt-2 text-xs text-green-600 bg-green-50 rounded px-2 py-1 inline-block">
+                            💬 {{ t('chat_with_us') }}
+                        </div>
+                    {% elif platform.name == 'tiktok' %}
+                        <p class="text-sm text-gray-600">{{ t('tiktok_videos') }} - {{ t('watch_videos') }}</p>
+                        <div class="mt-2 text-xs text-gray-600 bg-gray-50 rounded px-2 py-1 inline-block">
+                            🎥 {{ t('health_tips') }}
+                        </div>
+                    {% elif platform.name == 'youtube' %}
+                        <p class="text-sm text-gray-600">{{ t('youtube_channel') }} - {{ t('educational_content') }}</p>
+                        <div class="mt-2 text-xs text-red-600 bg-red-50 rounded px-2 py-1 inline-block">
+                            📺 {{ t('watch_videos') }}
+                        </div>
+                    {% elif platform.name == 'google_business' %}
+                        <p class="text-sm text-gray-600">{{ t('google_business') }} - {{ t('view_on_maps') }}</p>
+                        <div class="mt-2 text-xs text-blue-600 bg-blue-50 rounded px-2 py-1 inline-block">
+                            📍 Maps & Reviews
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="space-y-2">
+                    <!-- Visit Platform Button -->
+                    <a href="{{ platform.url }}" 
+                       target="_blank"
+                       class="block w-full text-center py-2 px-4 rounded text-white font-medium transition hover:opacity-90"
+                       style="background-color: {{ platform.color }};">
+                        <i class="{{ platform.icon }} mr-2"></i>
+                        {% if platform.name == 'line' %}
+                            Add Friend
+                        {% elif platform.name == 'whatsapp' %}
+                            {{ t('chat_with_us') }}
+                        {% elif platform.name == 'facebook' %}
+                            {{ t('like_and_follow') }}
+                        {% elif platform.name == 'google_business' %}
+                            {{ t('view_on_maps') }}
+                        {% else %}
+                            {{ t('follow_us') }}
+                        {% endif %}
+                    </a>
+                    
+                    <!-- QR Code Button -->
+                    {% if platform.qr_enabled %}
+                    <div class="flex space-x-2">
+                        <a href="{{ url_for('public.social_qr', platform=platform.name, size='medium') }}" 
+                           target="_blank"
+                           class="flex-1 text-center py-2 px-3 bg-gray-100 text-gray-700 rounded text-sm hover:bg-gray-200 transition">
+                            📱 QR Code
+                        </a>
+                        <button onclick="shareContent('{{ platform.name }}', '{{ platform.url }}')"
+                                class="flex-1 text-center py-2 px-3 bg-gray-100 text-gray-700 rounded text-sm hover:bg-gray-200 transition">
+                            📤 {{ t('share') }}
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <!-- No platforms available -->
+    <div class="text-center py-12">
+        <div class="max-w-md mx-auto">
+            <i class="fas fa-share-alt text-6xl text-gray-300 mb-4"></i>
+            <h2 class="text-xl font-semibold text-gray-700 mb-2">{{ t('no_social_platforms') }}</h2>
+            <p class="text-gray-500 mb-6">{{ t('no_social_platforms_desc') }}</p>
+            <a href="{{ url_for('public.home') }}" 
+               class="inline-flex items-center px-4 py-2 bg-thai-turquoise text-white rounded-md hover:bg-cyan-600 transition">
+                <i class="fas fa-arrow-left mr-2"></i>
+                {{ t('back_to_home') }}
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- QR Code Management -->
+    {% if platforms and platforms|length > 0 %}
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <h2 class="text-xl font-bold text-gray-700 mb-4">{{ t('social_qr_codes') }}</h2>
+        <p class="text-gray-600 mb-4">สร้างและดาวน์โหลด QR Code สำหรับแต่ละแพลตฟอร์ม</p>
+        
+        <div class="grid md:grid-cols-3 gap-4">
+            <!-- Generate All QR Codes -->
+            <button onclick="generateAllQRs()" 
+                    class="bg-thai-turquoise text-white py-3 px-4 rounded hover:bg-cyan-600 transition">
+                <i class="fas fa-qrcode mr-2"></i>
+                สร้าง QR ทั้งหมด
+            </button>
+            
+            <!-- Download Batch -->
+            <a href="/social/qr-batch?size=large" 
+               class="bg-green-500 text-white py-3 px-4 rounded hover:bg-green-600 transition text-center block">
+                <i class="fas fa-download mr-2"></i>
+                {{ t('download_qr') }} (Large)
+            </a>
+            
+            <!-- Print Version -->
+            <button onclick="printQRCodes()" 
+                    class="bg-purple-500 text-white py-3 px-4 rounded hover:bg-purple-600 transition">
+                <i class="fas fa-print mr-2"></i>
+                {{ t('print_qr') }}
+            </button>
+        </div>
+        
+        <!-- QR Display Area -->
+        <div id="qr-display" class="mt-6 grid md:grid-cols-2 lg:grid-cols-3 gap-4 hidden">
+            <!-- QR codes will be displayed here -->
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Thai-specific Social Media Tips -->
+    {% if platforms and platforms|length > 0 %}
+    <div class="bg-gradient-to-r from-thai-coral to-pink-400 rounded-lg shadow-md p-6 text-white">
+        <h2 class="text-xl font-bold mb-4">🇹🇭 สำหรับผู้อยู่อาศัยในไทย</h2>
+        <div class="grid md:grid-cols-2 gap-4">
+            <div>
+                <h3 class="font-semibold mb-2">📱 แพลตฟอร์มยอดนิยม:</h3>
+                <ul class="space-y-1 text-sm">
+                    <li>• <strong>LINE</strong> - แชทและรับข่าวสาร</li>
+                    <li>• <strong>Facebook</strong> - ข้อมูลและรีวิว</li>
+                    <li>• <strong>Instagram</strong> - รูปภาพและวิดีโอ</li>
+                    <li>• <strong>WhatsApp</strong> - ติดต่อด่วน</li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="font-semibold mb-2">🔔 สิ่งที่จะได้รับ:</h3>
+                <ul class="space-y-1 text-sm">
+                    <li>• ข่าวสารเวลาทำการล่าสุด</li>
+                    <li>• เคล็ดลับสุขภาพประจำสัปดาห์</li>
+                    <li>• ข้อมูลการตรวจเลือดพิเศษ</li>
+                    <li>• การแจ้งเตือนวันหยุด</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+function shareContent(platform, url) {
+    const shareUrl = `/social/share?platform=${platform}&content=ตรวจเลือดที่ห้องปฏิบัติการพัทยา&url=${encodeURIComponent(url)}`;
+    window.open(shareUrl, '_blank', 'width=600,height=400');
+}
+
+function generateAllQRs() {
+    const displayArea = document.getElementById('qr-display');
+    displayArea.innerHTML = '<div class="col-span-full text-center py-8"><div class="animate-spin rounded-full h-12 w-12 border-b-2 border-thai-turquoise mx-auto"></div><p class="mt-4 text-gray-600">กำลังสร้าง QR Codes...</p></div>';
+    displayArea.classList.remove('hidden');
+    
+    fetch('/social/qr-batch?size=medium')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                let html = '';
+                for (const [platform, info] of Object.entries(data.files)) {
+                    html += `
+                        <div class="text-center bg-gray-50 rounded p-4">
+                            <h4 class="font-semibold mb-2" style="color: ${info.color};">${info.display_name}</h4>
+                            <img src="/static/qr/${info.filename}" alt="${info.display_name} QR" class="mx-auto mb-2 max-w-32">
+                            <a href="/static/qr/${info.filename}" download class="text-sm text-thai-turquoise hover:underline">ดาวน์โหลด</a>
+                        </div>
+                    `;
+                }
+                displayArea.innerHTML = html;
+            }
+        })
+        .catch(error => {
+            displayArea.innerHTML = '<div class="col-span-full text-center py-8 text-red-600">เกิดข้อผิดพลาดในการสร้าง QR Codes</div>';
+        });
+}
+
+function printQRCodes() {
+    generateAllQRs();
+    setTimeout(() => {
+        const printContent = document.getElementById('qr-display').innerHTML;
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(`
+            <html>
+                <head>
+                    <title>QR Codes - Laboratory Pattaya</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; }
+                        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 20px; }
+                        .text-center { text-align: center; }
+                        img { max-width: 150px; }
+                        @media print { 
+                            .grid { grid-template-columns: repeat(2, 1fr); }
+                            img { max-width: 120px; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <h1>Social Media QR Codes - Laboratory Pattaya</h1>
+                    <div class="grid">${printContent}</div>
+                </body>
+            </html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
+    }, 2000);
+}
+</script>
+
+<!-- FontAwesome for Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}

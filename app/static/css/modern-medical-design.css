@@ -1,0 +1,740 @@
+/* ================================================
+   QR INFO PORTAL - MODERN MEDICAL DESIGN SYSTEM
+   Version: 3.0 - Design Modernization Agent
+   Purpose: Modern, professional medical facility design with individual service icons
+   ================================================ */
+
+/* ========================================
+   MODERN COLOR SYSTEM - MEDICAL THEME
+   ======================================== */
+
+:root {
+  /* Primary Medical Colors - Professional & Trustworthy */
+  --medical-primary: #0284C7;        /* Professional Blue */
+  --medical-primary-light: #38BDF8;  /* Light Blue */
+  --medical-primary-dark: #0369A1;   /* Dark Blue */
+  
+  /* Secondary Medical Colors - Warm & Welcoming */
+  --medical-secondary: #059669;      /* Medical Green */
+  --medical-secondary-light: #10B981; /* Light Green */
+  --medical-secondary-dark: #047857;  /* Dark Green */
+  
+  /* Thai-Inspired Accent Colors */
+  --thai-turquoise: #06B6D4;         /* Modern Turquoise */
+  --thai-turquoise-light: #22D3EE;   /* Light Turquoise */
+  --thai-turquoise-dark: #0891B2;    /* Dark Turquoise */
+  
+  --thai-coral: #F97316;             /* Modern Coral */
+  --thai-coral-light: #FB923C;       /* Light Coral */
+  --thai-coral-dark: #EA580C;        /* Dark Coral */
+  
+  /* Service-Specific Colors */
+  --service-blood: #DC2626;          /* Blood Red */
+  --service-blood-bg: #FEE2E2;       /* Light Red Background */
+  
+  --service-consultation: #2563EB;    /* Consultation Blue */
+  --service-consultation-bg: #DBEAFE; /* Light Blue Background */
+  
+  --service-vaccination: #059669;     /* Vaccination Green */
+  --service-vaccination-bg: #D1FAE5;  /* Light Green Background */
+  
+  --service-followup: #7C3AED;       /* Follow-up Purple */
+  --service-followup-bg: #EDE9FE;    /* Light Purple Background */
+  
+  --service-results: #EA580C;        /* Results Orange */
+  --service-results-bg: #FED7AA;     /* Light Orange Background */
+  
+  /* Status Colors - Enhanced Contrast */
+  --status-open: #059669;
+  --status-open-bg: #D1FAE5;
+  --status-closed: #DC2626;
+  --status-closed-bg: #FEE2E2;
+  --status-warning: #D97706;
+  --status-warning-bg: #FED7AA;
+  --status-info: #2563EB;
+  --status-info-bg: #DBEAFE;
+  
+  /* Neutral Grays - Modern Scale */
+  --gray-50: #F9FAFB;
+  --gray-100: #F3F4F6;
+  --gray-200: #E5E7EB;
+  --gray-300: #D1D5DB;
+  --gray-400: #9CA3AF;
+  --gray-500: #6B7280;
+  --gray-600: #4B5563;
+  --gray-700: #374151;
+  --gray-800: #1F2937;
+  --gray-900: #111827;
+  
+  /* Typography Scale */
+  --text-xs: 0.75rem;    /* 12px */
+  --text-sm: 0.875rem;   /* 14px */
+  --text-base: 1rem;     /* 16px */
+  --text-lg: 1.125rem;   /* 18px */
+  --text-xl: 1.25rem;    /* 20px */
+  --text-2xl: 1.5rem;    /* 24px */
+  --text-3xl: 1.875rem;  /* 30px */
+  --text-4xl: 2.25rem;   /* 36px */
+  --text-5xl: 3rem;      /* 48px */
+  
+  /* Spacing System */
+  --space-1: 0.25rem;    /* 4px */
+  --space-2: 0.5rem;     /* 8px */
+  --space-3: 0.75rem;    /* 12px */
+  --space-4: 1rem;       /* 16px */
+  --space-5: 1.25rem;    /* 20px */
+  --space-6: 1.5rem;     /* 24px */
+  --space-8: 2rem;       /* 32px */
+  --space-10: 2.5rem;    /* 40px */
+  --space-12: 3rem;      /* 48px */
+  --space-16: 4rem;      /* 64px */
+  
+  /* Shadows - Enhanced Depth */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  
+  /* Border Radius */
+  --radius-sm: 0.25rem;   /* 4px */
+  --radius: 0.375rem;     /* 6px */
+  --radius-md: 0.5rem;    /* 8px */
+  --radius-lg: 0.75rem;   /* 12px */
+  --radius-xl: 1rem;      /* 16px */
+  --radius-2xl: 1.5rem;   /* 24px */
+  --radius-full: 9999px;
+  
+  /* Transitions */
+  --transition-fast: 150ms ease-in-out;
+  --transition: 300ms ease-in-out;
+  --transition-slow: 500ms ease-in-out;
+  
+  /* Icon Sizes */
+  --icon-xs: 1rem;       /* 16px */
+  --icon-sm: 1.25rem;    /* 20px */
+  --icon-base: 1.5rem;   /* 24px */
+  --icon-lg: 2rem;       /* 32px */
+  --icon-xl: 2.5rem;     /* 40px */
+  --icon-2xl: 3rem;      /* 48px */
+  --icon-3xl: 4rem;      /* 64px */
+}
+
+/* ========================================
+   MEDICAL SERVICE ICONS - SVG SYSTEM
+   ======================================== */
+
+.service-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--icon-lg);
+  height: var(--icon-lg);
+  border-radius: var(--radius-md);
+  transition: all var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.service-icon::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+
+.service-icon:hover::before {
+  opacity: 1;
+}
+
+/* Blood Test Icon */
+.service-icon-blood {
+  background: linear-gradient(135deg, var(--service-blood), #B91C1C);
+  color: white;
+}
+
+.service-icon-blood svg {
+  width: var(--icon-sm);
+  height: var(--icon-sm);
+}
+
+/* Consultation Icon */
+.service-icon-consultation {
+  background: linear-gradient(135deg, var(--service-consultation), #1D4ED8);
+  color: white;
+}
+
+/* Vaccination Icon */
+.service-icon-vaccination {
+  background: linear-gradient(135deg, var(--service-vaccination), #047857);
+  color: white;
+}
+
+/* Follow-up Icon */
+.service-icon-followup {
+  background: linear-gradient(135deg, var(--service-followup), #6D28D9);
+  color: white;
+}
+
+/* Results Pickup Icon */
+.service-icon-results {
+  background: linear-gradient(135deg, var(--service-results), #C2410C);
+  color: white;
+}
+
+/* ========================================
+   MODERN CARD SYSTEM
+   ======================================== */
+
+.card-modern {
+  background: white;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--gray-200);
+  overflow: hidden;
+  transition: all var(--transition);
+  position: relative;
+}
+
+.card-modern:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.card-modern::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--thai-turquoise), var(--thai-coral));
+}
+
+.card-header-modern {
+  padding: var(--space-6);
+  background: linear-gradient(135deg, var(--gray-50), var(--gray-100));
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.card-body-modern {
+  padding: var(--space-6);
+}
+
+.card-footer-modern {
+  padding: var(--space-4) var(--space-6);
+  background: var(--gray-50);
+  border-top: 1px solid var(--gray-200);
+}
+
+/* Service Card Variants */
+.card-service {
+  transition: all var(--transition);
+  cursor: pointer;
+}
+
+.card-service:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: var(--shadow-xl);
+}
+
+.card-service-blood {
+  border-left: 4px solid var(--service-blood);
+  background: linear-gradient(135deg, var(--service-blood-bg), white);
+}
+
+.card-service-consultation {
+  border-left: 4px solid var(--service-consultation);
+  background: linear-gradient(135deg, var(--service-consultation-bg), white);
+}
+
+.card-service-vaccination {
+  border-left: 4px solid var(--service-vaccination);
+  background: linear-gradient(135deg, var(--service-vaccination-bg), white);
+}
+
+.card-service-followup {
+  border-left: 4px solid var(--service-followup);
+  background: linear-gradient(135deg, var(--service-followup-bg), white);
+}
+
+/* ========================================
+   ENHANCED BUTTON SYSTEM
+   ======================================== */
+
+.btn-modern {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  border-radius: var(--radius-lg);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-decoration: none;
+  font-family: inherit;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-modern::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left var(--transition);
+}
+
+.btn-modern:hover::before {
+  left: 100%;
+}
+
+/* Primary Button */
+.btn-primary-modern {
+  background: linear-gradient(135deg, var(--medical-primary), var(--medical-primary-dark));
+  color: white;
+  box-shadow: var(--shadow);
+}
+
+.btn-primary-modern:hover {
+  background: linear-gradient(135deg, var(--medical-primary-dark), var(--medical-primary));
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-1px);
+}
+
+/* Secondary Button */
+.btn-secondary-modern {
+  background: linear-gradient(135deg, var(--medical-secondary), var(--medical-secondary-dark));
+  color: white;
+  box-shadow: var(--shadow);
+}
+
+.btn-secondary-modern:hover {
+  background: linear-gradient(135deg, var(--medical-secondary-dark), var(--medical-secondary));
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-1px);
+}
+
+/* Thai-themed Button */
+.btn-thai-modern {
+  background: linear-gradient(135deg, var(--thai-turquoise), var(--thai-coral));
+  color: white;
+  box-shadow: var(--shadow);
+}
+
+.btn-thai-modern:hover {
+  background: linear-gradient(135deg, var(--thai-coral), var(--thai-turquoise));
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-1px);
+}
+
+/* Outline Button */
+.btn-outline-modern {
+  background: transparent;
+  border: 2px solid var(--medical-primary);
+  color: var(--medical-primary);
+}
+
+.btn-outline-modern:hover {
+  background: var(--medical-primary);
+  color: white;
+}
+
+/* Large Button for Kiosk */
+.btn-kiosk-modern {
+  padding: var(--space-6) var(--space-8);
+  font-size: var(--text-lg);
+  border-radius: var(--radius-xl);
+  min-width: 200px;
+  box-shadow: var(--shadow-xl);
+}
+
+/* ========================================
+   MODERN STATUS INDICATORS
+   ======================================== */
+
+.status-modern {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.status-modern::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.status-open-modern {
+  background: var(--status-open-bg);
+  color: var(--status-open);
+}
+
+.status-open-modern::before {
+  background: var(--status-open);
+}
+
+.status-closed-modern {
+  background: var(--status-closed-bg);
+  color: var(--status-closed);
+}
+
+.status-closed-modern::before {
+  background: var(--status-closed);
+}
+
+.status-warning-modern {
+  background: var(--status-warning-bg);
+  color: var(--status-warning);
+}
+
+.status-warning-modern::before {
+  background: var(--status-warning);
+}
+
+/* ========================================
+   SERVICE GRID SYSTEM
+   ======================================== */
+
+.services-grid-modern {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-6);
+  margin: var(--space-8) 0;
+}
+
+.service-item-modern {
+  display: flex;
+  align-items: center;
+  padding: var(--space-6);
+  background: white;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--gray-200);
+  transition: all var(--transition);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.service-item-modern:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: var(--shadow-xl);
+}
+
+.service-item-modern::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--medical-primary);
+  transform: scaleY(0);
+  transition: transform var(--transition);
+}
+
+.service-item-modern:hover::before {
+  transform: scaleY(1);
+}
+
+.service-icon-container {
+  flex-shrink: 0;
+  margin-right: var(--space-4);
+}
+
+.service-content {
+  flex: 1;
+}
+
+.service-title {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--gray-800);
+  margin-bottom: var(--space-1);
+}
+
+.service-description {
+  font-size: var(--text-sm);
+  color: var(--gray-600);
+  line-height: 1.5;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN ENHANCEMENTS
+   ======================================== */
+
+/* Mobile First Approach */
+@media (max-width: 640px) {
+  .services-grid-modern {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+  
+  .service-item-modern {
+    padding: var(--space-4);
+  }
+  
+  .service-icon {
+    width: var(--icon-base);
+    height: var(--icon-base);
+  }
+  
+  .btn-modern {
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--text-xs);
+  }
+  
+  .card-modern {
+    border-radius: var(--radius-lg);
+  }
+  
+  .card-header-modern,
+  .card-body-modern {
+    padding: var(--space-4);
+  }
+}
+
+/* Tablet */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .services-grid-modern {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .service-icon {
+    width: var(--icon-lg);
+    height: var(--icon-lg);
+  }
+}
+
+/* Desktop */
+@media (min-width: 1025px) {
+  .services-grid-modern {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .service-item-modern:hover {
+    transform: translateY(-4px) scale(1.03);
+  }
+}
+
+/* Large Desktop */
+@media (min-width: 1440px) {
+  .services-grid-modern {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  .service-icon {
+    width: var(--icon-xl);
+    height: var(--icon-xl);
+  }
+}
+
+/* ========================================
+   KIOSK MODE ENHANCEMENTS
+   ======================================== */
+
+.kiosk-modern {
+  background: linear-gradient(135deg, var(--gray-50), var(--gray-100));
+  min-height: 100vh;
+  padding: var(--space-8);
+  font-size: var(--text-lg);
+}
+
+.kiosk-card-modern {
+  background: white;
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-2xl);
+  padding: var(--space-12);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.kiosk-card-modern::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background: linear-gradient(90deg, var(--thai-turquoise), var(--thai-coral), var(--medical-secondary));
+}
+
+.kiosk-header-modern {
+  text-align: center;
+  margin-bottom: var(--space-12);
+  padding-bottom: var(--space-8);
+  border-bottom: 2px solid var(--gray-200);
+}
+
+.kiosk-title-modern {
+  font-size: var(--text-4xl);
+  font-weight: 700;
+  color: var(--gray-800);
+  margin-bottom: var(--space-2);
+  background: linear-gradient(135deg, var(--thai-turquoise), var(--thai-coral));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.kiosk-subtitle-modern {
+  font-size: var(--text-xl);
+  color: var(--gray-600);
+}
+
+.kiosk-time-modern {
+  font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Roboto Mono', monospace;
+  font-size: var(--text-5xl);
+  font-weight: 700;
+  text-align: center;
+  background: linear-gradient(135deg, var(--thai-turquoise), var(--thai-coral));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: var(--space-4);
+}
+
+/* ========================================
+   UTILITY CLASSES
+   ======================================== */
+
+.text-medical-primary { color: var(--medical-primary) !important; }
+.text-medical-secondary { color: var(--medical-secondary) !important; }
+.text-thai-turquoise { color: var(--thai-turquoise) !important; }
+.text-thai-coral { color: var(--thai-coral) !important; }
+
+.bg-medical-primary { background-color: var(--medical-primary) !important; }
+.bg-medical-secondary { background-color: var(--medical-secondary) !important; }
+.bg-thai-turquoise { background-color: var(--thai-turquoise) !important; }
+.bg-thai-coral { background-color: var(--thai-coral) !important; }
+
+.shadow-modern { box-shadow: var(--shadow) !important; }
+.shadow-modern-md { box-shadow: var(--shadow-md) !important; }
+.shadow-modern-lg { box-shadow: var(--shadow-lg) !important; }
+.shadow-modern-xl { box-shadow: var(--shadow-xl) !important; }
+.shadow-modern-2xl { box-shadow: var(--shadow-2xl) !important; }
+
+.rounded-modern { border-radius: var(--radius) !important; }
+.rounded-modern-lg { border-radius: var(--radius-lg) !important; }
+.rounded-modern-xl { border-radius: var(--radius-xl) !important; }
+.rounded-modern-2xl { border-radius: var(--radius-2xl) !important; }
+
+/* ========================================
+   ANIMATIONS
+   ======================================== */
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-slide-up-modern {
+  animation: slideInUp 0.6s ease-out;
+}
+
+.animate-fade-in-scale {
+  animation: fadeInScale 0.4s ease-out;
+}
+
+/* ========================================
+   ACCESSIBILITY ENHANCEMENTS
+   ======================================== */
+
+/* Focus Styles */
+*:focus {
+  outline: 2px solid var(--medical-primary);
+  outline-offset: 2px;
+}
+
+.service-item-modern:focus {
+  outline: 3px solid var(--medical-primary);
+  outline-offset: 4px;
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  :root {
+    --gray-200: var(--gray-400);
+    --shadow: 0 0 0 1px var(--gray-900);
+    --shadow-lg: 0 0 0 2px var(--gray-900);
+  }
+  
+  .btn-modern {
+    border: 2px solid currentColor;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .service-icon,
+  .btn-modern {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  .card-modern {
+    box-shadow: none !important;
+    border: 2px solid var(--gray-300) !important;
+  }
+}

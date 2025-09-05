@@ -1,0 +1,339 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ get_translation('admin.appointments.title', lang) }}{% endblock %}
+
+{% block admin_content %}
+<div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="md:flex md:items-center md:justify-between mb-6">
+        <div class="flex-1 min-w-0">
+            <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+                {{ get_translation('admin.appointments.title', lang) }}
+            </h2>
+            <p class="mt-1 text-sm text-gray-500">
+                {{ get_translation('admin.appointments.subtitle', lang) }}
+            </p>
+        </div>
+        
+        <div class="mt-4 flex md:mt-0 md:ml-4">
+            {% if not booking_enabled %}
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
+                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                    </svg>
+                    {{ get_translation('admin.appointments.feature_disabled', lang) }}
+                </span>
+            {% else %}
+                <button type="button" onclick="showCreateServiceModal()" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"></path>
+                    </svg>
+                    {{ get_translation('admin.appointments.add_service', lang) }}
+                </button>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if not booking_enabled %}
+        <!-- Feature Disabled Notice -->
+        <div class="bg-yellow-50 border border-yellow-200 rounded-md p-4 mb-6">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <svg class="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <h3 class="text-sm font-medium text-yellow-800">
+                        {{ get_translation('admin.appointments.activation_required', lang) }}
+                    </h3>
+                    <div class="mt-2 text-sm text-yellow-700">
+                        <p>{{ get_translation('admin.appointments.enable_instructions', lang) }}</p>
+                        <code class="mt-2 inline-block bg-yellow-100 px-2 py-1 rounded text-xs">FEATURE_BOOKING=true</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">{{ get_translation('admin.appointments.stats.today', lang) }}</dt>
+                                <dd class="text-lg font-medium text-gray-900" id="today-bookings">{{ today_stats.total_bookings or 0 }}</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <svg class="h-6 w-6 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">{{ get_translation('admin.appointments.stats.confirmed', lang) }}</dt>
+                                <dd class="text-lg font-medium text-gray-900" id="confirmed-bookings">{{ today_stats.confirmed or 0 }}</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <svg class="h-6 w-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">{{ get_translation('admin.appointments.stats.pending', lang) }}</dt>
+                                <dd class="text-lg font-medium text-gray-900" id="pending-bookings">{{ (today_stats.total_bookings or 0) - (today_stats.confirmed or 0) }}</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <svg class="h-6 w-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">{{ get_translation('admin.appointments.stats.no_shows', lang) }}</dt>
+                                <dd class="text-lg font-medium text-gray-900" id="noshow-bookings">{{ today_stats.no_shows or 0 }}</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <div class="border-b border-gray-200">
+            <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+                <button onclick="switchTab('bookings')" id="tab-bookings" class="border-indigo-500 text-indigo-600 whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm" aria-current="page">
+                    {{ get_translation('admin.appointments.tabs.bookings', lang) }}
+                </button>
+                <button onclick="switchTab('services')" id="tab-services" class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
+                    {{ get_translation('admin.appointments.tabs.services', lang) }}
+                </button>
+                <button onclick="switchTab('slots')" id="tab-slots" class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
+                    {{ get_translation('admin.appointments.tabs.slots', lang) }}
+                </button>
+                <button onclick="switchTab('statistics')" id="tab-statistics" class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
+                    {{ get_translation('admin.appointments.tabs.statistics', lang) }}
+                </button>
+            </nav>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="mt-6">
+            <!-- Bookings Tab -->
+            <div id="content-bookings" class="tab-content">
+                <div class="bg-white shadow overflow-hidden sm:rounded-md">
+                    <div class="px-4 py-5 sm:p-6">
+                        <div class="sm:flex sm:items-center sm:justify-between mb-4">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900">{{ get_translation('admin.appointments.recent_bookings', lang) }}</h3>
+                            
+                            <!-- Date Filter -->
+                            <div class="mt-3 sm:mt-0 sm:ml-4">
+                                <input type="date" id="booking-date-filter" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block sm:text-sm border-gray-300 rounded-md" 
+                                       value="{{ today.isoformat() }}" onchange="filterBookings()">
+                            </div>
+                        </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200" id="bookings-table">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ get_translation('admin.appointments.table.reference', lang) }}</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ get_translation('admin.appointments.table.patient', lang) }}</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ get_translation('admin.appointments.table.service', lang) }}</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ get_translation('admin.appointments.table.datetime', lang) }}</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ get_translation('admin.appointments.table.status', lang) }}</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ get_translation('admin.appointments.table.actions', lang) }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200" id="bookings-tbody">
+                                    <!-- Bookings will be loaded via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Services Tab -->
+            <div id="content-services" class="tab-content hidden">
+                <div class="bg-white shadow overflow-hidden sm:rounded-md">
+                    <div class="px-4 py-5 sm:p-6">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">{{ get_translation('admin.appointments.booking_services', lang) }}</h3>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ get_translation('admin.appointments.services.name', lang) }}</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ get_translation('admin.appointments.services.type', lang) }}</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ get_translation('admin.appointments.services.duration', lang) }}</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ get_translation('admin.appointments.services.active', lang) }}</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ get_translation('admin.appointments.table.actions', lang) }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200" id="services-tbody">
+                                    {% for service in services %}
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                            {{ service.name.get(lang, service.name.get('th', 'Unknown')) }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {{ service.service_type }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {{ service.duration_minutes }} {{ get_translation('common.minutes', lang) }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ 'bg-green-100 text-green-800' if service.active else 'bg-red-100 text-red-800' }}">
+                                                {{ get_translation('common.active' if service.active else 'common.inactive', lang) }}
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <button onclick="editService({{ service.id }})" class="text-indigo-600 hover:text-indigo-900 mr-3">{{ get_translation('common.edit', lang) }}</button>
+                                            <button onclick="toggleService({{ service.id }}, {{ service.active|lower }})" class="text-{{ 'red' if service.active else 'green' }}-600 hover:text-{{ 'red' if service.active else 'green' }}-900">
+                                                {{ get_translation('common.deactivate' if service.active else 'common.activate', lang) }}
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slots Tab -->
+            <div id="content-slots" class="tab-content hidden">
+                <div class="bg-white shadow overflow-hidden sm:rounded-md">
+                    <div class="px-4 py-5 sm:p-6">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">{{ get_translation('admin.appointments.slot_management', lang) }}</h3>
+                        <p class="text-sm text-gray-600 mb-4">{{ get_translation('admin.appointments.slots_description', lang) }}</p>
+                        
+                        <!-- Slot templates will be managed here -->
+                        <div class="text-center py-12">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"></path>
+                            </svg>
+                            <h3 class="mt-2 text-sm font-medium text-gray-900">{{ get_translation('admin.appointments.slots_coming_soon', lang) }}</h3>
+                            <p class="mt-1 text-sm text-gray-500">{{ get_translation('admin.appointments.slots_coming_soon_desc', lang) }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics Tab -->
+            <div id="content-statistics" class="tab-content hidden">
+                <div class="bg-white shadow overflow-hidden sm:rounded-md">
+                    <div class="px-4 py-5 sm:p-6">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">{{ get_translation('admin.appointments.booking_statistics', lang) }}</h3>
+                        
+                        <!-- Chart placeholder -->
+                        <div class="text-center py-12">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                            </svg>
+                            <h3 class="mt-2 text-sm font-medium text-gray-900">{{ get_translation('admin.appointments.statistics_coming_soon', lang) }}</h3>
+                            <p class="mt-1 text-sm text-gray-500">{{ get_translation('admin.appointments.statistics_coming_soon_desc', lang) }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+// Tab switching
+function switchTab(tabName) {
+    // Hide all tab contents
+    document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.add('hidden');
+    });
+    
+    // Remove active styles from all tabs
+    document.querySelectorAll('[id^="tab-"]').forEach(tab => {
+        tab.classList.remove('border-indigo-500', 'text-indigo-600');
+        tab.classList.add('border-transparent', 'text-gray-500');
+    });
+    
+    // Show selected tab content
+    document.getElementById('content-' + tabName).classList.remove('hidden');
+    
+    // Add active styles to selected tab
+    const activeTab = document.getElementById('tab-' + tabName);
+    activeTab.classList.add('border-indigo-500', 'text-indigo-600');
+    activeTab.classList.remove('border-transparent', 'text-gray-500');
+    
+    // Load tab-specific data
+    if (tabName === 'bookings') {
+        loadBookings();
+    }
+}
+
+// Load bookings for selected date
+function loadBookings() {
+    const dateFilter = document.getElementById('booking-date-filter').value;
+    // Implementation would load bookings via AJAX
+    console.log('Loading bookings for date:', dateFilter);
+}
+
+function filterBookings() {
+    loadBookings();
+}
+
+// Service management functions
+function editService(serviceId) {
+    console.log('Editing service:', serviceId);
+    // Implementation would show edit modal
+}
+
+function toggleService(serviceId, currentActive) {
+    console.log('Toggling service:', serviceId, 'currently active:', currentActive);
+    // Implementation would toggle service status
+}
+
+function showCreateServiceModal() {
+    console.log('Showing create service modal');
+    // Implementation would show create modal
+}
+
+// Initialize page
+document.addEventListener('DOMContentLoaded', function() {
+    {% if booking_enabled %}
+        loadBookings();
+    {% endif %}
+});
+</script>
+{% endblock %}

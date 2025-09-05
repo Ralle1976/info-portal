@@ -1,0 +1,308 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page_title }} - QR Info Portal{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/help-system.css') }}">
+<style>
+.faq-category {
+    margin-bottom: 2rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.faq-category-header {
+    background: linear-gradient(135deg, #40E0D0, #20B2AA);
+    color: white;
+    padding: 1rem 1.5rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.faq-item {
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.faq-item:last-child {
+    border-bottom: none;
+}
+
+.faq-question {
+    background-color: #f9fafb;
+    padding: 1rem 1.5rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.2s;
+    font-weight: 500;
+}
+
+.faq-question:hover {
+    background-color: #f3f4f6;
+}
+
+.faq-answer {
+    padding: 1.5rem;
+    display: none;
+    line-height: 1.6;
+    color: #4b5563;
+}
+
+.faq-item.active .faq-answer {
+    display: block;
+}
+
+.faq-toggle {
+    transition: transform 0.3s ease;
+}
+
+.faq-item.active .faq-toggle {
+    transform: rotate(180deg);
+}
+
+.search-box {
+    max-width: 500px;
+    margin: 0 auto 2rem auto;
+    position: relative;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 16px 12px 45px;
+    border: 2px solid #e5e7eb;
+    border-radius: 25px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #40E0D0;
+    box-shadow: 0 0 0 3px rgba(64, 224, 208, 0.1);
+}
+
+.search-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+}
+
+.no-results {
+    text-align: center;
+    padding: 2rem;
+    color: #6b7280;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-thai-turquoise/5 to-thai-coral/5">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">
+                <i class="fas fa-question-circle text-thai-turquoise mr-3"></i>
+                {{ page_title }}
+            </h1>
+            <p class="text-gray-600">{{ t('faq_subtitle', 'Häufig gestellte Fragen zum QR Info Portal') }}</p>
+        </div>
+
+        <!-- Search Box -->
+        <div class="search-box">
+            <div class="relative">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" 
+                       class="search-input" 
+                       id="faqSearch"
+                       placeholder="{{ t('search_faq_placeholder', 'Durchsuchen Sie die häufig gestellten Fragen...') }}">
+            </div>
+        </div>
+
+        <!-- FAQ Categories -->
+        <div id="faqContainer">
+            {% if faq_categories %}
+                {% for category, faqs in faq_categories.items() %}
+                <div class="faq-category" data-category="{{ category.lower() }}">
+                    <div class="faq-category-header">
+                        <i class="fas fa-folder mr-2"></i>
+                        {{ category }}
+                    </div>
+                    
+                    {% for faq in faqs %}
+                    <div class="faq-item" data-question="{{ faq.question.lower() }}" data-answer="{{ faq.answer.lower() }}">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <span>{{ faq.question }}</span>
+                            <i class="fas fa-chevron-down faq-toggle"></i>
+                        </div>
+                        <div class="faq-answer">
+                            {{ faq.answer|safe }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            {% else %}
+            <div class="no-results">
+                <i class="fas fa-search text-4xl text-gray-300 mb-4"></i>
+                <p class="text-lg">{{ t('no_faqs', 'Noch keine häufig gestellten Fragen verfügbar.') }}</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- No Search Results Message -->
+        <div id="noResults" class="no-results" style="display: none;">
+            <i class="fas fa-search text-4xl text-gray-300 mb-4"></i>
+            <p class="text-lg">{{ t('no_search_results', 'Keine Ergebnisse für Ihre Suchanfrage gefunden.') }}</p>
+            <p class="text-sm text-gray-500 mt-2">{{ t('try_different_search', 'Versuchen Sie andere Suchbegriffe oder kontaktieren Sie uns direkt.') }}</p>
+        </div>
+
+        <!-- Contact Section -->
+        <div class="mt-12 text-center bg-white rounded-lg p-6 shadow-sm">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">
+                {{ t('need_more_help', 'Brauchen Sie weitere Hilfe?') }}
+            </h3>
+            <p class="text-gray-600 mb-4">
+                {{ t('contact_us_help', 'Wenn Sie Ihre Antwort hier nicht finden, kontaktieren Sie uns gerne direkt.') }}
+            </p>
+            <div class="flex justify-center space-x-4">
+                <a href="tel:+66381234567" class="btn-enhanced bg-thai-turquoise text-white">
+                    <i class="fas fa-phone mr-2"></i>
+                    {{ t('call_us', 'Anrufen') }}
+                </a>
+                <a href="mailto:info@qr-portal.com" class="btn-enhanced bg-thai-coral text-white">
+                    <i class="fas fa-envelope mr-2"></i>
+                    {{ t('email_us', 'E-Mail') }}
+                </a>
+            </div>
+        </div>
+
+        <!-- Back to Portal -->
+        <div class="text-center mt-8">
+            <a href="{{ url_for('public.home') }}" class="text-thai-turquoise hover:text-thai-turquoise/80 font-medium">
+                <i class="fas fa-arrow-left mr-2"></i>
+                {{ t('back_to_portal', 'Zurück zum Portal') }}
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+// FAQ functionality
+function toggleFaq(element) {
+    const faqItem = element.parentElement;
+    const isActive = faqItem.classList.contains('active');
+    
+    // Close all other FAQs in the same category
+    const category = faqItem.closest('.faq-category');
+    category.querySelectorAll('.faq-item.active').forEach(item => {
+        item.classList.remove('active');
+    });
+    
+    // Toggle current FAQ
+    if (!isActive) {
+        faqItem.classList.add('active');
+    }
+}
+
+// Search functionality
+document.getElementById('faqSearch').addEventListener('input', function(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    const faqContainer = document.getElementById('faqContainer');
+    const noResults = document.getElementById('noResults');
+    
+    if (searchTerm === '') {
+        // Show all FAQs
+        faqContainer.style.display = 'block';
+        noResults.style.display = 'none';
+        
+        document.querySelectorAll('.faq-category, .faq-item').forEach(el => {
+            el.style.display = '';
+        });
+        return;
+    }
+    
+    let hasResults = false;
+    
+    document.querySelectorAll('.faq-category').forEach(category => {
+        let categoryHasResults = false;
+        
+        category.querySelectorAll('.faq-item').forEach(item => {
+            const question = item.dataset.question;
+            const answer = item.dataset.answer;
+            
+            if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+                item.style.display = '';
+                categoryHasResults = true;
+                hasResults = true;
+                
+                // Highlight search term
+                highlightSearchTerm(item, searchTerm);
+            } else {
+                item.style.display = 'none';
+            }
+        });
+        
+        category.style.display = categoryHasResults ? '' : 'none';
+    });
+    
+    // Show/hide no results message
+    if (hasResults) {
+        faqContainer.style.display = 'block';
+        noResults.style.display = 'none';
+    } else {
+        faqContainer.style.display = 'none';
+        noResults.style.display = 'block';
+    }
+});
+
+function highlightSearchTerm(item, term) {
+    const question = item.querySelector('.faq-question span');
+    const answer = item.querySelector('.faq-answer');
+    
+    // Simple highlighting (in production, use a proper highlighting library)
+    const regex = new RegExp(`(${term})`, 'gi');
+    
+    if (question.dataset.originalText === undefined) {
+        question.dataset.originalText = question.textContent;
+    }
+    if (answer.dataset.originalText === undefined) {
+        answer.dataset.originalText = answer.innerHTML;
+    }
+    
+    question.innerHTML = question.dataset.originalText.replace(regex, '<mark>$1</mark>');
+    answer.innerHTML = answer.dataset.originalText.replace(regex, '<mark>$1</mark>');
+}
+
+// Clear highlights when search is cleared
+document.getElementById('faqSearch').addEventListener('blur', function() {
+    setTimeout(() => {
+        if (this.value === '') {
+            document.querySelectorAll('[data-original-text]').forEach(el => {
+                if (el.tagName === 'SPAN') {
+                    el.textContent = el.dataset.originalText;
+                } else {
+                    el.innerHTML = el.dataset.originalText;
+                }
+            });
+        }
+    }, 100);
+});
+
+// Keyboard shortcuts
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        document.getElementById('faqSearch').value = '';
+        document.getElementById('faqSearch').dispatchEvent(new Event('input'));
+    }
+    
+    if (e.ctrlKey && e.key === 'f') {
+        e.preventDefault();
+        document.getElementById('faqSearch').focus();
+    }
+});
+</script>
+{% endblock %}

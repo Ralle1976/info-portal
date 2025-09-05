@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="{{ i18n.get_current_language() }}" data-theme="medical">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>{{ config.site.name }} - Enhanced Triple View</title>
+    
+    <!-- Preload critical resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    
+    <!-- Enhanced Font Loading -->
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for Enhanced Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <!-- TailwindCSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Enhanced Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/kiosk-enhanced.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/kiosk-responsive.css') }}">
+    <!-- Font Optimization CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font-optimization.css') }}">
+    <!-- UI/UX Fixes CSS (Critical - Load Last) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/ui-ux-fixes.css') }}">
+    
+    <!-- Tailwind Config for Medical Theme -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'medical-green': '#00A86B',
+                        'medical-blue': '#0056B3',
+                        'thai-gold': '#FFD700',
+                        'thai-coral': '#FF7F50'
+                    },
+                    fontFamily: {
+                        'thai': ['Sarabun', 'Noto Sans Thai', 'sans-serif'],
+                        'mono': ['SF Mono', 'Monaco', 'Cascadia Code', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Thai-First Typography */
+        .thai-primary {
+            font-family: 'Sarabun', 'Noto Sans Thai', sans-serif;
+            font-weight: 700;
+            color: #1a202c;
+            line-height: 1.3;
+        }
+        
+        .en-subtitle {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: #718096;
+            font-weight: 400;
+            margin-top: 0.25rem;
+        }
+        
+        body {
+            background: linear-gradient(135deg, 
+                #F0FDF4 0%,     /* Light green */ 
+                #E0F2FE 25%,    /* Light blue */
+                #FFF7ED 50%,    /* Light orange */
+                #F3F4F6 75%,    /* Light gray */
+                #F9FAFB 100%    /* White */
+            );
+            background-size: 400% 400%;
+            animation: enhanced-gradient-shift 20s ease infinite;
+            font-family: 'Sarabun', 'Noto Sans Thai', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        @keyframes enhanced-gradient-shift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .enhanced-clock {
+            font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Roboto Mono', monospace;
+            font-size: 3.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: #00A86B;
+            text-shadow: 0 4px 8px rgba(0, 168, 107, 0.3);
+        }
+        
+        .enhanced-fade-in {
+            animation: enhanced-fadeIn 1s ease-out;
+        }
+        
+        @keyframes enhanced-fadeIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        
+        .enhanced-card {
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .medical-icon-bg {
+            background: linear-gradient(135deg, #00A86B, #20C997);
+            box-shadow: 0 4px 12px rgba(0, 168, 107, 0.3);
+        }
+        
+        .status-icon-animate {
+            animation: status-pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes status-pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.9; }
+        }
+        
+        /* Enhanced time display with better hierarchy */
+        .time-hierarchy-large { font-size: 2.5rem; font-weight: 700; }
+        .time-hierarchy-medium { font-size: 1.75rem; font-weight: 600; }
+        .time-hierarchy-small { font-size: 1.25rem; font-weight: 500; }
+        
+        /* Professional status colors */
+        .status-open-professional { 
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+        }
+        .status-closed-professional { 
+            background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);
+        }
+        .status-warning-professional { 
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4);
+        }
+        
+        /* Enhanced responsive text sizing */
+        @media (min-width: 1920px) {
+            .enhanced-clock { font-size: 4.5rem; }
+            .time-hierarchy-large { font-size: 3rem; }
+            .time-hierarchy-medium { font-size: 2rem; }
+        }
+        
+        @media (min-width: 2560px) {
+            .enhanced-clock { font-size: 6rem; }
+            .time-hierarchy-large { font-size: 4rem; }
+            .time-hierarchy-medium { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body class="kiosk-triple-mode min-h-screen text-gray-800" data-kiosk="triple">
+    
+    <!-- Language Switcher for Kiosk Triple -->
+    <div class="fixed top-4 left-4 z-50">
+        {% include 'components/language_switcher.html' %}
+    </div>
+    
+    <!-- Auto-refresh indicator -->
+    <div class="fixed top-4 right-4 bg-black bg-opacity-80 text-white px-6 py-3 rounded-full flex items-center gap-3 z-50 backdrop-blur-sm">
+        <i class="fas fa-sync-alt text-medical-green" id="refresh-icon"></i>
+        <span class="font-mono text-sm">Auto-refresh: <span id="refresh-timer" class="font-bold text-thai-gold">2:00</span></span>
+    </div>
+    
+    <!-- Enhanced Header -->
+    <header class="text-center py-8 enhanced-card bg-white bg-opacity-90 mx-6 mt-6 rounded-3xl enhanced-fade-in">
+        <div class="flex items-center justify-center gap-6 mb-4">
+            <div class="w-20 h-20 medical-icon-bg rounded-2xl flex items-center justify-center">
+                <i class="fas fa-stethoscope text-white text-3xl"></i>
+            </div>
+            <div class="text-left">
+                <h1 class="text-5xl font-bold text-gray-800">{{ config.site.name }}</h1>
+                <p class="text-xl text-gray-600 font-medium">{{ t('kiosk.enhanced.professional_service') or 'Medizinisches Labor' }} • ตรวจเลือด • Medical Laboratory</p>
+            </div>
+        </div>
+        <div id="clock" class="enhanced-clock mt-4">--:--:--</div>
+        <div class="text-lg text-gray-600 font-medium mt-2">{{ now.strftime('%A, %d. %B %Y') }}</div>
+        <div class="text-sm text-gray-500 uppercase tracking-wider">{{ t('kiosk.enhanced.bangkok_timezone') or 'Bangkok Zeit' }}</div>
+    </header>
+    
+    <!-- Enhanced Three Column Layout -->
+    <div class="grid grid-cols-3 gap-8 px-6 pb-6" style="height: calc(100vh - 280px);">
+        
+        <!-- Column 1: TODAY - Enhanced -->
+        <div class="enhanced-card bg-white bg-opacity-95 rounded-3xl p-8 enhanced-fade-in flex flex-col">
+            <div class="flex items-center gap-4 mb-8 pb-4 border-b-2 border-medical-green border-opacity-30">
+                <div class="w-16 h-16 medical-icon-bg rounded-xl flex items-center justify-center">
+                    <i class="fas fa-calendar-day text-white text-2xl"></i>
+                </div>
+                <h2 class="text-4xl font-bold text-gray-800">
+                    <div class="thai-primary text-5xl">วันนี้</div>
+                    <div class="en-subtitle text-2xl font-normal text-gray-600">Today</div>
+                </h2>
+            </div>
+            
+            <!-- Enhanced Status -->
+            <div class="mb-8 flex-shrink-0">
+                {% if status.status_type == 'ANWESEND' %}
+                    <div class="status-open-professional rounded-2xl p-6 text-center text-white">
+                        <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full mx-auto mb-4 flex items-center justify-center status-icon-animate">
+                            <i class="fas fa-door-open text-3xl"></i>
+                        </div>
+                        <div class="time-hierarchy-medium mb-2">{{ t('kiosk.enhanced.status_messages.currently_open') or t('open') }}</div>
+                        <div class="text-lg opacity-90">{{ t('kiosk.we_are_here') }}</div>
+                    </div>
+                {% elif status.status_type == 'URLAUB' %}
+                    <div class="status-warning-professional rounded-2xl p-6 text-center text-white">
+                        <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full mx-auto mb-4 flex items-center justify-center status-icon-animate">
+                            <i class="fas fa-umbrella-beach text-3xl"></i>
+                        </div>
+                        <div class="time-hierarchy-medium mb-2">{{ t('on_vacation') }}</div>
+                        <div class="text-lg opacity-90">
+                            {% if status.to_date %}
+                                {{ t('kiosk.vacation_return') }} {{ status.to_date.strftime('%d.%m.%Y') }}
+                            {% else %}
+                                Bald wieder für Sie da
+                            {% endif %}
+                        </div>
+                    </div>
+                {% elif status.status_type == 'BILDUNGSURLAUB' %}
+                    <div class="bg-medical-blue rounded-2xl p-6 text-center text-white" style="box-shadow: 0 4px 20px rgba(0, 86, 179, 0.4);">
+                        <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full mx-auto mb-4 flex items-center justify-center status-icon-animate">
+                            <i class="fas fa-graduation-cap text-3xl"></i>
+                        </div>
+                        <div class="time-hierarchy-medium mb-2">{{ t('educational_leave') }}</div>
+                        <div class="text-lg opacity-90">{{ t('kiosk.educational_leave_note') }}</div>
+                    </div>
+                {% else %}
+                    <div class="status-closed-professional rounded-2xl p-6 text-center text-white">
+                        <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full mx-auto mb-4 flex items-center justify-center status-icon-animate">
+                            <i class="fas fa-door-closed text-3xl"></i>
+                        </div>
+                        <div class="time-hierarchy-medium mb-2">{{ t('kiosk.enhanced.status_messages.currently_closed') or t('closed') }}</div>
+                        <div class="text-lg opacity-90">{{ status.note or t('kiosk.see_notice') }}</div>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Enhanced Today's Hours -->
+            <div class="flex-1 flex flex-col">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 bg-medical-green bg-opacity-20 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-clock text-medical-green text-xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-semibold text-gray-800">{{ t('opening_hours') }}</h3>
+                </div>
+                
+                <div class="space-y-4 flex-1">
+                    {% if today_hours and not today_hours.closed %}
+                        {% for time_range in today_hours.time_ranges %}
+                            {% set hour_parts = time_range.split('-') %}
+                            {% set start_hour = hour_parts[0].split(':')[0]|int if hour_parts|length > 1 else 12 %}
+                            
+                            <div class="bg-gradient-to-r from-medical-green to-green-400 rounded-xl p-4 text-white">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+                                        {% if start_hour < 12 %}
+                                            <i class="fas fa-sun text-xl"></i>
+                                        {% else %}
+                                            <i class="fas fa-moon text-xl"></i>
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        <div class="time-hierarchy-large font-mono">{{ time_range }}</div>
+                                        <div class="text-sm opacity-90">
+                                            {% if start_hour < 12 %}{{ t('kiosk.enhanced.time_periods.morning') or 'Vormittag' }}
+                                            {% else %}{{ t('kiosk.enhanced.time_periods.afternoon') or 'Nachmittag' }}{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="bg-red-500 rounded-xl p-6 text-center text-white">
+                            <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full mx-auto mb-4 flex items-center justify-center">
+                                <i class="fas fa-door-closed text-2xl"></i>
+                            </div>
+                            <div class="time-hierarchy-large">{{ t('closed') }}</div>
+                            <div class="text-lg opacity-90 mt-2">{{ t('kiosk.enhanced.day_status.today') or t('today') }}</div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Column 2: THIS WEEK - Enhanced -->
+        <div class="enhanced-card bg-white bg-opacity-95 rounded-3xl p-8 enhanced-fade-in flex flex-col">
+            <div class="flex items-center gap-4 mb-8 pb-4 border-b-2 border-medical-blue border-opacity-30">
+                <div class="w-16 h-16 bg-medical-blue rounded-xl flex items-center justify-center" style="box-shadow: 0 4px 12px rgba(0, 86, 179, 0.3);">
+                    <i class="fas fa-calendar-week text-white text-2xl"></i>
+                </div>
+                <h2 class="text-4xl font-bold text-gray-800">
+                    <div class="thai-primary text-5xl">สัปดาห์นี้</div>
+                    <div class="en-subtitle text-2xl font-normal text-gray-600">This Week</div>
+                </h2>
+            </div>
+            
+            <div class="space-y-4 flex-1 overflow-y-auto">
+                {% set week_schedule = [
+                    ('monday', 'จันทร์', '08:30-12:00, 13:00-16:00', 'fas fa-briefcase', true),
+                    ('tuesday', 'อังคาร', '08:30-12:00, 13:00-16:00', 'fas fa-briefcase', true),
+                    ('wednesday', 'พุธ', '08:30-12:00', 'fas fa-clock', true),
+                    ('thursday', 'พฤหัสบดี', '08:30-12:00, 13:00-16:00', 'fas fa-briefcase', true),
+                    ('friday', 'ศุกร์', '08:30-13:00', 'fas fa-clock', true),
+                    ('saturday', 'เสาร์', 'Closed', 'fas fa-door-closed', false),
+                    ('sunday', 'อาทิตย์', 'Closed', 'fas fa-door-closed', false)
+                ] %}
+                
+                {% for day_key, thai_day, hours, icon, is_open in week_schedule %}
+                    {% set is_today = loop.index == now.isoweekday() %}
+                    
+                    <div class="
+                        {% if is_today %}
+                            bg-gradient-to-r from-medical-green to-green-400 text-white transform scale-105
+                        {% elif is_open %}
+                            bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200
+                        {% else %}
+                            bg-gradient-to-r from-red-50 to-red-100
+                        {% endif %}
+                        rounded-2xl p-4 transition-all duration-300 hover:shadow-lg
+                    ">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <div class="
+                                    {% if is_today %}
+                                        bg-white bg-opacity-20
+                                    {% elif is_open %}
+                                        bg-medical-green
+                                    {% else %}
+                                        bg-red-500
+                                    {% endif %}
+                                    w-12 h-12 rounded-lg flex items-center justify-center
+                                ">
+                                    <i class="{{ icon }} 
+                                        {% if is_today %}
+                                            text-white
+                                        {% else %}
+                                            text-white
+                                        {% endif %}
+                                        text-lg"></i>
+                                </div>
+                                <div>
+                                    <div class="font-bold text-xl 
+                                        {% if is_today %}
+                                            text-white
+                                        {% elif is_open %}
+                                            text-gray-800
+                                        {% else %}
+                                            text-red-700
+                                        {% endif %}
+                                    ">{{ t(day_key) }}</div>
+                                    <div class="text-sm opacity-80 
+                                        {% if is_today %}
+                                            text-white
+                                        {% elif is_open %}
+                                            text-gray-600
+                                        {% else %}
+                                            text-red-600
+                                        {% endif %}
+                                    ">{{ thai_day }}</div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="font-mono font-semibold
+                                    {% if is_today %}
+                                        text-white time-hierarchy-medium
+                                    {% elif is_open %}
+                                        text-gray-800 text-lg
+                                    {% else %}
+                                        text-red-700 text-lg
+                                    {% endif %}
+                                ">{{ hours }}</div>
+                                {% if is_today %}
+                                    <div class="text-sm text-white opacity-90 font-medium uppercase tracking-wider">
+                                        {{ t('kiosk.enhanced.day_status.today') or t('today') }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        {% if is_today and is_open %}
+                            <div class="mt-3 pt-3 border-t border-white border-opacity-20">
+                                <div class="flex items-center justify-center gap-2 text-white text-sm">
+                                    <i class="fas fa-circle text-green-300 animate-pulse"></i>
+                                    <span class="font-medium">{{ t('kiosk.enhanced.status_messages.currently_open') or 'Aktuell geöffnet' }}</span>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- Column 3: PREVIEW - Enhanced -->
+        <div class="enhanced-card bg-white bg-opacity-95 rounded-3xl p-8 enhanced-fade-in flex flex-col">
+            <div class="flex items-center gap-4 mb-8 pb-4 border-b-2 border-thai-coral border-opacity-30">
+                <div class="w-16 h-16 bg-thai-coral rounded-xl flex items-center justify-center" style="box-shadow: 0 4px 12px rgba(255, 127, 80, 0.3);">
+                    <i class="fas fa-calendar-alt text-white text-2xl"></i>
+                </div>
+                <h2 class="text-4xl font-bold text-gray-800">
+                    <div class="thai-primary text-5xl">ตัวอย่าง</div>
+                    <div class="en-subtitle text-2xl font-normal text-gray-600">Preview</div>
+                </h2>
+            </div>
+            
+            <div class="mb-8">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 bg-thai-gold bg-opacity-20 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-arrow-right text-thai-gold text-lg"></i>
+                    </div>
+                    <h4 class="text-2xl font-semibold text-gray-800">{{ t('kiosk.next_week') }}</h4>
+                </div>
+                
+                <div class="space-y-3">
+                    {% set next_week_preview = [
+                        ('Mo', 'จันทร์', '●', 'full', '08:30-16:00'),
+                        ('Di', 'อังคาร', '●', 'full', '08:30-16:00'),
+                        ('Mi', 'พุธ', '○', 'half', '08:30-12:00'),
+                        ('Do', 'พฤหัสบดี', '●', 'full', '08:30-16:00'),
+                        ('Fr', 'ศุกร์', '○', 'half', '08:30-13:00'),
+                        ('Sa', '×', 'closed', 'closed', 'Closed'),
+                        ('So', '×', 'closed', 'closed', 'Closed')
+                    ] %}
+                    
+                    {% for day_short, thai_short, symbol, status, hours in next_week_preview %}
+                        <div class="bg-gray-50 rounded-xl p-4 flex items-center justify-between hover:bg-gray-100 transition-colors">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 
+                                    {% if status == 'full' %}bg-medical-green
+                                    {% elif status == 'half' %}bg-thai-gold
+                                    {% else %}bg-red-500{% endif %}
+                                    rounded-lg flex items-center justify-center text-white font-bold text-lg">
+                                    {{ day_short }}
+                                </div>
+                                <div>
+                                    <div class="font-semibold text-gray-800">{{ day_short }}</div>
+                                    <div class="text-sm text-gray-600">{{ thai_short }}</div>
+                                </div>
+                            </div>
+                            
+                            <div class="text-right">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="
+                                        {% if status == 'full' %}text-medical-green
+                                        {% elif status == 'half' %}text-thai-gold
+                                        {% else %}text-red-500{% endif %}
+                                        text-2xl font-bold">{{ symbol }}</span>
+                                </div>
+                                <div class="text-sm font-mono
+                                    {% if status == 'closed' %}text-red-600
+                                    {% else %}text-gray-800{% endif %}
+                                ">{{ hours }}</div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Enhanced Legend -->
+            <div class="mt-auto pt-6 border-t border-gray-200">
+                <div class="space-y-3">
+                    <div class="flex items-center gap-3">
+                        <span class="text-medical-green text-xl font-bold">●</span>
+                        <span class="text-gray-700">{{ t('kiosk.full_day_open') }}</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-thai-gold text-xl font-bold">○</span>
+                        <span class="text-gray-700">{{ t('kiosk.half_day_open') }}</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-red-500 text-xl font-bold">×</span>
+                        <span class="text-gray-700">{{ t('closed') }}</span>
+                    </div>
+                </div>
+                
+                <div class="mt-6 p-4 bg-gradient-to-r from-medical-green to-green-400 rounded-xl text-white text-center">
+                    <div class="flex items-center justify-center gap-2 mb-2">
+                        <i class="fas fa-info-circle"></i>
+                        <span class="font-semibold">{{ t('kiosk.enhanced.upcoming_availability') or 'Kommende Verfügbarkeit' }}</span>
+                    </div>
+                    <div class="text-sm opacity-90">{{ t('kiosk.enhanced.services.appointment_booking') or 'Termine nach Vereinbarung' }}</div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+    <!-- Enhanced Footer -->
+    <footer class="fixed bottom-0 left-0 right-0 enhanced-card bg-white bg-opacity-90 mx-6 mb-6 rounded-2xl p-6 backdrop-blur-sm">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center gap-8">
+                {% if config.contact.phone %}
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 medical-icon-bg rounded-lg flex items-center justify-center">
+                        <i class="fas fa-phone text-white"></i>
+                    </div>
+                    <span class="font-semibold text-gray-800 text-lg">{{ config.contact.phone }}</span>
+                </div>
+                {% endif %}
+                
+                {% if config.contact.email %}
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-medical-blue rounded-lg flex items-center justify-center">
+                        <i class="fas fa-envelope text-white"></i>
+                    </div>
+                    <span class="font-semibold text-gray-800 text-lg">{{ config.contact.email }}</span>
+                </div>
+                {% endif %}
+                
+                {% if config.location.address %}
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-thai-coral rounded-lg flex items-center justify-center">
+                        <i class="fas fa-map-marker-alt text-white"></i>
+                    </div>
+                    <span class="font-semibold text-gray-800 text-lg">{{ config.location.address }}</span>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="flex items-center gap-6">
+                <div class="flex items-center gap-2 text-medical-green">
+                    <div class="w-3 h-3 bg-medical-green rounded-full animate-pulse"></div>
+                    <span class="font-medium text-gray-700">{{ t('kiosk.enhanced.system_online') or 'System Online' }}</span>
+                </div>
+                
+                <div class="text-center">
+                    <div class="text-sm text-gray-600 mb-2">{{ t('kiosk.scan_for_info') }}</div>
+                    <img src="/qr?size=150" alt="QR Code" class="w-20 h-20 bg-white rounded-lg border-2 border-medical-green p-1">
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Performance Optimizations -->
+    <script src="{{ url_for('static', filename='js/kiosk-performance.js') }}" defer></script>
+    
+    <!-- Enhanced JavaScript -->
+    <script src="{{ url_for('static', filename='js/kiosk-enhanced.js') }}" defer></script>
+    
+    <!-- Inline enhanced functionality -->
+    <script>
+        // Enhanced clock with timezone support
+        function updateEnhancedClock() {
+            const now = new Date();
+            const bangkokTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Bangkok"}));
+            
+            const hours = String(bangkokTime.getHours()).padStart(2, '0');
+            const minutes = String(bangkokTime.getMinutes()).padStart(2, '0');
+            const seconds = String(bangkokTime.getSeconds()).padStart(2, '0');
+            
+            const colonOpacity = bangkokTime.getSeconds() % 2 ? '1' : '0.3';
+            const clockElement = document.getElementById('clock');
+            
+            if (clockElement) {
+                clockElement.innerHTML = `${hours}<span style="opacity: ${colonOpacity}; transition: opacity 0.3s ease;">:</span>${minutes}<span style="opacity: ${colonOpacity}; transition: opacity 0.3s ease;">:</span>${seconds}`;
+            }
+        }
+        
+        // Enhanced auto-refresh with visual countdown
+        let refreshTimeLeft = 120;
+        
+        function updateRefreshTimer() {
+            const minutes = Math.floor(refreshTimeLeft / 60);
+            const seconds = refreshTimeLeft % 60;
+            const timerElement = document.getElementById('refresh-timer');
+            const iconElement = document.getElementById('refresh-icon');
+            
+            if (timerElement) {
+                timerElement.textContent = `${minutes}:${String(seconds).padStart(2, '0')}`;
+                
+                if (refreshTimeLeft <= 10) {
+                    timerElement.classList.add('text-red-400');
+                    if (iconElement) {
+                        iconElement.classList.add('animate-spin');
+                    }
+                }
+                
+                if (refreshTimeLeft <= 0) {
+                    // Smooth refresh with fade effect
+                    document.body.style.transition = 'opacity 0.8s ease-out';
+                    document.body.style.opacity = '0.7';
+                    
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 800);
+                    return;
+                }
+                
+                refreshTimeLeft--;
+            }
+        }
+        
+        // Initialize enhanced kiosk
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🖥️ Enhanced Triple Kiosk Mode Loading...');
+            console.log('📊 Display:', window.innerWidth + 'x' + window.innerHeight + ' @ ' + window.devicePixelRatio + 'x DPR');
+            console.log('🌏 Language:', document.documentElement.lang);
+            console.log('⏰ Timezone:', Intl.DateTimeFormat().resolvedOptions().timeZone);
+            
+            // Initialize clock
+            updateEnhancedClock();
+            setInterval(updateEnhancedClock, 1000);
+            
+            // Initialize refresh timer
+            updateRefreshTimer();
+            setInterval(updateRefreshTimer, 1000);
+            
+            // Add entrance animations with enhanced stagger
+            const cards = document.querySelectorAll('.enhanced-fade-in');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px) scale(0.98)';
+                card.style.transition = 'all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0) scale(1)';
+                }, 300 + (index * 200));
+            });
+            
+            // Prevent common browser shortcuts
+            document.addEventListener('keydown', function(e) {
+                // Prevent F5, Ctrl+R (unless admin mode with Ctrl+Alt)
+                if (e.key === 'F5' || (e.ctrlKey && e.key === 'r' && !e.altKey)) {
+                    e.preventDefault();
+                }
+                
+                // Prevent F11 (we handle fullscreen ourselves)
+                if (e.key === 'F11') {
+                    e.preventDefault();
+                }
+                
+                // Admin shortcuts (Ctrl+Alt+...)
+                if (e.ctrlKey && e.altKey) {
+                    if (e.key === 'r') {
+                        // Admin force refresh
+                        window.location.reload();
+                    } else if (e.key === 'f') {
+                        // Admin toggle fullscreen
+                        if (document.fullscreenElement) {
+                            document.exitFullscreen();
+                        } else {
+                            document.documentElement.requestFullscreen();
+                        }
+                    } else if (e.key === 'i') {
+                        // Admin system info
+                        console.log(`
+🖥️ ENHANCED TRIPLE KIOSK - SYSTEM INFO:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📺 Display: ${window.innerWidth}x${window.innerHeight} (${window.devicePixelRatio}x DPR)
+🌐 Network: ${navigator.onLine ? 'Online' : 'Offline'}
+🎯 Fullscreen: ${document.fullscreenElement ? 'Active' : 'Inactive'}
+⏰ Refresh in: ${Math.floor(refreshTimeLeft / 60)}:${String(refreshTimeLeft % 60).padStart(2, '0')}
+💾 Memory: ${navigator.deviceMemory || 'Unknown'}GB
+🔧 Platform: ${navigator.platform}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                        `);
+                    }
+                }
+            });
+            
+            // Auto-fullscreen on first interaction
+            let hasInteracted = false;
+            function tryFullscreen() {
+                if (!hasInteracted && !document.fullscreenElement) {
+                    document.documentElement.requestFullscreen()
+                        .then(() => {
+                            console.log('📺 Auto-fullscreen activated');
+                            hasInteracted = true;
+                        })
+                        .catch(err => {
+                            console.log('📺 Fullscreen not available:', err.message);
+                            hasInteracted = true;
+                        });
+                }
+            }
+            
+            ['click', 'touchstart', 'keydown'].forEach(event => {
+                document.addEventListener(event, tryFullscreen, { once: true });
+            });
+            
+            // Prevent context menu and text selection
+            document.addEventListener('contextmenu', e => e.preventDefault());
+            document.addEventListener('selectstart', e => e.preventDefault());
+            document.addEventListener('dragstart', e => e.preventDefault());
+            
+            // Network status monitoring
+            window.addEventListener('online', () => {
+                console.log('🌐 Network connection restored');
+                document.body.classList.remove('offline');
+            });
+            
+            window.addEventListener('offline', () => {
+                console.log('🌐 Network connection lost');
+                document.body.classList.add('offline');
+                
+                // Show offline indicator
+                const indicator = document.createElement('div');
+                indicator.innerHTML = '⚠️ OFFLINE';
+                indicator.style.cssText = `
+                    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                    background: rgba(239, 68, 68, 0.95); color: white; padding: 2rem 3rem;
+                    border-radius: 2rem; font-size: 2rem; font-weight: bold; z-index: 10000;
+                    backdrop-filter: blur(10px); box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+                `;
+                document.body.appendChild(indicator);
+                
+                setTimeout(() => indicator.remove(), 5000);
+            });
+            
+            console.log('✅ Enhanced Triple Kiosk initialized successfully');
+        });
+        
+        // Performance monitoring
+        let performanceChecks = 0;
+        setInterval(() => {
+            const memory = performance.memory;
+            if (memory && memory.usedJSHeapSize > 50000000) { // 50MB
+                console.warn('⚠️ High memory usage detected:', Math.round(memory.usedJSHeapSize / 1024 / 1024) + 'MB');
+                performanceChecks++;
+                
+                if (performanceChecks > 5) {
+                    console.log('🔄 Reloading due to memory usage...');
+                    window.location.reload();
+                }
+            } else {
+                performanceChecks = Math.max(0, performanceChecks - 1);
+            }
+        }, 30000);
+    </script>
+    
+</body>
+</html>

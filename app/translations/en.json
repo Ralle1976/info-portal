@@ -1,0 +1,1078 @@
+{
+  "FLASK_ENV": "Flask Environment",
+  "address": "Address",
+  "address_placeholder": "Add",
+  "admin": {
+    "announcements_management": {
+      "actions": {
+        "activate": "Activate",
+        "deactivate": "Deactivate",
+        "delete": "Delete",
+        "edit": "Edit",
+        "preview": "Preview"
+      },
+      "add_new": "Add New Announcement",
+      "create": {
+        "form": "Create Announcement Form",
+        "title": "Create Announcement"
+      },
+      "current_announcements": "Current Announcements",
+      "delete": {
+        "confirm": "Are you sure you want to delete this announcement?",
+        "title": "Delete Announcement"
+      },
+      "edit": {
+        "form": "Edit Announcement Form",
+        "title": "Edit Announcement"
+      },
+      "filters": {
+        "active": "Active",
+        "all": "All",
+        "all_languages": "All Languages",
+        "all_status": "All Status",
+        "by_date": "By Date",
+        "english": "English",
+        "german": "German",
+        "inactive": "Inactive",
+        "thai": "Thai",
+        "title": "Filters"
+      },
+      "form": {
+        "content": "Content",
+        "end_date": "End Date",
+        "language": "Language",
+        "priority": "Priority",
+        "start_date": "Start Date",
+        "status": "Status",
+        "title": "Title"
+      },
+      "list": {
+        "active": "Active",
+        "created": "Created on",
+        "from": "From",
+        "inactive": "Inactive",
+        "until": "Until"
+      },
+      "messages": {
+        "delete_confirm": "Are you sure you want to delete the announcement '{title}'?",
+        "delete_error": "Error deleting:",
+        "delete_network_error": "Network error while deleting",
+        "delete_success": "Announcement deleted successfully!",
+        "load_error": "Error loading announcements",
+        "network_error": "Network error",
+        "save_error": "Error saving:",
+        "save_success_create": "Announcement created successfully!",
+        "save_success_update": "Announcement updated successfully!",
+        "toggle_activated": "activated",
+        "toggle_deactivated": "deactivated",
+        "toggle_error": "Error changing status:",
+        "toggle_network_error": "Network error while changing status",
+        "toggle_success": "Status successfully changed to {status}"
+      },
+      "modal": {
+        "add": "Add",
+        "category_label": "Category",
+        "category_options": {
+          "emergency": "Emergency",
+          "general": "General",
+          "holiday": "Holiday",
+          "maintenance": "Maintenance",
+          "schedule": "Schedule",
+          "service": "Service"
+        },
+        "create": {
+          "title": "Create New Announcement"
+        },
+        "delete": {
+          "title": "Confirm Deletion"
+        },
+        "edit": {
+          "title": "Edit Announcement"
+        },
+        "language_label": "Language",
+        "message_label": "Message",
+        "message_placeholder": "Enter announcement content...",
+        "priority_label": "Priority Level",
+        "priority_options": {
+          "high": "High",
+          "low": "Low",
+          "normal": "Normal",
+          "urgent": "Urgent"
+        },
+        "publish_from": "Publish From",
+        "publish_immediately": "Publish Immediately",
+        "publish_until": "Publish Until",
+        "save": "Save",
+        "title_add": "Add New Announcement",
+        "title_edit": "Edit Announcement",
+        "title_label": "Title",
+        "title_placeholder": "Enter announcement title..."
+      },
+      "no_announcements": {
+        "create_first": "Create First Announcement",
+        "message": "No announcements have been created yet",
+        "title": "No Announcements"
+      },
+      "preview_modal": {
+        "close": "Close",
+        "title": "Announcement Preview"
+      },
+      "search": {
+        "placeholder": "Search announcements...",
+        "results": "Search Results"
+      },
+      "search_placeholder": "Search announcements...",
+      "status": {
+        "archived": "Archived",
+        "draft": "Draft",
+        "published": "Published"
+      },
+      "subtitle": "Manage announcements and notices for visitors",
+      "title": "Announcements Management",
+      "validation": {
+        "content_required": "Content is required",
+        "end_after_start": "End date must be after start date",
+        "title_required": "Title is required"
+      }
+    },
+    "availability_management": {
+      "add_slot": "Add Time Slot",
+      "bulk_operations": {
+        "apply_template": "Apply Template",
+        "copy_selected": "Copy Selected",
+        "delete_selected": "Delete Selected",
+        "select_all": "Select All",
+        "title": "Bulk Operations"
+      },
+      "calendar": "Calendar",
+      "calendar_view": {
+        "month": "Month",
+        "navigation": "Navigation",
+        "title": "Calendar View",
+        "today": "Today",
+        "week": "Week"
+      },
+      "clear_data": {
+        "clear_all": "Clear All",
+        "clear_past": "Clear Past Data",
+        "title": "Clear Data"
+      },
+      "copy_timerange": {
+        "copy": "Copy",
+        "title": "Copy Time Range"
+      },
+      "day_detail_modal": {
+        "add_slot": "Add Time Slot",
+        "capacity_text": "Capacity:",
+        "close": "Close",
+        "no_slots": "No slots for this day",
+        "title": "Day Details"
+      },
+      "day_headers": {
+        "friday": "Friday",
+        "monday": "Monday",
+        "saturday": "Saturday",
+        "sunday": "Sunday",
+        "thursday": "Thursday",
+        "tuesday": "Tuesday",
+        "wednesday": "Wednesday"
+      },
+      "list": "List",
+      "list_view": {
+        "add": "Add",
+        "create_first": "Create first time slot",
+        "create_message": "Create time slots for this month",
+        "filters": "Filters",
+        "no_availability": "No availability",
+        "search": "Search",
+        "sort": "Sort",
+        "title": "List View"
+      },
+      "messages": {
+        "clear_all_confirm": "Do you want to delete ALL time slots?",
+        "clear_all_error": "Error deleting:",
+        "clear_all_final_confirm": "Are you sure? All data will be lost!",
+        "clear_all_network_error": "Network error while deleting",
+        "clear_all_success": "All {count} time slots deleted.",
+        "clear_past_confirm": "Do you want to delete all past time slots?",
+        "clear_past_error": "Error deleting:",
+        "clear_past_network_error": "Network error while deleting",
+        "clear_past_success": "{count} past time slots deleted.",
+        "copy_confirm": "Do you want to copy all time slots from {from} to {to} to the current month?",
+        "copy_date_order_error": "The 'to' date must be after the 'from' date",
+        "copy_dates_error": "Please select both dates",
+        "copy_error": "Error copying:",
+        "copy_network_error": "Network error while copying",
+        "copy_success": "Time slots copied successfully! {count} time slots created.",
+        "delete_confirm": "Are you sure you want to delete the time slot {time} on {date}?",
+        "delete_error": "Error deleting:",
+        "delete_network_error": "Network error while deleting",
+        "delete_success": "Time slot deleted successfully!",
+        "error": "Error occurred",
+        "load_error": "Error loading availability data",
+        "loading": "Loading...",
+        "network_error": "Network error",
+        "no_availability": "No availability",
+        "save_error": "Error saving:",
+        "save_success_create": "Time slot created successfully!",
+        "save_success_update": "Time slot updated successfully!",
+        "success": "Successfully saved",
+        "template_confirm": "Do you want to apply the template '{template}' for the current month?",
+        "template_error": "Error applying template:",
+        "template_network_error": "Network error while applying template",
+        "template_select_error": "Please select a template",
+        "template_success": "Template applied successfully! {count} time slots created.",
+        "time_validation": "End time must be after start time"
+      },
+      "month_names": [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+      ],
+      "slot_modal": {
+        "active_label": "Active",
+        "cancel": "Cancel",
+        "capacity_help": "Maximum number of people",
+        "capacity_label": "Capacity",
+        "date_label": "Date",
+        "end_label": "End Time",
+        "note_label": "Note",
+        "note_placeholder": "Additional notes...",
+        "recurring_label": "Recurring",
+        "recurring_options": {
+          "biweekly": "Every 2 weeks",
+          "monthly": "Monthly",
+          "type_label": "Recurrence Type",
+          "until_label": "Repeat until",
+          "weekly": "Weekly"
+        },
+        "save": "Save",
+        "start_label": "Start Time",
+        "title_add": "Add Time Slot",
+        "title_edit": "Edit Time Slot",
+        "type_label": "Type",
+        "type_options": {
+          "blood_draw": "Blood Draw",
+          "consultation": "Consultation",
+          "follow_up": "Follow-up",
+          "general": "General"
+        }
+      },
+      "subtitle": "Manage available time slots for appointments",
+      "tabs": {
+        "bulk": "Bulk Operations",
+        "calendar": "Calendar",
+        "list": "List",
+        "templates": "Templates"
+      },
+      "templates": {
+        "apply": "Apply Template",
+        "create": "Create Template",
+        "manage": "Manage Templates",
+        "title": "Templates"
+      },
+      "time_slot_modal": {
+        "available": "Available",
+        "capacity": "Capacity",
+        "date": "Date",
+        "end_time": "End Time",
+        "notes": "Notes",
+        "start_time": "Start Time",
+        "title": "Time Slot"
+      },
+      "title": "Availability Management",
+      "view_mode": "View Mode",
+      "weekly_template": {
+        "apply": "Apply Template",
+        "compact": "Compact",
+        "extended": "Extended",
+        "select_placeholder": "Select Template",
+        "standard": "Standard",
+        "title": "Weekly Template"
+      }
+    },
+    "bangkok_time": "Bangkok Time",
+    "bangkok_time_label": "Bangkok Time",
+    "change_status": "Change Status",
+    "closed": "Closed",
+    "common": {
+      "back": "Back",
+      "cancel": "Cancel",
+      "close": "Close",
+      "confirm": "Confirm",
+      "create": "Create",
+      "delete": "Delete",
+      "edit": "Edit",
+      "error": "Error",
+      "info": "Information",
+      "loading": "Loading...",
+      "next": "Next",
+      "previous": "Previous",
+      "save": "Save",
+      "success": "Success",
+      "update": "Update",
+      "warning": "Warning"
+    },
+    "current_announcements": "Current Announcements",
+    "current_status": "Current Status",
+    "dashboard": {
+      "title": "Admin Dashboard"
+    },
+    "export_data": "Export Data",
+    "generate_qr": "Generate QR Code",
+    "hours_management": {
+      "current_week": "Current Week",
+      "current_week_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "exception_modal": {
+        "add": "Add",
+        "cancel": "Cancel",
+        "closed_all_day": "Closed all day",
+        "date_label": "Date",
+        "note_label": "Note (optional)",
+        "note_placeholder": "e.g. Holiday, Training, etc.",
+        "opening_hours": "Opening Hours",
+        "title": "Add Exception",
+        "to": "to"
+      },
+      "exceptions": {
+        "add": "Add Exception",
+        "closed": "Closed",
+        "delete": "Delete Exception",
+        "edit": "Edit Exception",
+        "no_exceptions": "No exceptions defined",
+        "subtitle": "Special opening hours for specific dates",
+        "title": "Exceptions"
+      },
+      "form": {
+        "break_end": "Break End",
+        "break_start": "Break Start",
+        "closed_all_day": "Closed All Day",
+        "end_time": "Closing Time",
+        "start_time": "Opening Time"
+      },
+      "messages": {
+        "date_required": "Please select a date",
+        "exception_add_error": "Error adding exception",
+        "exception_add_network_error": "Network error while adding exception",
+        "exception_add_success": "Exception added successfully",
+        "exception_delete_confirm": "Do you really want to delete the exception for {date}?",
+        "exception_delete_error": "Error deleting exception",
+        "exception_delete_network_error": "Network error while deleting exception",
+        "exception_delete_success": "Exception deleted successfully",
+        "hours_required": "Please specify opening hours or select \"Closed all day\"",
+        "network_error": "Network error. Please try again.",
+        "reset_confirm": "Do you really want to reset all opening hours to default values?",
+        "save_error": "Error saving opening hours",
+        "save_success": "Opening hours saved successfully"
+      },
+      "modal": {
+        "closed": "Closed",
+        "custom_hours": "Custom Hours",
+        "date": "Date",
+        "reason": "Reason",
+        "title": "Manage Hours"
+      },
+      "regular": {
+        "friday": "Friday",
+        "monday": "Monday",
+        "saturday": "Saturday",
+        "sunday": "Sunday",
+        "thursday": "Thursday",
+        "title": "Regular Hours",
+        "tuesday": "Tuesday",
+        "wednesday": "Wednesday"
+      },
+      "regular_hours": {
+        "add_timeslot": "Add Time Slot",
+        "closed": "Closed",
+        "friday": "Friday",
+        "monday": "Monday",
+        "reset": "Reset",
+        "saturday": "Saturday",
+        "save": "Save",
+        "subtitle": "Set standard opening hours for each weekday",
+        "sunday": "Sunday",
+        "thursday": "Thursday",
+        "title": "Regular Opening Hours",
+        "to": "to",
+        "tuesday": "Tuesday",
+        "wednesday": "Wednesday"
+      },
+      "subtitle": "Manage regular opening hours and exceptions",
+      "title": "Hours Management",
+      "validation": {
+        "break_within_hours": "Break must be within operating hours",
+        "end_after_start": "Closing time must be after opening time",
+        "time_required": "Time is required"
+      }
+    },
+    "language_switcher": {
+      "current_language": "Current Language"
+    },
+    "logout": "Logout",
+    "navigation": {
+      "announcements": "Announcements",
+      "availability": "Availability",
+      "change_password": "Change Password",
+      "dashboard": "Dashboard",
+      "legal_compliance": "Legal Compliance",
+      "opening_hours": "Opening Hours",
+      "settings": "Settings",
+      "status": "Status"
+    },
+    "open_portal": "Open Portal",
+    "password_change": {
+      "confirm_password": "Confirm Password",
+      "confirm_password_placeholder": "Confirm new password",
+      "current_password": "Current Password",
+      "match": {
+        "invalid": "Passwords do not match",
+        "valid": "Passwords match"
+      },
+      "new_password": "New Password",
+      "requirements": {
+        "lowercase": "One lowercase letter",
+        "min_length": "At least 8 characters",
+        "number": "One number",
+        "special": "One special character",
+        "uppercase": "One uppercase letter"
+      },
+      "security_notice": "Security Notice: Use a strong password",
+      "subtitle": "Change your administrator password",
+      "title": "Change Password"
+    },
+    "portal_management": "Portal Management",
+    "portal_open": "Portal Open",
+    "quick_actions": "Quick Actions",
+    "refresh_data": "Refresh Data",
+    "restart_server": "Restart Server",
+    "rollback_changes": "Rollback Changes",
+    "settings_management": {
+      "actions": {
+        "cancel": "Cancel",
+        "reset": "Reset",
+        "save": "Save"
+      },
+      "appearance_tab": {
+        "branding": {
+          "favicon_url": "Favicon URL",
+          "logo_help": "Logo Help",
+          "logo_url": "Logo URL",
+          "preview": "Preview",
+          "title": "Branding"
+        },
+        "font_sizes": {
+          "large": "Large",
+          "medium": "Medium",
+          "small": "Small"
+        },
+        "preview": {
+          "announcement": "Announcement",
+          "hours": "Opening Hours",
+          "title": "Preview"
+        },
+        "theme": {
+          "color_scheme": "Color Scheme",
+          "colors": {
+            "blue": "Blue",
+            "coral": "Coral",
+            "teal": "Teal"
+          },
+          "dark_mode": "Dark Mode",
+          "default": "Default",
+          "description": "Choose a theme for the interface",
+          "font_size": "Font Size",
+          "font_sizes": {
+            "large": "Large",
+            "medium": "Medium",
+            "small": "Small",
+            "xl": "Extra Large"
+          },
+          "high_contrast": "High Contrast",
+          "title": "Theme"
+        }
+      },
+      "contact_tab": {
+        "address": "Address",
+        "contact_info": "Contact Information",
+        "coordinates": "Coordinates",
+        "directions": "Directions",
+        "email": "Email",
+        "latitude": "Latitude",
+        "location_info": "Location Information",
+        "location_services": "Location Services",
+        "longitude": "Longitude",
+        "phone": "Phone Number",
+        "services": {
+          "add": "Add",
+          "new_service": "New Service",
+          "title": "Services"
+        },
+        "show_location": "Show Location",
+        "site_name": "Site Name",
+        "title": "Contact Information",
+        "tooltips": {
+          "email": "Email Address",
+          "phone": "Phone Number",
+          "site_name": "Website Name"
+        },
+        "use_current_location": "Use Current Location",
+        "website": "Website"
+      },
+      "description": "Manage system settings",
+      "help_modal": {
+        "close": "Close",
+        "contact_support": "Contact Support",
+        "faq": "Frequently Asked Questions",
+        "keyboard_shortcuts": "Keyboard Shortcuts",
+        "sections": {
+          "appearance": {
+            "descriptions": {
+              "branding": "Admin Settings",
+              "color_scheme": "Admin Settings",
+              "font_size": "Admin Settings",
+              "high_contrast": "Admin Settings"
+            },
+            "fields": {
+              "branding": "Admin Settings",
+              "color_scheme": "Admin Settings",
+              "font_size": "Admin Settings",
+              "high_contrast": "Admin Settings"
+            },
+            "title": "Appearance Management"
+          },
+          "contact": {
+            "descriptions": {
+              "address": "Add",
+              "coordinates": "Admin Settings",
+              "directions": "Admin Settings",
+              "email": "Admin Settings",
+              "name": "Admin Settings",
+              "phone": "Admin Settings",
+              "services": "Admin Settings",
+              "website": "Admin Settings"
+            },
+            "fields": {
+              "address": "Add",
+              "coordinates": "Admin Settings",
+              "directions": "Admin Settings",
+              "email": "Admin Settings",
+              "name": "Admin Settings",
+              "phone": "Admin Settings",
+              "services": "Admin Settings",
+              "website": "Admin Settings"
+            },
+            "title": "Contact Management"
+          },
+          "logs": {
+            "descriptions": {
+              "date": "Admin Settings",
+              "download": "Admin Settings",
+              "log_level": "Admin Settings",
+              "source": "Admin Settings"
+            },
+            "fields": {
+              "date": "Admin Settings",
+              "download": "Admin Settings",
+              "log_level": "Admin Settings",
+              "source": "Admin Settings"
+            },
+            "title": "Log Management"
+          },
+          "system": {
+            "descriptions": {
+              "clear_cache": "Admin Settings",
+              "create_backup": "Admin Settings",
+              "export_settings": "Admin Settings",
+              "regenerate_qr": "Admin Settings"
+            },
+            "fields": {
+              "clear_cache": "Admin Settings",
+              "create_backup": "Admin Settings",
+              "export_settings": "Admin Settings",
+              "regenerate_qr": "Admin Settings"
+            },
+            "title": "System Management"
+          }
+        },
+        "tips": {
+          "items": {
+            "color_schemes": "Admin Settings",
+            "gps_coordinates": "Admin Settings",
+            "high_contrast": "Admin Settings",
+            "monitor_logs": "Admin Settings",
+            "regular_backups": "Admin Settings"
+          },
+          "title": "Tips"
+        },
+        "title": "Help and Guide",
+        "user_guide": "User Guide",
+        "warnings": {
+          "items": {
+            "backup_security": "Admin Settings",
+            "cache_performance": "Admin Settings",
+            "immediate_changes": "Admin Settings",
+            "qr_reprint": "Admin Settings"
+          },
+          "title": "Warnings"
+        }
+      },
+      "help_tips": "Help and Tips",
+      "import_export": {
+        "backup_data": "Backup Data",
+        "export": "Export",
+        "import": "Import",
+        "restore_data": "Restore Data",
+        "title": "Import/Export Data"
+      },
+      "import_modal": {
+        "file_label": "Select File",
+        "import": "Import",
+        "title": "Import Settings"
+      },
+      "logs_tab": {
+        "actions": {
+          "clear": "Clear",
+          "download": "Download",
+          "refresh": "Refresh"
+        },
+        "filters": {
+          "all_levels": "All Levels",
+          "all_sources": "All Sources"
+        },
+        "levels": {
+          "debug": "Debug",
+          "error": "Error",
+          "info": "Information",
+          "warning": "Warning"
+        },
+        "loading": "Loading...",
+        "sources": {
+          "admin": "Admin Settings",
+          "api": "Admin Settings",
+          "public": "Admin Settings",
+          "system": "Admin Settings"
+        },
+        "stats": {
+          "errors": "Error",
+          "info": "Admin Settings",
+          "total": "Admin Settings",
+          "warnings": "Admin Settings"
+        }
+      },
+      "messages": {
+        "appearance_save_success": "Save",
+        "backup_error": "Error",
+        "backup_success": "Success",
+        "cache_clear_error": "Error",
+        "cache_clear_network_error": "Error",
+        "cache_clear_success": "Success",
+        "confirm_clear_cache": "Are you sure you want to clear the cache?",
+        "confirm_clear_logs": "Are you sure you want to clear the logs?",
+        "contact_save_success": "Save",
+        "coordinates_required": "Coordinates are required",
+        "export_error": "Error",
+        "export_success": "Success",
+        "geolocation_not_supported": "Geolocation is not supported",
+        "import_error": "Error",
+        "import_network_error": "Error",
+        "import_success": "Success",
+        "location_error": "Error",
+        "location_success": "Success",
+        "logs_clear_error": "Error",
+        "logs_clear_network_error": "Error",
+        "logs_clear_success": "Success",
+        "logs_download_error": "Error",
+        "logs_download_success": "Success",
+        "logs_load_error": "Error",
+        "network_error": "Error",
+        "no_logs": "No logs available",
+        "qr_regenerate_error": "Error",
+        "qr_regenerate_network_error": "Error",
+        "qr_regenerate_success": "Success",
+        "save_error": "Save",
+        "select_file": "Please select a file"
+      },
+      "system_tab": {
+        "backup": {
+          "create": "Create Backup",
+          "full_backup": "Full Backup",
+          "full_backup_desc": "Create complete system backup",
+          "title": "Backup"
+        },
+        "clear_cache": "Clear Cache",
+        "database": "Database",
+        "maintenance": {
+          "clear_cache": "Clear Cache",
+          "export_settings": "Export Settings",
+          "import_settings": "Import Settings",
+          "regenerate_qr": "Regenerate QR Codes",
+          "title": "Maintenance"
+        },
+        "restore": "Restore",
+        "security": {
+          "change_password": "Change Password",
+          "password_requirements": "Password Requirements",
+          "title": "Security"
+        },
+        "storage": "Storage",
+        "system_info": {
+          "database": "Database",
+          "timezone": "Timezone",
+          "title": "System Information",
+          "uptime": "Uptime",
+          "version": "Version"
+        },
+        "title": "System Configuration",
+        "uptime": "Uptime",
+        "version": "Version"
+      },
+      "tabs": {
+        "appearance": "Appearance",
+        "contact": "Contact",
+        "contact_location": "Contact & Location",
+        "design_theme": "Design & Theme",
+        "system": "System",
+        "system_logs": "System Logs"
+      },
+      "title": "Settings Management"
+    },
+    "status_management": {
+      "title": "Update Status",
+      "update_button": "Update Status"
+    },
+    "setup": {
+      "color_scheme": {
+        "title": "Choose Color Scheme",
+        "description": "Select a color scheme that matches your facility"
+      }
+    },
+    "system_info": "System Information",
+    "system_online": "System Online",
+    "todays_hours": "Today's Hours"
+  },
+  "admin_setup_wizard": "Admin Setup Wizard",
+  "admin_wizard_description": "Welcome to the setup wizard",
+  "america_new_york": "America/New York",
+  "announcements": "Announcements",
+  "appointment_booking": "Appointment Booking",
+  "asia_bangkok": "Asia/Bangkok",
+  "available_slots": "Available Slots",
+  "back_on": "Back on",
+  "back_to_home": "Not specified",
+  "basic_info_description": "Not specified",
+  "basic_information": "Not specified",
+  "blood_test": "Blood Test",
+  "book_appointment": "Book Appointment",
+  "call_now": "Not specified",
+  "chat_with_us": "Chat with Us",
+  "check_current_status": "Not specified",
+  "close": "Close",
+  "closed": "Closed",
+  "closed_today": "Closed Today",
+  "closes_at": "Closes at",
+  "common": {
+    "activate": "Activate",
+    "active": "Active",
+    "deactivate": "Deactivate",
+    "edit": "Edit",
+    "inactive": "Inactive",
+    "minutes": "minutes"
+  },
+  "configuration_summary": "Not specified",
+  "confirm_skip_wizard": "Not specified",
+  "congress": "Congress",
+  "consultation": "Consultation",
+  "contact": "Contact",
+  "contact_description": "Not specified",
+  "contact_practice": "Not specified",
+  "contact_via": "Contact via",
+  "core_features": "Not specified",
+  "currently_closed": "Currently Closed",
+  "currently_open": "Currently Open",
+  "date_from": "Not specified",
+  "date_to": "Not specified",
+  "day_abbreviations": {
+    "friday": "Fri",
+    "monday": "Mon",
+    "saturday": "Sat",
+    "sunday": "Sun",
+    "thursday": "Thu",
+    "tuesday": "Tue",
+    "wednesday": "Wed"
+  },
+  "default_language": "Default Language",
+  "description": "Description",
+  "display_screens": "Not specified",
+  "div": "Section",
+  "download_qr": "Download QR",
+  "educational_content": "Educational Content",
+  "educational_leave": "Educational Leave",
+  "email": "Email",
+  "email_address": "Add",
+  "essential_feature": "Not specified",
+  "europe_berlin": "Europe/Berlin",
+  "extended_availability": "Not specified",
+  "facebook_page": "Facebook Page",
+  "features_and_settings": "Not specified",
+  "features_description": "Not specified",
+  "finish_setup": "Not specified",
+  "first_time": "Not specified",
+  "follow_for_updates": "Follow for Updates",
+  "follow_up": "Follow-up",
+  "follow_us": "Follow Us",
+  "friday": "Friday",
+  "generate_qr_codes": "Not specified",
+  "get_directions": "Not specified",
+  "google_business": "Google Business",
+  "half_day": "Not specified",
+  "health_tips": "Health Tips",
+  "home": "Not specified",
+  "hours_format_example": "Not specified",
+  "hours_format_help": "Not specified",
+  "hours_view_description": "Not specified",
+  "input": "Input",
+  "instagram_account": "Instagram",
+  "kiosk": {
+    "closed_today_big": "Closed today",
+    "congress_big": "Congress",
+    "education_big": "Educational Leave",
+    "educational_leave_note": "For better treatment",
+    "enhanced": {
+      "auto_refresh": "Auto Refresh",
+      "bangkok_timezone": "Bangkok Time",
+      "blood_tests_available": "Blood Tests Available",
+      "day_status": {
+        "today": "Today"
+      },
+      "medical_laboratory": "Medical Laboratory",
+      "opening_times": "Opening Times",
+      "professional_service": "Professional Service",
+      "scan_qr_portal": "Scan QR Code for Portal",
+      "services": {
+        "appointment_booking": "Appointment Booking",
+        "blood_collection": "Blood Collection",
+        "health_checkup": "Health Checkup",
+        "laboratory_analysis": "Laboratory Analysis",
+        "results_collection": "Results Collection"
+      },
+      "status_messages": {
+        "at_conference": "At Conference",
+        "currently_closed": "Close",
+        "currently_open": "Currently Open",
+        "in_training": "In Training",
+        "on_vacation": "On Vacation"
+      },
+      "system_online": "System Online",
+      "time_periods": {
+        "afternoon": "Afternoon",
+        "evening": "Evening",
+        "morning": "Morning",
+        "night": "Night"
+      },
+      "upcoming_availability": "Upcoming Availability"
+    },
+    "full_day_open": "Full day open",
+    "half_day_open": "Half day open",
+    "next_week": "Next week",
+    "notice": "Notice",
+    "open_and_available": "Open and available today",
+    "preview_title": "PREVIEW",
+    "scan_for_info": "Scan for more information →",
+    "see_notice": "See notice board",
+    "this_week_title": "THIS WEEK",
+    "today_title": "TODAY",
+    "todays_opening_hours": "Today's Opening Hours",
+    "vacation_big": "On Vacation",
+    "vacation_return": "Back:",
+    "we_are_here": "We are here for you!"
+  },
+  "kiosk_mode": "Not specified",
+  "kiosk_texts": {
+    "back_on_date": "Back on",
+    "back_soon": "Back soon",
+    "for_better_treatment": "For better treatment",
+    "information": "Information",
+    "please_note": "Please note our information",
+    "scan_for_info": "Scan for<br>more info"
+  },
+  "laboratory_updates": "Laboratory Updates",
+  "language": "Language",
+  "language_description": "Choose your preferred language",
+  "launch_description": "Not specified",
+  "legal": {
+    "privacy_policy": "Privacy Policy"
+  },
+  "like_and_follow": "Like and Follow",
+  "line_facebook_whatsapp": "Not specified",
+  "line_official": "LINE Official",
+  "medical_hours": "Not specified",
+  "mobile_description": "Not specified",
+  "mobile_friendly": "Not specified",
+  "mobile_optimized": "Not specified",
+  "mon_fri_8_5": "Not specified",
+  "monday": "Monday",
+  "month": "Month",
+  "months": {
+    "april": "April",
+    "august": "August",
+    "december": "December",
+    "february": "February",
+    "january": "January",
+    "july": "July",
+    "june": "June",
+    "march": "March",
+    "may": "May",
+    "november": "November",
+    "october": "October",
+    "september": "September"
+  },
+  "morning_only": "Not specified",
+  "multi_language": "Not specified",
+  "multi_language_support": "Not specified",
+  "multiple_languages": "Not specified",
+  "navigate": "Navigate",
+  "next": "Next",
+  "next_available": "Next Available",
+  "next_steps": "Not specified",
+  "no_appointments": "No appointments available",
+  "no_social_platforms": "Not specified",
+  "no_social_platforms_desc": "Not specified",
+  "not_set": "Not specified",
+  "of": "of",
+  "on_vacation": "On Vacation",
+  "online_appointments": "Not specified",
+  "open": "Open",
+  "opening_hours": "Opening Hours",
+  "opening_hours_description": "Not specified",
+  "opens_at": "Opens at",
+  "opens_on": "Opens on",
+  "optional_features": "Not specified",
+  "other": "Other",
+  "phone": "Phone",
+  "phone_number": "Not specified",
+  "practice_name": "Not specified",
+  "practice_name_placeholder": "Not specified",
+  "previous": "Previous",
+  "print_door_sign": "Not specified",
+  "print_qr": "Print QR",
+  "qr_code_access": "Not specified",
+  "qr_code_generation": "Not specified",
+  "qr_code_integration": "Not specified",
+  "quick_contact": "Quick Contact",
+  "quick_templates": "Not specified",
+  "ready_to_launch": "Not specified",
+  "real_time_info": "Not specified",
+  "real_time_updates": "Not specified",
+  "realtime_description": "Not specified",
+  "saturday": "Saturday",
+  "scan_qr": "Scan QR Code",
+  "scan_qr_description": "Not specified",
+  "scan_to_follow": "Scan to Follow",
+  "services": "Services",
+  "share": "Share",
+  "share_on": "Share on",
+  "share_with_staff": "Not specified",
+  "site_title": "Laboratory Pattaya",
+  "skip_wizard": "Not specified",
+  "social_media": "Social Media",
+  "social_media_integration": "Not specified",
+  "social_qr_codes": "Social QR Codes",
+  "span": "Span",
+  "special_note": "Not specified",
+  "standard_hours": "Not specified",
+  "status": "Status",
+  "status_changed": "Not specified",
+  "status_check_description": "Not specified",
+  "step": "Step",
+  "sunday": "Sunday",
+  "tablet": "Not specified",
+  "test_mobile_access": "Not specified",
+  "this_week": "Not specified",
+  "thursday": "Thursday",
+  "tiktok_videos": "TikTok Videos",
+  "timezone": "Timezone",
+  "today": "Today",
+  "todays_hours": "Not specified",
+  "tuesday": "Tuesday",
+  "ui_common": {
+    "access": "Access",
+    "additional_services": "Additional services available upon request.",
+    "address_label": "Address",
+    "available_now": "Available Now",
+    "bangkok_time": "Bangkok Time",
+    "barrier_free": "Barrier-free",
+    "contact_us": "Contact Us",
+    "currently_open_status": "Open",
+    "developed_by": "Developed by Ralle1976 | Legal Compliance active",
+    "exception": "Exception",
+    "global_error": "An error occurred. Please try again.",
+    "individual_consultation": "Contact us for individual consultation.",
+    "legal_links_later": "Legal links will be added later",
+    "loading": "Loading...",
+    "our_location": "Our Location in Pattaya",
+    "our_services": "Our Medical Services",
+    "parking": "Parking",
+    "parking_available": "Available",
+    "portal_online": "Portal Online",
+    "public_transport": "Public Transport",
+    "quick_social_contact": "Quick contact via social media:",
+    "todays_hours": "Today's Opening Hours",
+    "weekend": "Weekend"
+  },
+  "usage_statistics": "Not specified",
+  "view_on_maps": "View on Maps",
+  "view_opening_hours": "Not specified",
+  "visitor_analytics": "Not specified",
+  "watch_videos": "Watch Videos",
+  "wednesday": "Wednesday",
+  "week": "Week",
+  "weekdays": {
+    "friday": "Friday",
+    "monday": "Monday",
+    "saturday": "Saturday",
+    "sunday": "Sunday",
+    "thursday": "Thursday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday"
+  },
+  "weekly_schedule": "Not specified",
+  "welcome_to_qr_portal": "Not specified",
+  "whatsapp_business": "WhatsApp Business",
+  "wizard": "Wizard",
+  "wizard_complete": "Setup Complete",
+  "wizard_complete_description": "Setup has been completed successfully",
+  "wizard_completed": "Wizard Completed",
+  "wizard_started": "Wizard Started",
+  "wizard_welcome_description": "Let us help you set up your system",
+  "youtube_channel": "YouTube Channel",
+  "placeholder_current_password": "Enter your current password",
+  "placeholder_new_password": "Enter a new password",
+  "placeholder_confirm_password": "Confirm the new password",
+  "language_german": "German",
+  "language_thai": "Thai",
+  "language_english": "English",
+  "timezone_thailand": "Thailand",
+  "timezone_germany": "Germany",
+  "timezone_usa_east": "USA East",
+  "timezone_usa_west": "USA West",
+  "timezone_japan": "Japan",
+  "timezone_utc": "Universal Time"
+}

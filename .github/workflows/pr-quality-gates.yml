@@ -1,0 +1,572 @@
+name: Pull Request Quality Gates
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+    types: [opened, synchronize, reopened, ready_for_review]
+
+env:
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  pr-info:
+    name: PR Information & Validation
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    
+    outputs:
+      has-python-changes: ${{ steps.changes.outputs.python }}
+      has-docker-changes: ${{ steps.changes.outputs.docker }}
+      has-config-changes: ${{ steps.changes.outputs.config }}
+      has-security-changes: ${{ steps.changes.outputs.security }}
+      
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Detect changes
+        uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            python:
+              - '**/*.py'
+              - 'requirements*.txt'
+              - 'pyproject.toml'
+            docker:
+              - 'Dockerfile*'
+              - 'docker-compose*.yml'
+              - '.dockerignore'
+            config:
+              - 'config.yml'
+              - 'app/config.py'
+              - '.env*'
+            security:
+              - 'app/services/**'
+              - 'app/routes_admin.py'
+              - 'requirements*.txt'
+              - '.github/workflows/security*.yml'
+              
+      - name: PR Size Check
+        run: |
+          lines_changed=$(git diff --numstat ${{ github.event.pull_request.base.sha }}..HEAD | awk '{sum+=$1+$2} END {print sum}')
+          echo "Lines changed: $lines_changed"
+          
+          if [ "$lines_changed" -gt 1000 ]; then
+            echo "❌ PR is too large ($lines_changed lines). Consider breaking it into smaller PRs."
+            exit 1
+          elif [ "$lines_changed" -gt 500 ]; then
+            echo "⚠️ Large PR ($lines_changed lines). Please ensure thorough review."
+          else
+            echo "✅ PR size is reasonable ($lines_changed lines)"
+          fi
+          
+      - name: Check PR title format
+        run: |
+          title="${{ github.event.pull_request.title }}"
+          
+          # Check if title follows conventional commits
+          if echo "$title" | grep -E '^(feat|fix|docs|style|refactor|test|chore|security|perf|ci|build)(\(.+\))?: .+'; then
+            echo "✅ PR title follows conventional commits format"
+          else
+            echo "❌ PR title should follow conventional commits format (feat|fix|docs|style|refactor|test|chore|security|perf|ci|build): description"
+            exit 1
+          fi
+
+  code-quality:
+    name: Code Quality Checks
+    runs-on: ubuntu-latest
+    needs: pr-info
+    if: needs.pr-info.outputs.has-python-changes == 'true'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-quality-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-quality-
+            
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install flake8 black isort mypy pytest pytest-cov
+          pip install flake8-bandit flake8-bugbear flake8-secure-coding-standard
+          
+      - name: Run code quality checks
+        run: |
+          echo "## Code Quality Report" > quality-report.md
+          echo "Generated: $(date)" >> quality-report.md
+          echo "" >> quality-report.md
+          
+          # Black formatting check
+          echo "### Code Formatting (Black)" >> quality-report.md
+          if black --check app/; then
+            echo "✅ Code is properly formatted" >> quality-report.md
+          else
+            echo "❌ Code formatting issues found" >> quality-report.md
+            echo '```' >> quality-report.md
+            black --diff app/ >> quality-report.md 2>&1 || true
+            echo '```' >> quality-report.md
+          fi
+          
+          # Import sorting check
+          echo "" >> quality-report.md
+          echo "### Import Sorting (isort)" >> quality-report.md
+          if isort --check-only app/; then
+            echo "✅ Imports are properly sorted" >> quality-report.md
+          else
+            echo "❌ Import sorting issues found" >> quality-report.md
+          fi
+          
+          # Linting check
+          echo "" >> quality-report.md
+          echo "### Code Linting (Flake8)" >> quality-report.md
+          flake8 app/ --max-line-length=88 --extend-ignore=E203,W503 \
+            --output-file=flake8-report.txt --tee || true
+            
+          if [ -s flake8-report.txt ]; then
+            echo "❌ Linting issues found:" >> quality-report.md
+            echo '```' >> quality-report.md
+            cat flake8-report.txt >> quality-report.md
+            echo '```' >> quality-report.md
+          else
+            echo "✅ No linting issues found" >> quality-report.md
+          fi
+          
+          # Type checking
+          echo "" >> quality-report.md
+          echo "### Type Checking (MyPy)" >> quality-report.md
+          mypy app/ --ignore-missing-imports --txt-report mypy-report.txt || true
+          
+          if [ -s mypy-report.txt ]; then
+            echo "⚠️ Type checking findings:" >> quality-report.md
+            echo '```' >> quality-report.md
+            cat mypy-report.txt >> quality-report.md
+            echo '```' >> quality-report.md
+          else
+            echo "✅ No type checking issues" >> quality-report.md
+          fi
+          
+      - name: Upload quality report
+        uses: actions/upload-artifact@v3
+        with:
+          name: code-quality-report-${{ github.sha }}
+          path: |
+            quality-report.md
+            flake8-report.txt
+            mypy-report.txt
+
+  security-review:
+    name: Security Review
+    runs-on: ubuntu-latest
+    needs: pr-info
+    if: needs.pr-info.outputs.has-security-changes == 'true'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          
+      - name: Install security tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install bandit safety pip-audit
+          pip install -r requirements.txt
+          
+      - name: Enhanced security scan
+        run: |
+          echo "## PR Security Review" > security-review.md
+          echo "Generated: $(date)" >> security-review.md
+          echo "" >> security-review.md
+          
+          # Run Bandit with strict settings for PR
+          echo "### Static Security Analysis" >> security-review.md
+          bandit -r app/ -ll -f json -o pr-bandit-report.json || true
+          
+          if [ -s pr-bandit-report.json ]; then
+            issues=$(jq '.results | length' pr-bandit-report.json)
+            echo "❌ $issues security issues found in code" >> security-review.md
+            echo "Review required before merge!" >> security-review.md
+          else
+            echo "✅ No static security issues detected" >> security-review.md
+          fi
+          
+          # Check dependencies
+          echo "" >> security-review.md
+          echo "### Dependency Security" >> security-review.md
+          safety check --json --output pr-safety-report.json || true
+          
+          if [ -s pr-safety-report.json ]; then
+            echo "❌ Vulnerable dependencies detected" >> security-review.md
+            echo "Security update required!" >> security-review.md
+          else
+            echo "✅ No known vulnerable dependencies" >> security-review.md
+          fi
+          
+      - name: Check for sensitive files
+        run: |
+          echo "" >> security-review.md
+          echo "### Sensitive Files Check" >> security-review.md
+          
+          # Look for potential secrets in changed files
+          git diff --name-only ${{ github.event.pull_request.base.sha }}..HEAD | while read file; do
+            if [ -f "$file" ]; then
+              # Check for common secret patterns
+              if grep -E "(password|secret|key|token).*=" "$file" 2>/dev/null; then
+                echo "⚠️ Potential secret in $file - manual review required" >> security-review.md
+              fi
+            fi
+          done
+          
+          # Check if any database files are being committed
+          if git diff --name-only ${{ github.event.pull_request.base.sha }}..HEAD | grep -E "\.(db|sqlite|sql)$"; then
+            echo "❌ Database files detected in PR - remove before merge!" >> security-review.md
+          fi
+          
+      - name: Upload security review
+        uses: actions/upload-artifact@v3
+        with:
+          name: pr-security-review-${{ github.sha }}
+          path: |
+            security-review.md
+            pr-bandit-report.json
+            pr-safety-report.json
+
+  test-coverage:
+    name: Test Coverage Analysis
+    runs-on: ubuntu-latest
+    needs: pr-info
+    if: needs.pr-info.outputs.has-python-changes == 'true'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov coverage
+          
+      - name: Run tests with coverage
+        env:
+          FLASK_ENV: testing
+          SECRET_KEY: test-secret-key-for-coverage
+          ADMIN_USERNAME: testuser
+          ADMIN_PASSWORD: testpass123
+        run: |
+          pytest --cov=app --cov-report=json --cov-report=html --cov-report=xml -v
+          
+      - name: Coverage analysis
+        run: |
+          # Get coverage percentage
+          COVERAGE=$(coverage report --format=total)
+          echo "Current coverage: $COVERAGE%"
+          
+          # Check if coverage is acceptable
+          if [ "$COVERAGE" -lt 70 ]; then
+            echo "❌ Coverage is below 70% ($COVERAGE%). Please add more tests."
+            exit 1
+          elif [ "$COVERAGE" -lt 80 ]; then
+            echo "⚠️ Coverage could be improved ($COVERAGE%). Consider adding more tests."
+          else
+            echo "✅ Good test coverage ($COVERAGE%)"
+          fi
+          
+          # Store coverage for PR comment
+          echo "COVERAGE_PERCENT=$COVERAGE" >> $GITHUB_ENV
+          
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-reports-${{ github.sha }}
+          path: |
+            htmlcov/
+            coverage.xml
+            coverage.json
+
+  docker-validation:
+    name: Docker Build & Security
+    runs-on: ubuntu-latest
+    needs: pr-info
+    if: needs.pr-info.outputs.has-docker-changes == 'true'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        
+      - name: Build test image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          tags: qr-info-portal:pr-test
+          outputs: type=docker,dest=/tmp/pr-image.tar
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          
+      - name: Test Docker image
+        run: |
+          docker load -i /tmp/pr-image.tar
+          
+          # Test container startup
+          docker run -d --name pr-test-container \
+            -e FLASK_ENV=testing \
+            -e SECRET_KEY=test-key \
+            -e ADMIN_USERNAME=test \
+            -e ADMIN_PASSWORD=test123 \
+            -p 5000:5000 \
+            qr-info-portal:pr-test
+            
+          sleep 10
+          
+          # Health check
+          curl -f http://localhost:5000/healthz || exit 1
+          
+          # Check critical endpoints
+          curl -f http://localhost:5000/ | grep -q "QR Info Portal" || exit 1
+          
+          docker stop pr-test-container
+          docker rm pr-test-container
+          
+      - name: Run Trivy scan on PR image
+        uses: aquasecurity/trivy-action@master
+        with:
+          input: '/tmp/pr-image.tar'
+          format: 'table'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'
+
+  performance-check:
+    name: Performance Regression Test
+    runs-on: ubuntu-latest
+    needs: pr-info
+    if: needs.pr-info.outputs.has-python-changes == 'true'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install locust requests
+          
+      - name: Start application
+        env:
+          FLASK_ENV: testing
+          SECRET_KEY: perf-test-key
+          ADMIN_USERNAME: perftest
+          ADMIN_PASSWORD: perftest123
+        run: |
+          python run.py &
+          sleep 10
+          curl -f http://localhost:5000/healthz
+          
+      - name: Run performance tests
+        run: |
+          # Simple performance test
+          python -c "
+import requests
+import time
+
+def test_endpoint_performance(url, max_time=2.0):
+    start_time = time.time()
+    response = requests.get(url)
+    end_time = time.time()
+    
+    duration = end_time - start_time
+    print(f'Endpoint {url}: {duration:.3f}s (max: {max_time}s)')
+    
+    if duration > max_time:
+        print(f'❌ Performance regression: {url} took {duration:.3f}s')
+        return False
+    return True
+
+# Test critical endpoints
+base_url = 'http://localhost:5000'
+endpoints = [
+    '/',
+    '/week', 
+    '/month',
+    '/healthz',
+    '/qr.png',
+    '/kiosk/single'
+]
+
+all_passed = True
+for endpoint in endpoints:
+    if not test_endpoint_performance(base_url + endpoint):
+        all_passed = False
+
+if not all_passed:
+    exit(1)
+else:
+    print('✅ All performance tests passed')
+"
+
+  configuration-validation:
+    name: Configuration Validation
+    runs-on: ubuntu-latest
+    needs: pr-info
+    if: needs.pr-info.outputs.has-config-changes == 'true'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyyaml jsonschema
+          
+      - name: Validate configuration
+        run: |
+          python -c "
+import yaml
+import json
+import sys
+
+# Validate config.yml structure
+try:
+    with open('config.yml', 'r', encoding='utf-8') as f:
+        config = yaml.safe_load(f)
+    
+    # Check required sections
+    required_sections = ['site', 'location', 'contact', 'status', 'hours']
+    for section in required_sections:
+        if section not in config:
+            print(f'❌ Missing required config section: {section}')
+            sys.exit(1)
+    
+    # Validate coordinates
+    if 'latitude' in config.get('location', {}):
+        lat = config['location']['latitude']
+        if not isinstance(lat, (int, float)) or not -90 <= lat <= 90:
+            print(f'❌ Invalid latitude: {lat}')
+            sys.exit(1)
+            
+    if 'longitude' in config.get('location', {}):
+        lng = config['location']['longitude'] 
+        if not isinstance(lng, (int, float)) or not -180 <= lng <= 180:
+            print(f'❌ Invalid longitude: {lng}')
+            sys.exit(1)
+    
+    # Check hours format
+    if 'weekly' in config.get('hours', {}):
+        for day, hours_list in config['hours']['weekly'].items():
+            for hours in hours_list:
+                if not isinstance(hours, str) or '-' not in hours:
+                    print(f'❌ Invalid hours format for {day}: {hours}')
+                    sys.exit(1)
+    
+    print('✅ Configuration validation passed')
+    
+except Exception as e:
+    print(f'❌ Configuration validation failed: {e}')
+    sys.exit(1)
+"
+
+  comment-pr:
+    name: Comment on PR
+    runs-on: ubuntu-latest
+    needs: [code-quality, security-review, test-coverage, performance-check]
+    if: always() && github.event.pull_request.draft == false
+    
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v3
+        
+      - name: Create PR comment
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            
+            let comment = '## 🤖 Automated PR Review\n\n';
+            
+            // Add results from different checks
+            try {
+              // Code quality results
+              if (fs.existsSync('code-quality-report-${{ github.sha }}/quality-report.md')) {
+                const qualityReport = fs.readFileSync('code-quality-report-${{ github.sha }}/quality-report.md', 'utf8');
+                comment += '<details>\n<summary>📊 Code Quality Report</summary>\n\n' + qualityReport + '\n</details>\n\n';
+              }
+              
+              // Security review results  
+              if (fs.existsSync('pr-security-review-${{ github.sha }}/security-review.md')) {
+                const securityReport = fs.readFileSync('pr-security-review-${{ github.sha }}/security-review.md', 'utf8');
+                comment += '<details>\n<summary>🔒 Security Review</summary>\n\n' + securityReport + '\n</details>\n\n';
+              }
+              
+            } catch (error) {
+              console.log('Error reading reports:', error);
+            }
+            
+            // Job status summary
+            comment += '### Job Status Summary\n';
+            comment += '- Code Quality: ${{ needs.code-quality.result }}\n';
+            comment += '- Security Review: ${{ needs.security-review.result }}\n';
+            comment += '- Test Coverage: ${{ needs.test-coverage.result }}\n';
+            comment += '- Performance Check: ${{ needs.performance-check.result }}\n\n';
+            
+            // Add merge recommendations
+            const allSuccess = [
+              '${{ needs.code-quality.result }}',
+              '${{ needs.security-review.result }}', 
+              '${{ needs.test-coverage.result }}',
+              '${{ needs.performance-check.result }}'
+            ].every(result => result === 'success' || result === 'skipped');
+            
+            if (allSuccess) {
+              comment += '### ✅ Ready for Merge\nAll quality gates passed. This PR is ready for review and merge.\n';
+            } else {
+              comment += '### ❌ Issues Detected\nPlease address the issues above before merging.\n';
+            }
+            
+            comment += '\n---\n*This comment was generated automatically by GitHub Actions.*';
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });

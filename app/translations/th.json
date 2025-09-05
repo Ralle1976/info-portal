@@ -1,0 +1,1103 @@
+{
+  "FLASK_ENV": "สภาพแวดล้อม Flask",
+  "address": "ที่อยู่",
+  "address_placeholder": "เพิ่ม",
+  "admin": {
+    "announcements_management": {
+      "actions": {
+        "activate": "เปิดใช้งาน",
+        "deactivate": "ปิดใช้งาน",
+        "delete": "ลบ",
+        "edit": "แก้ไข",
+        "preview": "ดูตัวอย่าง"
+      },
+      "add_new": "เพิ่มประกาศใหม่",
+      "create": {
+        "form": "แบบฟอร์มสร้างประกาศ",
+        "title": "สร้างประกาศ"
+      },
+      "current_announcements": "ประกาศปัจจุบัน",
+      "delete": {
+        "confirm": "คุณแน่ใจหรือไม่ที่จะลบประกาศนี้?",
+        "title": "ลบประกาศ"
+      },
+      "edit": {
+        "form": "แบบฟอร์มแก้ไขประกาศ",
+        "title": "แก้ไขประกาศ"
+      },
+      "filters": {
+        "active": "ใช้งาน",
+        "all": "ทั้งหมด",
+        "all_languages": "ทุกภาษา",
+        "all_status": "ทุกสถานะ",
+        "by_date": "ตามวันที่",
+        "english": "อังกฤษ",
+        "german": "เยอรมัน",
+        "inactive": "ไม่ใช้งาน",
+        "thai": "ไทย",
+        "title": "ตัวกรอง"
+      },
+      "form": {
+        "content": "เนื้อหา",
+        "end_date": "วันที่สิ้นสุด",
+        "language": "ภาษา",
+        "priority": "ความสำคัญ",
+        "start_date": "วันที่เริ่ม",
+        "status": "สถานะ",
+        "title": "หัวข้อ"
+      },
+      "list": {
+        "active": "ใช้งาน",
+        "created": "สร้างเมื่อ",
+        "from": "จาก",
+        "inactive": "ไม่ใช้งาน",
+        "until": "ถึง"
+      },
+      "messages": {
+        "delete_confirm": "คุณแน่ใจหรือไม่ที่จะลบประกาศ '{title}'?",
+        "delete_error": "เกิดข้อผิดพลาดในการลบ:",
+        "delete_network_error": "เกิดข้อผิดพลาดเครือข่ายในการลบ",
+        "delete_success": "ลบประกาศสำเร็จ!",
+        "load_error": "เกิดข้อผิดพลาดในการโหลดประกาศ",
+        "network_error": "เกิดข้อผิดพลาดเครือข่าย",
+        "save_error": "เกิดข้อผิดพลาดในการบันทึก:",
+        "save_success_create": "สร้างประกาศสำเร็จ!",
+        "save_success_update": "อัปเดตประกาศสำเร็จ!",
+        "toggle_activated": "เปิดใช้งาน",
+        "toggle_deactivated": "ปิดใช้งาน",
+        "toggle_error": "เกิดข้อผิดพลาดในการเปลี่ยนสถานะ:",
+        "toggle_network_error": "เกิดข้อผิดพลาดเครือข่ายในการเปลี่ยนสถานะ",
+        "toggle_success": "เปลี่ยนสถานะสำเร็จเป็น {status}"
+      },
+      "modal": {
+        "add": "เพิ่ม",
+        "category_label": "หมวดหมู่",
+        "category_options": {
+          "emergency": "เฉพาะกิจ",
+          "general": "ทั่วไป",
+          "holiday": "วันหยุด",
+          "maintenance": "บำรุงรักษา",
+          "schedule": "ตารางเวลา",
+          "service": "บริการ"
+        },
+        "create": {
+          "title": "สร้างประกาศใหม่"
+        },
+        "delete": {
+          "title": "ยืนยันการลบ"
+        },
+        "edit": {
+          "title": "แก้ไขประกาศ"
+        },
+        "language_label": "ภาษา",
+        "message_label": "ข้อความ",
+        "message_placeholder": "ใส่เนื้อหาประกาศ...",
+        "priority_label": "ระดับความสำคัญ",
+        "priority_options": {
+          "high": "สูง",
+          "low": "ต่ำ",
+          "normal": "ปกติ",
+          "urgent": "เร่งด่วน"
+        },
+        "publish_from": "เผยแพร่จาก",
+        "publish_immediately": "เผยแพร่ทันที",
+        "publish_until": "เผยแพร่จนถึง",
+        "save": "บันทึก",
+        "title_add": "เพิ่มประกาศใหม่",
+        "title_edit": "แก้ไขประกาศ",
+        "title_label": "หัวข้อ",
+        "title_placeholder": "ใส่หัวข้อประกาศ..."
+      },
+      "no_announcements": {
+        "create_first": "สร้างประกาศแรก",
+        "message": "ยังไม่มีประกาศที่สร้างไว้",
+        "title": "ไม่มีประกาศ"
+      },
+      "preview_modal": {
+        "close": "ปิด",
+        "title": "ตัวอย่างประกาศ"
+      },
+      "search": {
+        "placeholder": "ค้นหาประกาศ...",
+        "results": "ผลการค้นหา"
+      },
+      "search_placeholder": "ค้นหาประกาศ...",
+      "status": {
+        "archived": "เก็บถาวร",
+        "draft": "แบบร่าง",
+        "published": "เผยแพร่"
+      },
+      "subtitle": "จัดการประกาศและข่าวสารสำหรับผู้เยี่ยมชม",
+      "title": "การจัดการประกาศ",
+      "validation": {
+        "content_required": "กรุณาระบุเนื้อหา",
+        "end_after_start": "วันที่สิ้นสุดต้องหลังจากวันที่เริ่ม",
+        "title_required": "กรุณาระบุหัวข้อ"
+      }
+    },
+    "availability_management": {
+      "add_slot": "เพิ่มช่วงเวลา",
+      "bulk_operations": {
+        "apply_template": "ใช้แม่แบบ",
+        "copy_selected": "คัดลอกที่เลือก",
+        "delete_selected": "ลบที่เลือก",
+        "select_all": "เลือกทั้งหมด",
+        "title": "การดำเนินการเป็นกลุ่ม"
+      },
+      "calendar": "ปฏิทิน",
+      "calendar_view": {
+        "month": "เดือน",
+        "navigation": "นำทาง",
+        "title": "มุมมองปฏิทิน",
+        "today": "วันนี้",
+        "week": "สัปดาห์"
+      },
+      "clear_data": {
+        "clear_all": "ล้างทั้งหมด",
+        "clear_past": "ล้างข้อมูลที่ผ่านไปแล้ว",
+        "title": "ล้างข้อมูล"
+      },
+      "copy_timerange": {
+        "copy": "คัดลอก",
+        "title": "คัดลอกช่วงเวลา"
+      },
+      "day_detail_modal": {
+        "add_slot": "เพิ่มช่วงเวลา",
+        "capacity_text": "จำนวน:",
+        "close": "ปิด",
+        "no_slots": "ไม่มีช่วงเวลาสำหรับวันนี้",
+        "title": "รายละเอียดวัน"
+      },
+      "day_headers": {
+        "friday": "ศุกร์",
+        "monday": "จันทร์",
+        "saturday": "เสาร์",
+        "sunday": "อาทิตย์",
+        "thursday": "พฤหัส",
+        "tuesday": "อังคาร",
+        "wednesday": "พุธ"
+      },
+      "list": "รายการ",
+      "list_view": {
+        "add": "เพิ่ม",
+        "create_first": "สร้างช่วงเวลาแรก",
+        "create_message": "สร้างช่วงเวลาสำหรับเดือนนี้",
+        "filters": "ตัวกรอง",
+        "no_availability": "ไม่มีช่วงเวลาว่าง",
+        "search": "ค้นหา",
+        "sort": "เรียงลำดับ",
+        "title": "มุมมองรายการ"
+      },
+      "messages": {
+        "clear_all_confirm": "คุณต้องการลบช่วงเวลาทั้งหมดหรือไม่?",
+        "clear_all_error": "เกิดข้อผิดพลาดในการลบ:",
+        "clear_all_final_confirm": "คุณแน่ใจหรือไม่? ข้อมูลทั้งหมดจะหายไป!",
+        "clear_all_network_error": "เกิดข้อผิดพลาดเครือข่ายในการลบ",
+        "clear_all_success": "ลบช่วงเวลาทั้งหมด {count} รายการสำเร็จ",
+        "clear_past_confirm": "คุณต้องการลบช่วงเวลาที่ผ่านไปแล้วทั้งหมดหรือไม่?",
+        "clear_past_error": "เกิดข้อผิดพลาดในการลบ:",
+        "clear_past_network_error": "เกิดข้อผิดพลาดเครือข่ายในการลบ",
+        "clear_past_success": "ลบช่วงเวลาที่ผ่านไป {count} รายการสำเร็จ",
+        "copy_confirm": "คุณต้องการคัดลอกช่วงเวลาจาก {from} ถึง {to} ไปยังเดือนปัจจุบันหรือไม่?",
+        "copy_date_order_error": "วันที่ 'ถึง' ต้องหลังจากวันที่ 'จาก'",
+        "copy_dates_error": "กรุณาเลือกวันที่ทั้งสอง",
+        "copy_error": "เกิดข้อผิดพลาดในการคัดลอก:",
+        "copy_network_error": "เกิดข้อผิดพลาดเครือข่ายในการคัดลอก",
+        "copy_success": "คัดลอกช่วงเวลาสำเร็จ! สร้าง {count} ช่วงเวลา",
+        "delete_confirm": "คุณแน่ใจหรือไม่ที่จะลบช่วงเวลา {time} วันที่ {date}?",
+        "delete_error": "เกิดข้อผิดพลาดในการลบ:",
+        "delete_network_error": "เกิดข้อผิดพลาดเครือข่ายในการลบ",
+        "delete_success": "ลบช่วงเวลาสำเร็จ!",
+        "error": "เกิดข้อผิดพลาด",
+        "load_error": "เกิดข้อผิดพลาดในการโหลด",
+        "loading": "กำลังโหลด...",
+        "network_error": "เกิดข้อผิดพลาดเครือข่าย",
+        "no_availability": "ไม่มีช่วงเวลาว่าง",
+        "save_error": "เกิดข้อผิดพลาดในการบันทึก:",
+        "save_success_create": "สร้างช่วงเวลาสำเร็จ!",
+        "save_success_update": "อัปเดตช่วงเวลาสำเร็จ!",
+        "success": "บันทึกสำเร็จ",
+        "template_confirm": "คุณต้องการใช้แม่แบบ '{template}' สำหรับเดือนปัจจุบันหรือไม่?",
+        "template_error": "เกิดข้อผิดพลาดในการใช้แม่แบบ:",
+        "template_network_error": "เกิดข้อผิดพลาดเครือข่ายในการใช้แม่แบบ",
+        "template_select_error": "กรุณาเลือกแม่แบบ",
+        "template_success": "ใช้แม่แบบสำเร็จ! สร้าง {count} ช่วงเวลา",
+        "time_validation": "เวลาสิ้นสุดต้องหลังจากเวลาเริ่มต้น"
+      },
+      "month_names": [
+        "มกราคม",
+        "กุมภาพันธ์",
+        "มีนาคม",
+        "เมษายน",
+        "พฤษภาคม",
+        "มิถุนายน",
+        "กรกฎาคม",
+        "สิงหาคม",
+        "กันยายน",
+        "ตุลาคม",
+        "พฤศจิกายน",
+        "ธันวาคม"
+      ],
+      "slot_modal": {
+        "active_label": "เปิดใช้งาน",
+        "cancel": "ยกเลิก",
+        "capacity_help": "จำนวนคนสูงสุดที่รับได้",
+        "capacity_label": "จำนวน",
+        "date_label": "วันที่",
+        "end_label": "เวลาสิ้นสุด",
+        "note_label": "หมายเหตุ",
+        "note_placeholder": "หมายเหตุเพิ่มเติม...",
+        "recurring_label": "ทำซ้ำ",
+        "recurring_options": {
+          "biweekly": "ทุก 2 สัปดาห์",
+          "monthly": "รายเดือน",
+          "type_label": "ประเภทการทำซ้ำ",
+          "until_label": "ทำซ้ำจนถึง",
+          "weekly": "รายสัปดาห์"
+        },
+        "save": "บันทึก",
+        "start_label": "เวลาเริ่มต้น",
+        "title_add": "เพิ่มช่วงเวลา",
+        "title_edit": "แก้ไขช่วงเวลา",
+        "type_label": "ประเภท",
+        "type_options": {
+          "blood_draw": "เจาะเลือด",
+          "consultation": "ปรึกษา",
+          "follow_up": "ติดตามผล",
+          "general": "ทั่วไป"
+        }
+      },
+      "subtitle": "จัดการช่วงเวลาว่างสำหรับการจองคิว",
+      "tabs": {
+        "bulk": "จัดการเป็นกลุ่ม",
+        "calendar": "ปฏิทิน",
+        "list": "รายการ",
+        "templates": "แม่แบบ"
+      },
+      "templates": {
+        "apply": "ใช้แม่แบบ",
+        "create": "สร้างแม่แบบ",
+        "manage": "จัดการแม่แบบ",
+        "title": "แม่แบบ"
+      },
+      "time_slot_modal": {
+        "available": "ว่าง",
+        "capacity": "จำนวน",
+        "date": "วันที่",
+        "end_time": "เวลาสิ้นสุด",
+        "notes": "หมายเหตุ",
+        "start_time": "เวลาเริ่มต้น",
+        "title": "ช่วงเวลา"
+      },
+      "title": "การจัดการความพร้อมใช้งาน",
+      "view_mode": "โหมดการแสดงผล",
+      "weekly_template": {
+        "apply": "ใช้แม่แบบ",
+        "compact": "กะทัดรัด",
+        "extended": "ขยายเวลา",
+        "select_placeholder": "เลือกแม่แบบ",
+        "standard": "มาตรฐาน",
+        "title": "แม่แบบรายสัปดาห์"
+      }
+    },
+    "bangkok_time": "เวลากรุงเทพฯ",
+    "bangkok_time_label": "เวลากรุงเทพฯ",
+    "change_status": "เปลี่ยนสถานะ",
+    "closed": "ปิด",
+    "common": {
+      "back": "กลับ",
+      "cancel": "ยกเลิก",
+      "close": "ปิด",
+      "confirm": "ยืนยัน",
+      "create": "สร้าง",
+      "delete": "ลบ",
+      "edit": "แก้ไข",
+      "error": "ข้อผิดพลาด",
+      "info": "ข้อมูล",
+      "loading": "กำลังโหลด...",
+      "next": "ถัดไป",
+      "previous": "ก่อนหน้า",
+      "save": "บันทึก",
+      "success": "สำเร็จ",
+      "update": "อัปเดต",
+      "warning": "คำเตือน"
+    },
+    "current_announcements": "ประกาศปัจจุบัน",
+    "current_status": "สถานะปัจจุบัน",
+    "dashboard": {
+      "title": "แดชบอร์ดผู้ดูแล"
+    },
+    "export_data": "ส่งออกข้อมูล",
+    "generate_qr": "สร้าง QR Code",
+    "hours_management": {
+      "current_week": "สัปดาห์ปัจจุบัน",
+      "current_week_days": [
+        "วันจันทร์",
+        "วันอังคาร",
+        "วันพุธ",
+        "วันพฤหัสบดี",
+        "วันศุกร์",
+        "วันเสาร์",
+        "วันอาทิตย์"
+      ],
+      "exception_modal": {
+        "add": "เพิ่ม",
+        "cancel": "ยกเลิก",
+        "closed_all_day": "ปิดทั้งวัน",
+        "date_label": "วันที่",
+        "note_label": "หมายเหตุ (ไม่บังคับ)",
+        "note_placeholder": "เช่น วันหยุด, ฝึกอบรม ฯลฯ",
+        "opening_hours": "เวลาเปิด-ปิด",
+        "title": "เพิ่มข้อยกเว้น",
+        "to": "ถึง"
+      },
+      "exceptions": {
+        "add": "เพิ่มข้อยกเว้น",
+        "closed": "ปิด",
+        "delete": "ลบข้อยกเว้น",
+        "edit": "แก้ไขข้อยกเว้น",
+        "no_exceptions": "ไม่มีข้อยกเว้น",
+        "subtitle": "เวลาเปิด-ปิดพิเศษสำหรับวันที่กำหนด",
+        "title": "ข้อยกเว้น"
+      },
+      "form": {
+        "break_end": "เวลาพักสิ้นสุด",
+        "break_start": "เวลาพักเริ่ม",
+        "closed_all_day": "ปิดทั้งวัน",
+        "end_time": "เวลาปิด",
+        "start_time": "เวลาเปิด"
+      },
+      "messages": {
+        "date_required": "กรุณาเลือกวันที่",
+        "exception_add_error": "เกิดข้อผิดพลาดในการเพิ่มข้อยกเว้น",
+        "exception_add_network_error": "ข้อผิดพลาดเครือข่ายในการเพิ่มข้อยกเว้น",
+        "exception_add_success": "เพิ่มข้อยกเว้นเรียบร้อยแล้ว",
+        "exception_delete_confirm": "คุณต้องการลบข้อยกเว้นสำหรับ {date} หรือไม่?",
+        "exception_delete_error": "เกิดข้อผิดพลาดในการลบข้อยกเว้น",
+        "exception_delete_network_error": "ข้อผิดพลาดเครือข่ายในการลบข้อยกเว้น",
+        "exception_delete_success": "ลบข้อยกเว้นเรียบร้อยแล้ว",
+        "hours_required": "กรุณาระบุเวลาเปิด-ปิด หรือเลือก \"ปิดทั้งวัน\"",
+        "network_error": "ข้อผิดพลาดเครือข่าย กรุณาลองอีกครั้ง",
+        "reset_confirm": "คุณต้องการรีเซ็ตเวลาเปิด-ปิดทั้งหมดเป็นค่าเริ่มต้นหรือไม่?",
+        "save_error": "เกิดข้อผิดพลาดในการบันทึกเวลาเปิด-ปิด",
+        "save_success": "บันทึกเวลาเปิด-ปิดเรียบร้อยแล้ว"
+      },
+      "modal": {
+        "closed": "ปิดทำการ",
+        "custom_hours": "กำหนดเวลาเอง",
+        "date": "วันที่",
+        "reason": "เหตุผล",
+        "title": "จัดการเวลาทำการ"
+      },
+      "regular": {
+        "friday": "วันศุกร์",
+        "monday": "วันจันทร์",
+        "saturday": "วันเสาร์",
+        "sunday": "วันอาทิตย์",
+        "thursday": "วันพฤหัสบดี",
+        "title": "เวลาปกติ",
+        "tuesday": "วันอังคาร",
+        "wednesday": "วันพุธ"
+      },
+      "regular_hours": {
+        "add_timeslot": "เพิ่มช่วงเวลา",
+        "closed": "ปิด",
+        "friday": "ศุกร์",
+        "monday": "จันทร์",
+        "reset": "รีเซ็ต",
+        "saturday": "เสาร์",
+        "save": "บันทึก",
+        "subtitle": "กำหนดเวลาเปิด-ปิดมาตรฐานสำหรับแต่ละวัน",
+        "sunday": "อาทิตย์",
+        "thursday": "พฤหัสบดี",
+        "title": "เวลาเปิด-ปิดปกติ",
+        "to": "ถึง",
+        "tuesday": "อังคาร",
+        "wednesday": "พุธ"
+      },
+      "subtitle": "จัดการเวลาเปิด-ปิดปกติและข้อยกเว้น",
+      "title": "การจัดการเวลาทำการ",
+      "validation": {
+        "break_within_hours": "เวลาพักต้องอยู่ในช่วงเวลาทำการ",
+        "end_after_start": "เวลาปิดต้องหลังจากเวลาเปิด",
+        "time_required": "กรุณาระบุเวลา"
+      }
+    },
+    "language_switcher": {
+      "current_language": "ภาษาปัจจุบัน"
+    },
+    "logout": "ออกจากระบบ",
+    "navigation": {
+      "announcements": "ประกาศ",
+      "availability": "ความพร้อมใช้งาน",
+      "change_password": "เปลี่ยนรหัsผ่าน",
+      "dashboard": "แดชบอร์ด",
+      "legal_compliance": "การปฏิบัติตามกฎหมาย",
+      "opening_hours": "เวลาเปิด-ปิด",
+      "settings": "การตั้งค่า",
+      "status": "สถานะ"
+    },
+    "open_portal": "เปิดพอร์ทัล",
+    "password_change": {
+      "confirm_password": "ยืนยันรหัสผ่าน",
+      "confirm_password_placeholder": "ยืนยันรหัสผ่านใหม่",
+      "current_password": "รหัสผ่านปัจจุบัน",
+      "match": {
+        "invalid": "รหัสผ่านไม่ตรงกัน",
+        "valid": "รหัสผ่านตรงกัน"
+      },
+      "new_password": "รหัสผ่านใหม่",
+      "requirements": {
+        "lowercase": "ตัวอักษรพิมพ์เล็ก 1 ตัว",
+        "min_length": "อย่างน้อย 8 ตัวอักษร",
+        "number": "ตัวเลข 1 ตัว",
+        "special": "อักขระพิเศษ 1 ตัว",
+        "uppercase": "ตัวอักษรพิมพ์ใหญ่ 1 ตัว"
+      },
+      "security_notice": "ข้อควรจำ: ใช้รหัสผ่านที่แข็งแรง",
+      "subtitle": "เปลี่ยนรหัสผ่านผู้ดูแลระบบของคุณ",
+      "title": "เปลี่ยนรหัสผ่าน"
+    },
+    "portal_management": "การจัดการพอร์ทัล",
+    "portal_open": "เปิดพอร์ทัล",
+    "quick_actions": "การดำเนินการด่วน",
+    "refresh_data": "รีเฟรชข้อมูล",
+    "restart_server": "รีสตาร์ทเซิร์ฟเวอร์",
+    "rollback_changes": "ยกเลิกการเปลี่ยนแปลง",
+    "settings_management": {
+      "actions": {
+        "cancel": "ยกเลิก",
+        "reset": "รีเซ็ต",
+        "save": "บันทึก"
+      },
+      "appearance_tab": {
+        "branding": {
+          "favicon_url": "ลิงก์ไฟคอน",
+          "logo_help": "คำแนะนำโลโก้",
+          "logo_url": "ลิงก์โลโก้",
+          "preview": "ดูตัวอย่าง",
+          "title": "การจัดการตราสินค้า"
+        },
+        "font_sizes": {
+          "large": "ใหญ่",
+          "medium": "กลาง",
+          "small": "เล็ก"
+        },
+        "preview": {
+          "announcement": "ประกาศ",
+          "hours": "เวลาทำการ",
+          "title": "ดูตัวอย่าง"
+        },
+        "theme": {
+          "color_scheme": "ชุดสี",
+          "colors": {
+            "blue": "สีน้ำเงิน",
+            "coral": "สีแสด",
+            "teal": "สีเขียวน้ำทะเล"
+          },
+          "dark_mode": "โหมดมืด",
+          "default": "ค่าเริ่มต้น",
+          "description": "เลือกธีมสำหรับอินเทอร์เฟซ",
+          "font_size": "ขนาดตัวอักษร",
+          "font_sizes": {
+            "large": "ใหญ่",
+            "medium": "กลาง",
+            "small": "เล็ก",
+            "xl": "ใหญ่มาก"
+          },
+          "high_contrast": "คอนทราสต์สูง",
+          "title": "ธีม"
+        }
+      },
+      "contact_tab": {
+        "address": "ที่อยู่",
+        "contact_info": "ข้อมูลการติดต่อ",
+        "coordinates": "พิกัด",
+        "directions": "เส้นทาง",
+        "email": "อีเมล",
+        "latitude": "ละติจูด",
+        "location_info": "ข้อมูลที่ตั้ง",
+        "location_services": "บริการตำแหน่ง",
+        "longitude": "ลองจิจูด",
+        "phone": "เบอร์โทรศัพท์",
+        "services": {
+          "add": "เพิ่ม",
+          "new_service": "บริการใหม่",
+          "title": "บริการ"
+        },
+        "show_location": "แสดงตำแหน่ง",
+        "site_name": "ชื่อไซต์",
+        "title": "ข้อมูลติดต่อ",
+        "tooltips": {
+          "email": "อีเมลสำหรับการติดต่อ",
+          "phone": "เบอร์โทรศัพท์สำหรับการติดต่อ",
+          "site_name": "ชื่อของเว็บไซต์"
+        },
+        "use_current_location": "ใช้ตำแหน่งปัจจุบัน",
+        "website": "เว็บไซต์"
+      },
+      "description": "จัดการการตั้งค่าระบบ",
+      "help_modal": {
+        "close": "ปิด",
+        "contact_support": "ติดต่อฝ่ายสนับสนุน",
+        "faq": "คำถามที่พบบ่อย",
+        "keyboard_shortcuts": "คีย์บอร์ดลัด",
+        "sections": {
+          "appearance": {
+            "descriptions": {
+              "branding": "จัดการตราสินค้าของเว็บไซต์",
+              "color_scheme": "เลือกชุดสีที่เหมาะสม",
+              "font_size": "ปรับขนาดตัวอักษร",
+              "high_contrast": "เปิดคอนทราสต์สูงสำหรับคนที่มีปัญหาการมองเห็น"
+            },
+            "fields": {
+              "branding": "การตั้งค่าผู้ดูแล",
+              "color_scheme": "การตั้งค่าผู้ดูแล",
+              "font_size": "การตั้งค่าผู้ดูแล",
+              "high_contrast": "การตั้งค่าผู้ดูแล"
+            },
+            "title": "การจัดการรูปลักษณ์"
+          },
+          "contact": {
+            "descriptions": {
+              "address": "เพิ่ม",
+              "coordinates": "การตั้งค่าผู้ดูแล",
+              "directions": "การตั้งค่าผู้ดูแล",
+              "email": "การตั้งค่าผู้ดูแล",
+              "name": "การตั้งค่าผู้ดูแล",
+              "phone": "การตั้งค่าผู้ดูแล",
+              "services": "การตั้งค่าผู้ดูแล",
+              "website": "การตั้งค่าผู้ดูแล"
+            },
+            "fields": {
+              "address": "เพิ่ม",
+              "coordinates": "การตั้งค่าผู้ดูแล",
+              "directions": "การตั้งค่าผู้ดูแล",
+              "email": "การตั้งค่าผู้ดูแล",
+              "name": "การตั้งค่าผู้ดูแล",
+              "phone": "การตั้งค่าผู้ดูแล",
+              "services": "การตั้งค่าผู้ดูแล",
+              "website": "การตั้งค่าผู้ดูแล"
+            },
+            "title": "การจัดการการติดต่อ"
+          },
+          "logs": {
+            "descriptions": {
+              "date": "การตั้งค่าผู้ดูแล",
+              "download": "การตั้งค่าผู้ดูแล",
+              "log_level": "การตั้งค่าผู้ดูแล",
+              "source": "การตั้งค่าผู้ดูแล"
+            },
+            "fields": {
+              "date": "การตั้งค่าผู้ดูแล",
+              "download": "การตั้งค่าผู้ดูแล",
+              "log_level": "การตั้งค่าผู้ดูแล",
+              "source": "การตั้งค่าผู้ดูแล"
+            },
+            "title": "การจัดการบันทึก"
+          },
+          "system": {
+            "descriptions": {
+              "clear_cache": "การตั้งค่าผู้ดูแล",
+              "create_backup": "การตั้งค่าผู้ดูแล",
+              "export_settings": "การตั้งค่าผู้ดูแล",
+              "regenerate_qr": "การตั้งค่าผู้ดูแล"
+            },
+            "fields": {
+              "clear_cache": "การตั้งค่าผู้ดูแล",
+              "create_backup": "การตั้งค่าผู้ดูแล",
+              "export_settings": "การตั้งค่าผู้ดูแล",
+              "regenerate_qr": "การตั้งค่าผู้ดูแล"
+            },
+            "title": "การจัดการระบบ"
+          }
+        },
+        "tips": {
+          "items": {
+            "color_schemes": "การตั้งค่าผู้ดูแล",
+            "gps_coordinates": "การตั้งค่าผู้ดูแล",
+            "high_contrast": "การตั้งค่าผู้ดูแล",
+            "monitor_logs": "การตั้งค่าผู้ดูแล",
+            "regular_backups": "การตั้งค่าผู้ดูแล"
+          },
+          "title": "คำแนะนำ"
+        },
+        "title": "ช่วยเหลือและคู่มือ",
+        "user_guide": "คู่มือผู้ใช้",
+        "warnings": {
+          "items": {
+            "backup_security": "การตั้งค่าผู้ดูแล",
+            "cache_performance": "การตั้งค่าผู้ดูแล",
+            "immediate_changes": "การตั้งค่าผู้ดูแล",
+            "qr_reprint": "การตั้งค่าผู้ดูแล"
+          },
+          "title": "คำเตือน"
+        }
+      },
+      "help_tips": "ช่วยเหลือและเคล็ดลับ",
+      "import_export": {
+        "backup_data": "สำรองข้อมูล",
+        "export": "ส่งออก",
+        "import": "นำเข้า",
+        "restore_data": "คืนค่าข้อมูล",
+        "title": "นำเข้า/ส่งออกข้อมูล"
+      },
+      "import_modal": {
+        "file_label": "เลือกไฟล์",
+        "import": "นำเข้า",
+        "title": "นำเข้าการตั้งค่า"
+      },
+      "logs_tab": {
+        "actions": {
+          "clear": "ลบ",
+          "download": "ดาวน์โหลด",
+          "refresh": "รีเฟรช"
+        },
+        "filters": {
+          "all_levels": "ทุกระดับ",
+          "all_sources": "ทุกแหล่ง"
+        },
+        "levels": {
+          "debug": "การแก้บั๊ก",
+          "error": "ข้อผิดพลาด",
+          "info": "ข้อมูล",
+          "warning": "คำเตือน"
+        },
+        "loading": "กำลังโหลด...",
+        "sources": {
+          "admin": "การตั้งค่าผู้ดูแล",
+          "api": "การตั้งค่าผู้ดูแล",
+          "public": "การตั้งค่าผู้ดูแล",
+          "system": "การตั้งค่าผู้ดูแล"
+        },
+        "stats": {
+          "errors": "ข้อผิดพลาด",
+          "info": "การตั้งค่าผู้ดูแล",
+          "total": "การตั้งค่าผู้ดูแล",
+          "warnings": "การตั้งค่าผู้ดูแล"
+        }
+      },
+      "messages": {
+        "appearance_save_success": "บันทึก",
+        "backup_error": "ข้อผิดพลาด",
+        "backup_success": "สำเร็จ",
+        "cache_clear_error": "ข้อผิดพลาด",
+        "cache_clear_network_error": "ข้อผิดพลาด",
+        "cache_clear_success": "สำเร็จ",
+        "confirm_clear_cache": "คุณแน่ใจหรือไม่ที่จะลบแคช?",
+        "confirm_clear_logs": "คุณแน่ใจหรือไม่ที่จะลบบันทึก?",
+        "contact_save_success": "บันทึก",
+        "coordinates_required": "จำเป็นต้องระบุพิกัด",
+        "export_error": "ข้อผิดพลาด",
+        "export_success": "สำเร็จ",
+        "geolocation_not_supported": "ไม่สนับสนุนการระบุตำแหน่ง",
+        "import_error": "ข้อผิดพลาด",
+        "import_network_error": "ข้อผิดพลาด",
+        "import_success": "สำเร็จ",
+        "location_error": "ข้อผิดพลาด",
+        "location_success": "สำเร็จ",
+        "logs_clear_error": "ข้อผิดพลาด",
+        "logs_clear_network_error": "ข้อผิดพลาด",
+        "logs_clear_success": "สำเร็จ",
+        "logs_download_error": "ข้อผิดพลาด",
+        "logs_download_success": "สำเร็จ",
+        "logs_load_error": "ข้อผิดพลาด",
+        "network_error": "ข้อผิดพลาด",
+        "no_logs": "ไม่มีบันทึก",
+        "qr_regenerate_error": "ข้อผิดพลาด",
+        "qr_regenerate_network_error": "ข้อผิดพลาด",
+        "qr_regenerate_success": "สำเร็จ",
+        "save_error": "บันทึก",
+        "select_file": "เลือกไฟล์"
+      },
+      "system_tab": {
+        "backup": {
+          "create": "สร้าง",
+          "full_backup": "สำรองข้อมูลทั้งหมด",
+          "full_backup_desc": "สร้างการสำรองข้อมูลทั้งหมด",
+          "title": "การสำรองข้อมูล"
+        },
+        "clear_cache": "ล้างแคช",
+        "database": "ฐานข้อมูล",
+        "maintenance": {
+          "clear_cache": "ลบแคช",
+          "export_settings": "ส่งออกการตั้งค่า",
+          "import_settings": "นำเข้าการตั้งค่า",
+          "regenerate_qr": "สร้าง QR โค้ดใหม่",
+          "title": "การบำรุงรักษา"
+        },
+        "restore": "คืนค่าข้อมูล",
+        "security": {
+          "change_password": "เปลี่ยนรหัสผ่าน",
+          "password_requirements": "ความต้องการรหัสผ่าน",
+          "title": "ความปลอดภัย"
+        },
+        "storage": "พื้นที่จัดเก็บ",
+        "system_info": {
+          "database": "ฐานข้อมูล",
+          "timezone": "เขตเวลา",
+          "title": "ข้อมูลระบบ",
+          "uptime": "เวลาทำงาน",
+          "version": "เวอร์ชั่น"
+        },
+        "title": "การตั้งค่าระบบ",
+        "uptime": "เวลาใช้งาน",
+        "version": "เวอร์ชัน"
+      },
+      "tabs": {
+        "appearance": "ลักษณะ",
+        "contact": "ติดต่อ",
+        "contact_location": "ติดต่อ & สถานที่",
+        "design_theme": "ดีไซน์ & ธีม",
+        "system": "ระบบ",
+        "system_logs": "บันทึกระบบ"
+      },
+      "title": "การจัดการการตั้งค่า"
+    },
+    "status_management": {
+      "title": "อัปเดตสถานะ",
+      "update_button": "อัปเดตสถานะ"
+    },
+    "setup": {
+      "color_scheme": {
+        "title": "เลือกโทนสี",
+        "description": "เลือกโทนสีที่เข้ากับสถานที่ของคุณ"
+      }
+    },
+    "system_info": "ข้อมูลระบบ",
+    "system_online": "ระบบออนไลน์",
+    "todays_hours": "เวลาเปิด-ปิดวันนี้"
+  },
+  "admin_setup_wizard": "ตัวช่วยตั้งค่าผู้ดูแล",
+  "admin_wizard_description": "ยินดีต้อนรับสู่ตัวช่วยตั้งค่า",
+  "america_new_york": "อเมริกา/นิวยอร์ก",
+  "announcements": "ประกาศ",
+  "appointment_booking": "จองคิว",
+  "asia_bangkok": "เอเชีย/กรุงเทพฯ",
+  "available_slots": "เวลาว่าง",
+  "back_on": "กลับวันที่",
+  "back_to_home": "ไม่ระบุ",
+  "basic_info_description": "ไม่ระบุ",
+  "basic_information": "ไม่ระบุ",
+  "blood_test": "เจาะเลือด",
+  "book_appointment": "จองคิว",
+  "call_now": "ไม่ระบุ",
+  "chat_with_us": "แชทกับเรา",
+  "check_current_status": "ไม่ระบุ",
+  "close": "ปิด",
+  "closed": "ปิดทำการ",
+  "closed_today": "ปิดวันนี้",
+  "closes_at": "ปิด",
+  "common": {
+    "activate": "เปิดใช้งาน",
+    "active": "ใช้งาน",
+    "deactivate": "ปิดใช้งาน",
+    "edit": "แก้ไข",
+    "inactive": "ไม่ใช้งาน",
+    "minutes": "นาที"
+  },
+  "configuration_summary": "ไม่ระบุ",
+  "confirm_skip_wizard": "ไม่ระบุ",
+  "congress": "ประชุมวิชาการ",
+  "consultation": "ปรึกษา",
+  "contact": "ติดต่อ",
+  "contact_description": "ไม่ระบุ",
+  "contact_practice": "ไม่ระบุ",
+  "contact_via": "ติดต่อผ่าน",
+  "core_features": "ไม่ระบุ",
+  "currently_closed": "ปิดอยู่ตอนนี้",
+  "currently_open": "เปิดอยู่ตอนนี้",
+  "date_from": "ไม่ระบุ",
+  "date_to": "ไม่ระบุ",
+  "day_abbreviations": {
+    "friday": "ศ.",
+    "monday": "จ.",
+    "saturday": "ส.",
+    "sunday": "อา.",
+    "thursday": "พฤ.",
+    "tuesday": "อ.",
+    "wednesday": "พ."
+  },
+  "default_language": "ภาษาเริ่มต้น",
+  "description": "คำอธิบาย",
+  "display_screens": "ไม่ระบุ",
+  "div": "ส่วน",
+  "download_qr": "ดาวน์โหลด QR",
+  "educational_content": "เนื้อหาให้ความรู้",
+  "educational_leave": "ลาศึกษา",
+  "email": "อีเมล",
+  "email_address": "เพิ่ม",
+  "essential_feature": "ไม่ระบุ",
+  "europe_berlin": "ยุโรป/เบอร์ลิน",
+  "extended_availability": "ไม่ระบุ",
+  "facebook_page": "เพจ Facebook",
+  "features_and_settings": "ไม่ระบุ",
+  "features_description": "ไม่ระบุ",
+  "finish_setup": "ไม่ระบุ",
+  "first_time": "ไม่ระบุ",
+  "follow_for_updates": "ติดตามเพื่อรับข่าวสาร",
+  "follow_up": "ติดตามผล",
+  "follow_us": "ติดตามเรา",
+  "friday": "วันศุกร์",
+  "generate_qr_codes": "ไม่ระบุ",
+  "get_directions": "ไม่ระบุ",
+  "google_business": "Google Business",
+  "half_day": "ไม่ระบุ",
+  "health_tips": "เคล็ดลับสุขภาพ",
+  "home": "ไม่ระบุ",
+  "hours_format_example": "ไม่ระบุ",
+  "hours_format_help": "ไม่ระบุ",
+  "hours_view_description": "ไม่ระบุ",
+  "input": "ป้อนข้อมูล",
+  "instagram_account": "Instagram",
+  "kiosk": {
+    "closed_today_big": "ปิดทำการวันนี้",
+    "congress_big": "ประชุมวิชาการ",
+    "education_big": "ลาศึกษา",
+    "educational_leave_note": "เพื่อการรักษาที่ดีขึ้น",
+    "enhanced": {
+      "auto_refresh": "รีเฟรชอัตโนมัติ",
+      "bangkok_timezone": "เวลากรุงเทพฯ",
+      "blood_tests_available": "บริการตรวจเลือด",
+      "day_status": {
+        "today": "วันนี้"
+      },
+      "medical_laboratory": "ห้องปฏิบัติการทางการแพทย์",
+      "opening_times": "เวลาทำการ",
+      "professional_service": "บริการระดับมืออชีพ",
+      "scan_qr_portal": "สแกน QR โค้ดเพื่อเข้าพอร์ทัล",
+      "services": {
+        "appointment_booking": "จองนัดหมาย",
+        "blood_collection": "การเจาะเลือด",
+        "health_checkup": "ตรวจสุขภาพ",
+        "laboratory_analysis": "การวิเคราะห์ในห้องปฏิบัติการ",
+        "results_collection": "รับผลตรวจ"
+      },
+      "status_messages": {
+        "at_conference": "ประชุมวิชาการ",
+        "currently_closed": "ปิดทำการอยู่ตอนนี้",
+        "currently_open": "เปิดให้บริการอยู่ตอนนี้",
+        "in_training": "อบรม",
+        "next_opening": "เปิดให้บริการครั้งต่อไป",
+        "on_vacation": "ลาพักผ่อน",
+        "opening_soon": "กำลังจะเปิดให้บริการเร็วๆ นี้"
+      },
+      "system_online": "ระบบออนไลน์",
+      "time_periods": {
+        "afternoon": "ตอนบ่าย",
+        "evening": "เย็น",
+        "morning": "ตอนเช้า",
+        "night": "ค่ำ"
+      },
+      "upcoming_availability": "ความพร้อมให้บริการที่กำลังจะมา"
+    },
+    "full_day_open": "เปิดตลอดวัน",
+    "half_day_open": "เปิดครึ่งวัน",
+    "next_week": "สัปดาห์หน้า",
+    "notice": "ประกาศ",
+    "open_and_available": "เปิดและพร้อมให้บริการวันนี้",
+    "preview_title": "ตัวอย่าง",
+    "rotation": {
+      "auto_refresh": "รีเฟรชอัตโนมัติ",
+      "blood_test": "เจาะเลือด",
+      "blood_test_desc": "เจาะเลือดเพื่อตรวจวิเคราะห์สารต่างๆ ในร่างกาย",
+      "consultation": "ปรึกษาแพทย์",
+      "consultation_desc": "ปรึกษาเรื่องสุขภาพกับแพทย์เชี่ยวชาญ",
+      "contact_us": "ติดต่อเรา",
+      "currently_closed": "ปิดทำการอยู่ตอนนี้",
+      "currently_open": "เปิดให้บริการอยู่ตอนนี้",
+      "follow_up": "ติดตามผล",
+      "follow_up_desc": "ติดตามผลการรักษาและตรวจสอบความคืบหน้า",
+      "health_checkup": "ตรวจสุขภาพ",
+      "health_checkup_desc": "ตรวจสุขภาพประจำปีและการตรวจคัดกรอง",
+      "last_updated": "ข้อมูลล่าสุด",
+      "next_opening": "เปิดให้บริการอีกครั้ง",
+      "offline_mode": "โหมดออฟไลน์",
+      "our_services": "บริการของเรา",
+      "returning_on": "กลับมาให้บริการ",
+      "scan_more_info": "สแกนเพื่อข้อมูลเพิ่มเติม",
+      "system_online": "ระบบออนไลน์",
+      "todays_schedule": "ตารางวันนี้",
+      "weekly_schedule": "ตารางสัปดาห์นี้"
+    },
+    "scan_for_info": "สแกนเพื่อข้อมูลเพิ่มเติม →",
+    "see_notice": "ดูประกาศ",
+    "this_week_title": "สัปดาห์นี้",
+    "today_title": "วันนี้",
+    "todays_opening_hours": "เวลาทำการวันนี้",
+    "vacation_big": "ลาพักผ่อน",
+    "vacation_return": "กลับ:",
+    "we_are_here": "เราพร้อมให้บริการคุณ!"
+  },
+  "kiosk_mode": "ไม่ระบุ",
+  "kiosk_texts": {
+    "back_on_date": "กลับมาให้บริการวันที่",
+    "back_soon": "กลับมาให้บริการเร็วๆ นี้",
+    "for_better_treatment": "เพื่อการรักษาที่ดียิ่งขึ้น",
+    "information": "ข้อมูล",
+    "please_note": "โปรดทราบข้อมูลของเรา",
+    "scan_for_info": "สแกนเพื่อ<br>ข้อมูลเพิ่มเติม"
+  },
+  "laboratory_updates": "ข่าวสารห้องแล็บ",
+  "language": "ภาษา",
+  "language_description": "เลือกภาษาที่คุณต้องการ",
+  "launch_description": "ไม่ระบุ",
+  "legal": {
+    "privacy_policy": "นโยบายความเป็นส่วนตัว"
+  },
+  "like_and_follow": "กดไลค์และติดตาม",
+  "line_facebook_whatsapp": "ไม่ระบุ",
+  "line_official": "LINE Official",
+  "medical_hours": "ไม่ระบุ",
+  "mobile_description": "ไม่ระบุ",
+  "mobile_friendly": "ไม่ระบุ",
+  "mobile_optimized": "ไม่ระบุ",
+  "mon_fri_8_5": "ไม่ระบุ",
+  "monday": "วันจันทร์",
+  "month": "เดือน",
+  "months": {
+    "april": "เมษายน",
+    "august": "สิงหาคม",
+    "december": "ธันวาคม",
+    "february": "กุมภาพันธ์",
+    "january": "มกราคม",
+    "july": "กรกฎาคม",
+    "june": "มิถุนายน",
+    "march": "มีนาคม",
+    "may": "พฤษภาคม",
+    "november": "พฤศจิกายน",
+    "october": "ตุลาคม",
+    "september": "กันยายน"
+  },
+  "morning_only": "ไม่ระบุ",
+  "multi_language": "ไม่ระบุ",
+  "multi_language_support": "ไม่ระบุ",
+  "multiple_languages": "ไม่ระบุ",
+  "navigate": "นำทาง",
+  "next": "ถัดไป",
+  "next_available": "เวลาว่างถัดไป",
+  "next_steps": "ไม่ระบุ",
+  "no_appointments": "ไม่มีคิวว่าง",
+  "no_social_platforms": "ไม่ระบุ",
+  "no_social_platforms_desc": "ไม่ระบุ",
+  "not_set": "ไม่ระบุ",
+  "of": "ของ",
+  "on_vacation": "ลาพักผ่อน",
+  "online_appointments": "ไม่ระบุ",
+  "open": "เปิดให้บริการ",
+  "opening_hours": "เวลาทำการ",
+  "opening_hours_description": "ไม่ระบุ",
+  "opens_at": "เปิด",
+  "opens_on": "เปิดวันที่",
+  "optional_features": "ไม่ระบุ",
+  "other": "อื่นๆ",
+  "phone": "โทรศัพท์",
+  "phone_number": "ไม่ระบุ",
+  "practice_name": "ไม่ระบุ",
+  "practice_name_placeholder": "ไม่ระบุ",
+  "previous": "ก่อนหน้า",
+  "print_door_sign": "ไม่ระบุ",
+  "print_qr": "พิมพ์ QR",
+  "qr_code_access": "ไม่ระบุ",
+  "qr_code_generation": "ไม่ระบุ",
+  "qr_code_integration": "ไม่ระบุ",
+  "quick_contact": "ติดต่อด่วน",
+  "quick_templates": "ไม่ระบุ",
+  "ready_to_launch": "ไม่ระบุ",
+  "real_time_info": "ไม่ระบุ",
+  "real_time_updates": "ไม่ระบุ",
+  "realtime_description": "ไม่ระบุ",
+  "saturday": "วันเสาร์",
+  "scan_qr": "สแกน QR Code",
+  "scan_qr_description": "ไม่ระบุ",
+  "scan_to_follow": "สแกนเพื่อติดตาม",
+  "services": "บริการ",
+  "share": "แชร์",
+  "share_on": "แชร์บน",
+  "share_with_staff": "ไม่ระบุ",
+  "site_title": "ห้องปฏิบัติการพัทยา",
+  "skip_wizard": "ไม่ระบุ",
+  "social_media": "โซเชียลมีเดีย",
+  "social_media_integration": "ไม่ระบุ",
+  "social_qr_codes": "QR Code โซเชียล",
+  "span": "ช่วง",
+  "special_note": "ไม่ระบุ",
+  "standard_hours": "ไม่ระบุ",
+  "status": "สถานะ",
+  "status_changed": "ไม่ระบุ",
+  "status_check_description": "ไม่ระบุ",
+  "step": "ขั้นตอน",
+  "sunday": "วันอาทิตย์",
+  "tablet": "ไม่ระบุ",
+  "test_mobile_access": "ไม่ระบุ",
+  "this_week": "ไม่ระบุ",
+  "thursday": "วันพฤหัสบดี",
+  "tiktok_videos": "วิดีโอ TikTok",
+  "timezone": "เขตเวลา",
+  "today": "วันนี้",
+  "todays_hours": "ไม่ระบุ",
+  "tuesday": "วันอังคาร",
+  "ui_common": {
+    "access": "การเข้าถึง",
+    "additional_services": "บริการเพิ่มเติมตามคำขอ",
+    "address_label": "ที่อยู่",
+    "available_now": "พร้อมให้บริการ",
+    "bangkok_time": "เวลากรุงเทพฯ",
+    "barrier_free": "ปราศจากสิ่งกีดขวาง",
+    "contact_us": "ติดต่อเรา",
+    "currently_open_status": "เปิด",
+    "developed_by": "พัฒนาโดย Ralle1976 | กฎหมายที่ใช้บังคับอยู่",
+    "exception": "ข้อยกเว้น",
+    "global_error": "เกิดข้อผิดพลาด กรุณาลองอีกครั้ง",
+    "individual_consultation": "ติดต่อเราสำหรับการปรึกษาเฉพาะบุคคล",
+    "legal_links_later": "ลิงก์ทางกฎหมายจะถูกเพิ่มในภายหลัง",
+    "loading": "กำลังโหลด...",
+    "our_location": "สถานที่ตั้งของเราในพัทยา",
+    "our_services": "บริการทางการแพทย์ของเรา",
+    "parking": "ที่จอดรถ",
+    "parking_available": "มีที่จอด",
+    "portal_online": "พอร์ทัลออนไลน์",
+    "public_transport": "การเดินทางสาธารณะ",
+    "quick_social_contact": "ติดต่อด่วนผ่านโซเชียลมีเดีย:",
+    "todays_hours": "เวลาทำการวันนี้",
+    "weekend": "วันหยุดสุดสัปดาห์"
+  },
+  "usage_statistics": "ไม่ระบุ",
+  "view_on_maps": "ดูใน Maps",
+  "view_opening_hours": "ไม่ระบุ",
+  "visitor_analytics": "ไม่ระบุ",
+  "watch_videos": "ดูวิดีโอ",
+  "wednesday": "วันพุธ",
+  "week": "สัปดาห์",
+  "weekdays": {
+    "friday": "วันศุกร์",
+    "monday": "วันจันทร์",
+    "saturday": "วันเสาร์",
+    "sunday": "วันอาทิตย์",
+    "thursday": "วันพฤหัสบดี",
+    "tuesday": "วันอังคาร",
+    "wednesday": "วันพุธ"
+  },
+  "weekly_schedule": "ไม่ระบุ",
+  "welcome_to_qr_portal": "ไม่ระบุ",
+  "whatsapp_business": "WhatsApp Business",
+  "wizard": "ตัวช่วย",
+  "wizard_complete": "การตั้งค่าเสร็จสิ้น",
+  "wizard_complete_description": "การตั้งค่าเสร็จสิ้นสำเร็จ",
+  "wizard_completed": "ตัวช่วยเสร็จสิ้น",
+  "wizard_started": "เริ่มใช้ตัวช่วย",
+  "wizard_welcome_description": "ให้เราช่วยคุณตั้งค่าระบบ",
+  "youtube_channel": "ช่อง YouTube",
+  "placeholder_current_password": "ใส่รหัสผ่านปัจจุบันของคุณ",
+  "placeholder_new_password": "ใส่รหัสผ่านใหม่",
+  "placeholder_confirm_password": "ยืนยันรหัสผ่านใหม่",
+  "language_german": "เยอรมัน",
+  "language_thai": "ไทย",
+  "language_english": "อังกฤษ",
+  "timezone_thailand": "ประเทศไทย",
+  "timezone_germany": "เยอรมนี",
+  "timezone_usa_east": "สหรัฐอเมริกา ตะวันออก",
+  "timezone_usa_west": "สหรัฐอเมริกา ตะวันตก",
+  "timezone_japan": "ญี่ปุ่น",
+  "timezone_utc": "เวลาสากล"
+}

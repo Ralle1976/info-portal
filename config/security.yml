@@ -1,0 +1,211 @@
+# ==================================================
+# SECURITY CONFIGURATION FOR QR-INFO-PORTAL
+# Purpose: Address GitHub Security Scan Issues
+# ==================================================
+
+security:
+  # Content Security Policy (CSP)
+  csp:
+    enabled: true
+    # Strict CSP for production
+    default_src: ["'self'"]
+    script_src: 
+      - "'self'"
+      - "https://cdn.tailwindcss.com"
+      - "https://cdnjs.cloudflare.com"
+      - "'unsafe-inline'"  # Only for critical inline scripts
+    style_src:
+      - "'self'"
+      - "https://fonts.googleapis.com"
+      - "https://cdnjs.cloudflare.com"
+      - "'unsafe-inline'"  # Required for dynamic styles
+    font_src:
+      - "'self'"
+      - "https://fonts.gstatic.com"
+      - "data:"
+    img_src:
+      - "'self'"
+      - "data:"
+      - "blob:"
+    connect_src:
+      - "'self'"
+    frame_ancestors: ["'none'"]
+    base_uri: ["'self'"]
+    form_action: ["'self'"]
+    
+  # HTTP Security Headers
+  headers:
+    strict_transport_security:
+      enabled: true
+      max_age: 31536000
+      include_subdomains: true
+      preload: true
+      
+    x_content_type_options: "nosniff"
+    x_frame_options: "DENY"
+    x_xss_protection: "1; mode=block"
+    
+    referrer_policy: "strict-origin-when-cross-origin"
+    
+    permissions_policy:
+      camera: ["none"]
+      microphone: ["none"]
+      geolocation: ["none"]
+      payment: ["none"]
+      usb: ["none"]
+      
+  # Input Validation & Sanitization
+  input_validation:
+    # Sanitize all user inputs
+    sanitize_html: true
+    max_input_length: 1000
+    allowed_file_extensions: [".png", ".jpg", ".jpeg", ".svg"]
+    max_file_size_mb: 5
+    
+    # SQL Injection Prevention
+    parameterized_queries_only: true
+    escape_special_characters: true
+    
+    # XSS Prevention
+    escape_output: true
+    validate_json_input: true
+    
+  # Session & Authentication Security
+  session:
+    secure_cookies: true
+    httponly_cookies: true
+    samesite_cookies: "Strict"
+    session_timeout_minutes: 30
+    
+    # CSRF Protection
+    csrf_protection: true
+    csrf_token_name: "_csrf_token"
+    
+  # Rate Limiting
+  rate_limiting:
+    enabled: true
+    global_rate_limit: 100  # requests per minute
+    
+    endpoints:
+      "/admin/*": 10    # Admin endpoints
+      "/qr*": 30        # QR generation endpoints
+      "/api/*": 50      # API endpoints
+      "/kiosk/*": 20    # Kiosk endpoints
+      
+  # File Upload Security
+  file_uploads:
+    allowed_extensions: [".yml", ".yaml", ".json", ".png", ".jpg", ".svg"]
+    max_file_size_mb: 2
+    scan_for_malware: true
+    quarantine_suspicious_files: true
+    
+  # Database Security
+  database:
+    # Prevent SQL injection
+    use_prepared_statements: true
+    escape_special_chars: true
+    
+    # Connection security
+    ssl_required: false  # SQLite doesn't support SSL
+    connection_timeout_seconds: 30
+    
+    # Backup security
+    encrypt_backups: true
+    secure_backup_location: true
+    
+  # Dependency Security
+  dependencies:
+    # Regularly update dependencies
+    auto_update_security_patches: false  # Manual control
+    vulnerability_scanning: true
+    
+    # Pin versions to prevent supply chain attacks
+    lock_file_required: true
+    verify_package_integrity: true
+    
+  # Error Handling & Logging
+  error_handling:
+    # Don't expose sensitive information in errors
+    sanitize_error_messages: true
+    log_security_events: true
+    
+    # Security headers in error responses
+    security_headers_on_errors: true
+    
+  # Development vs Production
+  environments:
+    development:
+      debug_mode: true
+      detailed_error_messages: true
+      csp_report_only: true
+      
+    production:
+      debug_mode: false
+      detailed_error_messages: false
+      csp_enforce: true
+      security_monitoring: true
+      
+# Kiosk-Specific Security
+kiosk_security:
+  # Prevent unauthorized access
+  network_restrictions:
+    allowed_networks: ["192.168.0.0/16", "10.0.0.0/8"]
+    block_external_access: false  # Allow internet for updates
+    
+  # Browser security for kiosk mode
+  browser_security:
+    disable_dev_tools: true
+    prevent_right_click: true
+    disable_text_selection: true
+    prevent_navigation: true
+    
+  # Data protection in kiosk
+  data_protection:
+    no_personal_data_storage: true
+    clear_cache_on_restart: true
+    log_rotation: true
+    
+# External Service Security
+external_services:
+  cdn_security:
+    # Only allow trusted CDNs
+    trusted_cdns:
+      - "https://cdn.tailwindcss.com"
+      - "https://fonts.googleapis.com"
+      - "https://fonts.gstatic.com"
+      - "https://cdnjs.cloudflare.com"
+      
+    # Subresource Integrity (SRI)
+    sri_enabled: false  # Difficult with dynamic CDNs
+    fallback_to_local: true
+    
+  google_fonts:
+    # Privacy-focused font loading
+    privacy_mode: true
+    preconnect_enabled: true
+    display_swap: true
+    
+# Monitoring & Alerting
+monitoring:
+  security_events:
+    log_failed_logins: true
+    log_suspicious_requests: true
+    log_rate_limit_violations: true
+    
+  alerts:
+    email_security_alerts: false  # Configure if needed
+    slack_integration: false
+    
+# Compliance
+compliance:
+  # GDPR compliance for EU visitors
+  gdpr:
+    cookie_consent: true
+    data_protection_notice: true
+    right_to_deletion: true
+    
+  # Medical data compliance (if applicable)
+  medical_compliance:
+    hipaa_compliant: false  # Not handling medical data
+    encrypt_all_data: false
+    audit_trail: true

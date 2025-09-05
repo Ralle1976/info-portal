@@ -1,0 +1,72 @@
+# ZAP Scanning Rules for QR Info Portal
+# Format: RULE_TYPE	RULE_ID	RULE_VALUE	COMMENT
+
+# Ignore false positives
+IGNORE	10038		# Content Security Policy Header Not Set (handled by reverse proxy)
+IGNORE	10020		# X-Frame-Options Header Not Set (not needed for this app)
+
+# High priority security rules
+FAIL	40012		# Cross Site Scripting (Reflected)
+FAIL	40014		# Cross Site Scripting (Persistent)
+FAIL	40016		# Cross Site Scripting (Persistent) - Prime
+FAIL	40017		# Cross Site Scripting (Persistent) - Spider
+FAIL	40018		# SQL Injection
+FAIL	40019		# SQL Injection - MySQL
+FAIL	40020		# SQL Injection - Hypersonic SQL
+FAIL	40021		# SQL Injection - Oracle
+FAIL	40022		# SQL Injection - PostgreSQL
+FAIL	90020		# Remote OS Command Injection
+FAIL	90021		# XPath Injection
+FAIL	90022		# Application Error Disclosure
+FAIL	90023		# XML External Entity Attack
+FAIL	90029		# LDAP Injection
+FAIL	90030		# CRLF Injection
+
+# Medium priority rules
+WARN	10016		# Web Browser XSS Protection Not Enabled
+WARN	10017		# Cross-Domain JavaScript Source File Inclusion
+WARN	10021		# X-Content-Type-Options Header Missing
+WARN	10023		# Information Disclosure - Debug Error Messages
+WARN	10025		# Information Disclosure - Sensitive Information in URL
+WARN	10026		# HTTP Parameter Override
+WARN	10027		# Information Disclosure - Suspicious Comments
+WARN	10028		# Open Redirect
+WARN	10029		# Cookie Poisoning
+WARN	10030		# User Controllable Charset
+WARN	10031		# User Controllable HTML Element Attribute (Potential XSS)
+WARN	10032		# Viewstate Scanner
+WARN	10033		# Directory Browsing
+WARN	10034		# Heartbleed OpenSSL Vulnerability
+WARN	10035		# Strict-Transport-Security Header Not Set
+WARN	10036		# HTTP Server Response Header
+WARN	10037		# Server Leaks Information via "X-Powered-By" HTTP Response Header Field(s)
+WARN	10040		# Secure Pages Include Mixed Content
+WARN	10041		# HTTP to HTTPS Insecure Transition in Form Post
+WARN	10042		# HTTPS to HTTP Insecure Transition in Form Post
+WARN	10043		# User Controllable JavaScript Event (XSS)
+WARN	10044		# Big Redirect Detected (Potential Sensitive Information Leak)
+WARN	10045		# Source Code Disclosure - /WEB-INF folder
+WARN	10048		# Remote Code Execution - Shell Shock
+WARN	10049		# Content Cacheability
+WARN	10050		# Retrieved from Cache
+WARN	10051		# Relative Path Confusion
+WARN	10052		# X-ChromeLogger-Data Header Information Leak
+WARN	10054		# Cookie Without SameSite Attribute
+WARN	10055		# CSP Scanner
+WARN	10056		# X-Debug-Token Information Leak
+WARN	10057		# Username Hash Found
+WARN	10061		# X-AspNet-Version Response Header
+WARN	10062		# PII Scanner
+WARN	10063		# Permissions Policy Header Not Set
+WARN	10096		# Timestamp Disclosure
+WARN	10097		# Hash Disclosure
+WARN	10098		# Cross-Domain Misconfiguration
+WARN	10105		# Weak Authentication Method
+WARN	10106		# HTTP Only Site
+WARN	10108		# Reverse Tabnabbing
+WARN	10109		# Modern Web Application
+WARN	10110		# Dangerous JS Functions
+
+# Low priority (informational)
+INFO	10015		# Incomplete or No Cache-control and Pragma HTTP Header Set
+INFO	90001		# Insecure JSF ViewState

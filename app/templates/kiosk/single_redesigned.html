@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="{{ i18n.get_current_language() }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>{{ config.site.name }} - Single Kiosk</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Thai-optimized fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;800&family=Kanit:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'medical-primary': '#00A86B',
+                        'medical-secondary': '#0056B3',
+                        'thai-accent': '#B8860B',
+                        'status-open': '#059669',
+                        'status-closed': '#DC2626',
+                        'status-warning': '#D97706',
+                        'thai-respect': '#4A5568',
+                        'thai-calm': '#F7FAFC'
+                    },
+                    fontFamily: {
+                        'thai': ['Sarabun', 'Kanit', 'sans-serif'],
+                        'german': ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #F7FAFC 0%, #EDF2F7 50%, #E2E8F0 100%);
+            font-family: 'Sarabun', sans-serif;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        
+        /* THAI-FIRST TYPOGRAPHY HIERARCHY */
+        .thai-mega-text {
+            font-family: 'Sarabun', sans-serif;
+            font-size: clamp(3rem, 8vw, 8rem);
+            font-weight: 800;
+            line-height: 1.2;
+            letter-spacing: 0.02em;
+        }
+        
+        .german-subtitle {
+            font-family: 'Inter', -apple-system, sans-serif;
+            font-size: clamp(1.5rem, 4vw, 3rem);
+            font-weight: 600;
+            line-height: 1.4;
+            opacity: 0.85;
+        }
+        
+        .english-note {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(1rem, 2.5vw, 2rem);
+            font-weight: 500;
+            opacity: 0.7;
+        }
+        
+        /* STATUS MEGA HERO */
+        .status-hero {
+            height: 40vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        
+        /* TODAY DETAILS */
+        .today-details {
+            height: 25vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        
+        /* CONTACT & QR */
+        .contact-qr {
+            height: 25vh;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5vw;
+        }
+        
+        /* PERFORMANCE OPTIMIZATIONS */
+        .no-flicker {
+            will-change: transform;
+            backface-visibility: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* MEDICAL STATUS COLORS */
+        .status-open { background: linear-gradient(135deg, #059669, #10B981); }
+        .status-closed { background: linear-gradient(135deg, #DC2626, #EF4444); }
+        .status-warning { background: linear-gradient(135deg, #D97706, #F59E0B); }
+        
+        /* QR CODE POSITIONING */
+        .qr-fixed {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+        
+        /* CLOCK DISPLAY */
+        .mega-clock {
+            font-family: 'Kanit', monospace;
+            font-size: clamp(2rem, 6vw, 6rem);
+            font-weight: 800;
+            color: #0056B3;
+        }
+        
+        /* TOUCH-FRIENDLY ELEMENTS */
+        @media (max-width: 768px) {
+            .touch-optimized {
+                min-height: 60px;
+                min-width: 60px;
+            }
+        }
+    </style>
+</head>
+<body class="no-flicker">
+    <!-- HEADER: Zeit & Datum -->
+    <header class="text-center py-6 bg-white/90 backdrop-blur-sm">
+        <div class="mega-clock" id="live-clock">{{ now.strftime('%H:%M:%S') }}</div>
+        <div class="thai-mega-text text-2xl text-thai-respect">
+            {{ now.strftime('%A, %d %B %Y') }}
+        </div>
+        <div class="german-subtitle text-lg text-gray-600">Bangkok Zeit • Asia/Bangkok</div>
+    </header>
+
+    <!-- MEGA STATUS HERO - 40% SCREEN -->
+    <section class="status-hero">
+        {% if status.status_type == 'ANWESEND' %}
+            <div class="status-open rounded-3xl p-12 text-center text-white shadow-2xl max-w-4xl mx-auto">
+                <div class="mb-6">
+                    <i class="fas fa-heart-pulse text-8xl mb-4"></i>
+                </div>
+                <div class="thai-mega-text mb-4">เปิดให้บริการ</div>
+                <div class="german-subtitle mb-2">Wir sind für Sie da</div>
+                <div class="english-note">We are here for you</div>
+            </div>
+        {% elif status.status_type == 'URLAUB' %}
+            <div class="status-closed rounded-3xl p-12 text-center text-white shadow-2xl max-w-4xl mx-auto">
+                <div class="mb-6">
+                    <i class="fas fa-spa text-8xl mb-4"></i>
+                </div>
+                <div class="thai-mega-text mb-4">ปิดทำการชั่วคราว</div>
+                <div class="german-subtitle mb-2">Vorübergehend geschlossen</div>
+                <div class="english-note">Temporarily closed</div>
+                {% if status.to_date %}
+                <div class="mt-6 text-2xl">
+                    <span class="thai-mega-text text-3xl">กลับมา: {{ status.to_date.strftime('%d.%m.%Y') }}</span><br>
+                    <span class="german-subtitle text-xl">Zurück am: {{ status.to_date.strftime('%d.%m.%Y') }}</span>
+                </div>
+                {% endif %}
+            </div>
+        {% elif status.status_type == 'BILDUNGSURLAUB' %}
+            <div class="status-warning rounded-3xl p-12 text-center text-white shadow-2xl max-w-4xl mx-auto">
+                <div class="mb-6">
+                    <i class="fas fa-microscope text-8xl mb-4"></i>
+                </div>
+                <div class="thai-mega-text mb-4">อบรมเพิ่มพูนความรู้</div>
+                <div class="german-subtitle mb-2">Fortbildung</div>
+                <div class="english-note">Educational Training</div>
+                {% if status.to_date %}
+                <div class="mt-6 text-2xl">
+                    <span class="thai-mega-text text-3xl">กลับมา: {{ status.to_date.strftime('%d.%m.%Y') }}</span><br>
+                    <span class="german-subtitle text-xl">Zurück am: {{ status.to_date.strftime('%d.%m.%Y') }}</span>
+                </div>
+                {% endif %}
+            </div>
+        {% else %}
+            <div class="status-closed rounded-3xl p-12 text-center text-white shadow-2xl max-w-4xl mx-auto">
+                <div class="mb-6">
+                    <i class="fas fa-moon text-8xl mb-4"></i>
+                </div>
+                <div class="thai-mega-text mb-4">ปิดทำการ</div>
+                <div class="german-subtitle mb-2">Geschlossen</div>
+                <div class="english-note">Closed</div>
+            </div>
+        {% endif %}
+    </section>
+
+    <!-- HEUTE DETAILS - 25% SCREEN -->
+    <section class="today-details bg-white/80 mx-8 rounded-2xl shadow-xl">
+        <div class="text-center p-8">
+            <div class="thai-mega-text text-4xl text-thai-respect mb-6">วันนี้ • Heute • Today</div>
+            
+            {% if today_hours and status.status_type == 'ANWESEND' %}
+                <div class="grid grid-cols-2 gap-8">
+                    {% for hour_range in today_hours %}
+                        <div class="bg-medical-primary/10 rounded-xl p-6">
+                            <div class="text-4xl font-bold text-medical-primary mb-2">{{ hour_range }}</div>
+                            <div class="thai-mega-text text-lg text-thai-respect">เปิด</div>
+                            <div class="german-subtitle text-sm text-gray-600">Geöffnet</div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="bg-gray-200 rounded-xl p-8">
+                    <div class="text-5xl text-gray-500 mb-4">
+                        <i class="fas fa-calendar-times"></i>
+                    </div>
+                    <div class="thai-mega-text text-3xl text-gray-600 mb-2">ปิดวันนี้</div>
+                    <div class="german-subtitle text-xl text-gray-500">Heute geschlossen</div>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- KONTAKT & QR - 25% SCREEN -->
+    <section class="contact-qr bg-medical-primary/5 mx-8 rounded-2xl mt-6 p-8">
+        <div class="flex-1">
+            <div class="thai-mega-text text-2xl text-thai-respect mb-4">ติดต่อเรา • Kontakt</div>
+            
+            {% if config.contact.phone %}
+            <div class="flex items-center mb-4">
+                <i class="fas fa-phone-alt text-3xl text-medical-primary mr-6"></i>
+                <div>
+                    <div class="thai-mega-text text-xl">{{ config.contact.phone }}</div>
+                    <div class="german-subtitle text-sm text-gray-600">Telefon</div>
+                </div>
+            </div>
+            {% endif %}
+            
+            {% if config.contact.email %}
+            <div class="flex items-center">
+                <i class="fas fa-envelope text-3xl text-medical-primary mr-6"></i>
+                <div>
+                    <div class="thai-mega-text text-xl">{{ config.contact.email }}</div>
+                    <div class="german-subtitle text-sm text-gray-600">E-Mail</div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- QR CODE FIXED -->
+    <div class="qr-fixed">
+        <img src="/qr?size=120" alt="QR Portal" class="block">
+        <div class="text-center mt-3">
+            <div class="thai-mega-text text-sm font-bold">สแกนเพิ่มเติม</div>
+            <div class="german-subtitle text-xs text-gray-600">Scan für mehr Info</div>
+        </div>
+    </div>
+
+    <!-- PERFORMANCE-OPTIMIZED SCRIPTS -->
+    <script>
+        // ANTI-FLICKER CLOCK UPDATE
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('th-TH', {
+                hour: '2-digit',
+                minute: '2-digit', 
+                second: '2-digit',
+                timeZone: 'Asia/Bangkok'
+            });
+            
+            const clockElement = document.getElementById('live-clock');
+            if (clockElement && clockElement.textContent !== timeString) {
+                clockElement.textContent = timeString;
+            }
+        }
+        
+        // Update every second without flicker
+        setInterval(updateClock, 1000);
+        
+        // SMOOTH AUTO-REFRESH (5 minutes)
+        setTimeout(() => {
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+                position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+                background: linear-gradient(135deg, #F7FAFC, #EDF2F7);
+                display: flex; align-items: center; justify-content: center;
+                z-index: 10000; opacity: 0; transition: opacity 0.8s ease;
+            `;
+            overlay.innerHTML = `
+                <div style="text-align: center; color: #00A86B; font-family: 'Sarabun', sans-serif;">
+                    <div style="font-size: 4rem; margin-bottom: 2rem;">
+                        <i class="fas fa-sync-alt fa-spin"></i>
+                    </div>
+                    <div class="thai-mega-text" style="font-size: 2rem; font-weight: 800;">
+                        กำลังปรับปรุงข้อมูล
+                    </div>
+                    <div style="font-size: 1.2rem; opacity: 0.7; margin-top: 0.5rem;">
+                        Aktualisierung der Informationen
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+            requestAnimationFrame(() => {
+                overlay.style.opacity = '1';
+                setTimeout(() => window.location.reload(), 1200);
+            });
+        }, 300000); // 5 minutes
+        
+        // PERFORMANCE MONITORING
+        window.addEventListener('load', () => {
+            if (performance.memory && performance.memory.usedJSHeapSize > 50000000) {
+                console.warn('Memory usage high, consider refresh');
+            }
+        });
+    </script>
+</body>
+</html>

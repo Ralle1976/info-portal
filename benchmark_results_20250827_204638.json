@@ -1,0 +1,73 @@
+{
+  "benchmark_duration_seconds": 30,
+  "total_queries_executed": 4088,
+  "successful_queries": 4088,
+  "failed_queries": 0,
+  "average_execution_time_ms": 0.8637761573325213,
+  "min_execution_time_ms": 0.3981799818575382,
+  "max_execution_time_ms": 2.4423529976047575,
+  "queries_per_second": 136.26666666666668,
+  "slow_queries_count": 0,
+  "query_samples": [
+    {
+      "query": "SELECT * FROM announcement WHERE active = 1 AND la...",
+      "execution_time_ms": 2.4423529976047575,
+      "used_index": true,
+      "rows_returned": 1
+    },
+    {
+      "query": "SELECT * FROM status ORDER BY created_at DESC LIMI...",
+      "execution_time_ms": 1.2417470570653677,
+      "used_index": false,
+      "rows_returned": 1
+    },
+    {
+      "query": "SELECT * FROM standardhours ORDER BY day_of_week",
+      "execution_time_ms": 1.6841180040501058,
+      "used_index": true,
+      "rows_returned": 7
+    },
+    {
+      "query": "SELECT * FROM hourexception WHERE exception_date >...",
+      "execution_time_ms": 1.3572520110756159,
+      "used_index": true,
+      "rows_returned": 0
+    },
+    {
+      "query": "SELECT COUNT(*) FROM visitoranalytics WHERE visit_...",
+      "execution_time_ms": 1.1319160112179816,
+      "used_index": true,
+      "rows_returned": 1
+    },
+    {
+      "query": "SELECT page_path, COUNT(*) as views FROM visitoran...",
+      "execution_time_ms": 2.3140099947340786,
+      "used_index": true,
+      "rows_returned": 0
+    },
+    {
+      "query": "SELECT COUNT(*) FROM changelog WHERE created_at >=...",
+      "execution_time_ms": 1.6221309779211879,
+      "used_index": true,
+      "rows_returned": 1
+    },
+    {
+      "query": "SELECT * FROM availability WHERE availability_date...",
+      "execution_time_ms": 1.4944819849915802,
+      "used_index": true,
+      "rows_returned": 0
+    },
+    {
+      "query": "SELECT * FROM announcement WHERE active = 1 AND la...",
+      "execution_time_ms": 1.0017890017479658,
+      "used_index": true,
+      "rows_returned": 1
+    },
+    {
+      "query": "SELECT * FROM status ORDER BY created_at DESC LIMI...",
+      "execution_time_ms": 1.18167296750471,
+      "used_index": false,
+      "rows_returned": 1
+    }
+  ]
+}

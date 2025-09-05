@@ -1,0 +1,982 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Setup Wizard - {{ get_translation('site_title') }}{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/setup-wizard.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="wizard-container">
+    <!-- Wizard Progress Header -->
+    <div class="wizard-header">
+        <div class="wizard-progress">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="progress-steps">
+                <div class="step active" data-step="1">
+                    <div class="step-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <span class="step-label">Start</span>
+                </div>
+                <div class="step" data-step="2">
+                    <div class="step-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <span class="step-label">Standort</span>
+                </div>
+                <div class="step" data-step="3">
+                    <div class="step-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <span class="step-label">Öffnungszeiten</span>
+                </div>
+                <div class="step" data-step="4">
+                    <div class="step-icon">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <span class="step-label">Design</span>
+                </div>
+                <div class="step" data-step="5">
+                    <div class="step-icon">
+                        <i class="fas fa-desktop"></i>
+                    </div>
+                    <span class="step-label">Kiosk</span>
+                </div>
+                <div class="step" data-step="6">
+                    <div class="step-icon">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <span class="step-label">System</span>
+                </div>
+                <div class="step" data-step="7">
+                    <div class="step-icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <span class="step-label">Fertig</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Wizard Content -->
+    <div class="wizard-content">
+        <form id="wizard-form" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            
+            <!-- Step 1: Welcome -->
+            <div class="wizard-step active" data-step="1">
+                <div class="step-content">
+                    <div class="welcome-section">
+                        <div class="welcome-icon">
+                            <i class="fas fa-magic text-6xl text-thai-turquoise"></i>
+                        </div>
+                        <h1 class="text-4xl font-bold text-gray-800 mb-4">
+                            Willkommen zum Setup-Wizard!
+                        </h1>
+                        <p class="text-xl text-gray-600 mb-8">
+                            Konfigurieren Sie Ihr QR-Info-Portal in wenigen einfachen Schritten.
+                            Der Wizard führt Sie durch alle wichtigen Einstellungen.
+                        </p>
+                        
+                        <div class="feature-grid">
+                            <div class="feature-item">
+                                <i class="fas fa-globe text-2xl text-thai-turquoise mb-2"></i>
+                                <h3>Mehrsprachig</h3>
+                                <p>Deutsch, Thai, Englisch</p>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-mobile-alt text-2xl text-thai-turquoise mb-2"></i>
+                                <h3>Responsiv</h3>
+                                <p>Für alle Geräte optimiert</p>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-qrcode text-2xl text-thai-turquoise mb-2"></i>
+                                <h3>QR-Integration</h3>
+                                <p>Automatische QR-Code Generierung</p>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-tv text-2xl text-thai-turquoise mb-2"></i>
+                                <h3>Kiosk-Modi</h3>
+                                <p>Professionelle Display-Modi</p>
+                            </div>
+                        </div>
+                        
+                        <div class="setup-type-selection">
+                            <h3 class="text-lg font-semibold mb-4">Setup-Typ wählen:</h3>
+                            <div class="setup-options">
+                                <label class="setup-option">
+                                    <input type="radio" name="setup_type" value="quick" checked>
+                                    <div class="option-card">
+                                        <i class="fas fa-bolt text-2xl text-blue-500"></i>
+                                        <h4>Schnellsetup</h4>
+                                        <p>Grundkonfiguration (5 Min)</p>
+                                    </div>
+                                </label>
+                                <label class="setup-option">
+                                    <input type="radio" name="setup_type" value="detailed">
+                                    <div class="option-card">
+                                        <i class="fas fa-cogs text-2xl text-purple-500"></i>
+                                        <h4>Detailliert</h4>
+                                        <p>Alle Optionen (15 Min)</p>
+                                    </div>
+                                </label>
+                                <label class="setup-option">
+                                    <input type="radio" name="setup_type" value="advanced">
+                                    <div class="option-card">
+                                        <i class="fas fa-rocket text-2xl text-red-500"></i>
+                                        <h4>Erweitert</h4>
+                                        <p>Für Profis (20+ Min)</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Location & Contact -->
+            <div class="wizard-step" data-step="2">
+                <div class="step-content">
+                    <h2 class="step-title">
+                        <i class="fas fa-building mr-3"></i>
+                        Standort & Kontaktinformationen
+                    </h2>
+                    
+                    <div class="form-section">
+                        <div class="section-header">
+                            <h3>Grundinformationen</h3>
+                            <p>Diese Informationen werden auf der Hauptseite angezeigt</p>
+                        </div>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="site_name" class="required">Name der Einrichtung</label>
+                                <input type="text" id="site_name" name="site_name" 
+                                       value="{{ config.site.name if config and config.site else 'Labor Pattaya - Blutabnahme' }}"
+                                       placeholder="z.B. Labor Pattaya - Blutabnahme" required>
+                                <small class="form-help">Wird als Haupttitel angezeigt</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="site_subtitle">Untertitel</label>
+                                <input type="text" id="site_subtitle" name="site_subtitle" 
+                                       value="{{ config.site.subtitle if config and config.site else 'Medizinisches Labor' }}"
+                                       placeholder="z.B. Medizinisches Labor">
+                                <small class="form-help">Optionaler Beschreibungstext</small>
+                            </div>
+                        </div>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="contact_phone" class="required">Telefonnummer</label>
+                                <input type="tel" id="contact_phone" name="contact_phone" 
+                                       value="{{ config.contact.phone if config and config.contact else '+66 ' }}"
+                                       placeholder="+66 123 456 789" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="contact_email" class="required">E-Mail Adresse</label>
+                                <input type="email" id="contact_email" name="contact_email" 
+                                       value="{{ config.contact.email if config and config.contact else 'info@laborpattaya.com' }}"
+                                       placeholder="info@laborpattaya.com" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <div class="section-header">
+                            <h3>Adresse & Standort</h3>
+                            <p>Für Anfahrtsbeschreibung und Karten-Integration</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="address" class="required">Vollständige Adresse</label>
+                            <textarea id="address" name="address" rows="3" required
+                                      placeholder="Straße, Hausnummer&#10;Stadt, Postleitzahl&#10;Thailand">{{ config.location.address if config and config.location else '' }}</textarea>
+                        </div>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="latitude">Breitengrad</label>
+                                <input type="number" id="latitude" name="latitude" step="0.000001" 
+                                       value="{{ config.location.latitude if config and config.location else '12.923556' }}"
+                                       placeholder="12.923556">
+                                <small class="form-help">Für Google Maps (optional)</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="longitude">Längengrad</label>
+                                <input type="number" id="longitude" name="longitude" step="0.000001" 
+                                       value="{{ config.location.longitude if config and config.location else '100.882507' }}"
+                                       placeholder="100.882507">
+                                <small class="form-help">Für Google Maps (optional)</small>
+                            </div>
+                        </div>
+                        
+                        <div class="location-helper">
+                            <button type="button" class="btn btn-outline" onclick="getCurrentLocation()">
+                                <i class="fas fa-crosshairs mr-2"></i>
+                                Aktuelle Position verwenden
+                            </button>
+                            <button type="button" class="btn btn-outline" onclick="openMapSelector()">
+                                <i class="fas fa-map-marked-alt mr-2"></i>
+                                Auf Karte auswählen
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <div class="section-header">
+                            <h3>Mehrsprachigkeit</h3>
+                            <p>Welche Sprachen soll Ihr Portal unterstützen?</p>
+                        </div>
+                        
+                        <div class="language-selection">
+                            <label class="language-option">
+                                <input type="checkbox" name="languages" value="de" checked>
+                                <div class="language-card">
+                                    <div class="flag">🇩🇪</div>
+                                    <div class="language-info">
+                                        <h4>Deutsch</h4>
+                                        <p>Hauptsprache</p>
+                                    </div>
+                                </div>
+                            </label>
+                            
+                            <label class="language-option">
+                                <input type="checkbox" name="languages" value="th" checked>
+                                <div class="language-card">
+                                    <div class="flag">🇹🇭</div>
+                                    <div class="language-info">
+                                        <h4>ไทย (Thai)</h4>
+                                        <p>Lokalsprache</p>
+                                    </div>
+                                </div>
+                            </label>
+                            
+                            <label class="language-option">
+                                <input type="checkbox" name="languages" value="en" checked>
+                                <div class="language-card">
+                                    <div class="flag">🇺🇸</div>
+                                    <div class="language-info">
+                                        <h4>English</h4>
+                                        <p>International</p>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="default_language">Standard-Sprache</label>
+                            <select id="default_language" name="default_language">
+                                <option value="de" selected>{{ t('language_german') }}</option>
+                                <option value="th">{{ t('language_thai') }}</option>
+                                <option value="en">{{ t('language_english') }}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Opening Hours -->
+            <div class="wizard-step" data-step="3">
+                <div class="step-content">
+                    <h2 class="step-title">
+                        <i class="fas fa-clock mr-3"></i>
+                        Öffnungszeiten konfigurieren
+                    </h2>
+                    
+                    <div class="form-section">
+                        <div class="section-header">
+                            <h3>Standard-Öffnungszeiten</h3>
+                            <p>Legen Sie Ihre regulären Öffnungszeiten fest</p>
+                        </div>
+                        
+                        <div class="hours-grid">
+                            {% for day, day_name in [('monday', 'Montag'), ('tuesday', 'Dienstag'), ('wednesday', 'Mittwoch'), ('thursday', 'Donnerstag'), ('friday', 'Freitag'), ('saturday', 'Samstag'), ('sunday', 'Sonntag')] %}
+                            <div class="day-hours-card">
+                                <div class="day-header">
+                                    <label class="day-toggle">
+                                        <input type="checkbox" name="{{ day }}_enabled" checked>
+                                        <span class="day-name">{{ day_name }}</span>
+                                    </label>
+                                </div>
+                                
+                                <div class="time-ranges" id="{{ day }}_times">
+                                    <div class="time-range">
+                                        <input type="time" name="{{ day }}_start_1" value="{% if day in ['monday', 'tuesday', 'thursday'] %}08:30{% elif day == 'wednesday' %}08:30{% elif day == 'friday' %}08:30{% else %}{% endif %}">
+                                        <span class="time-separator">bis</span>
+                                        <input type="time" name="{{ day }}_end_1" value="{% if day in ['monday', 'tuesday', 'thursday'] %}12:00{% elif day == 'wednesday' %}12:00{% elif day == 'friday' %}13:00{% else %}{% endif %}">
+                                        <button type="button" class="btn-remove-time" onclick="removeTimeRange(this)">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                    
+                                    {% if day in ['monday', 'tuesday', 'thursday'] %}
+                                    <div class="time-range">
+                                        <input type="time" name="{{ day }}_start_2" value="13:00">
+                                        <span class="time-separator">bis</span>
+                                        <input type="time" name="{{ day }}_end_2" value="16:00">
+                                        <button type="button" class="btn-remove-time" onclick="removeTimeRange(this)">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <button type="button" class="btn-add-time" onclick="addTimeRange('{{ day }}')">
+                                    <i class="fas fa-plus mr-2"></i>Zeitraum hinzufügen
+                                </button>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <div class="section-header">
+                            <h3>Zeitzone</h3>
+                            <p>Stellen Sie sicher, dass die richtige Zeitzone verwendet wird</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="timezone">Zeitzone</label>
+                            <select id="timezone" name="timezone">
+                                <option value="Asia/Bangkok" selected>Asia/Bangkok ({{ t('timezone_thailand') }})</option>
+                                <option value="Europe/Berlin">Europe/Berlin ({{ t('timezone_germany') }})</option>
+                                <option value="America/New_York">America/New_York ({{ t('timezone_usa_east') }})</option>
+                                <option value="America/Los_Angeles">America/Los_Angeles ({{ t('timezone_usa_west') }})</option>
+                                <option value="Asia/Tokyo">Asia/Tokyo ({{ t('timezone_japan') }})</option>
+                                <option value="UTC">UTC ({{ t('timezone_utc') }})</option>
+                            </select>
+                            <small class="form-help">Aktuelle Zeit in gewählter Zeitzone: <span id="current-time-preview">--:--:--</span></small>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <div class="section-header">
+                            <h3>Feiertage & Ausnahmen</h3>
+                            <p>Definieren Sie besondere Tage mit abweichenden Öffnungszeiten</p>
+                        </div>
+                        
+                        <div class="exceptions-container" id="exceptions-container">
+                            <!-- Exceptions will be added here dynamically -->
+                        </div>
+                        
+                        <button type="button" class="btn btn-outline" onclick="addException()">
+                            <i class="fas fa-plus mr-2"></i>Ausnahme hinzufügen
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Design & Theme -->
+            <div class="wizard-step" data-step="4">
+                <div class="step-content">
+                    <h2 class="step-title">
+                        <i class="fas fa-palette mr-3"></i>
+                        Design & Theme anpassen
+                    </h2>
+                    
+                    <div class="form-section">
+                        <div class="section-header">
+                            <h3>{{ get_translation('admin.setup.color_scheme.title') }}</h3>
+                            <p>{{ get_translation('admin.setup.color_scheme.description') }}</p>
+                        </div>
+                        
+                        <div class="theme-selection">
+                            <label class="theme-option">
+                                <input type="radio" name="theme" value="medical" checked>
+                                <div class="theme-preview" data-theme="medical">
+                                    <div class="theme-colors">
+                                        <div class="color" style="background: #00A86B;"></div>
+                                        <div class="color" style="background: #40E0D0;"></div>
+                                        <div class="color" style="background: #FF7F50;"></div>
+                                    </div>
+                                    <h4>Medical</h4>
+                                    <p>Professionell & vertrauenswürdig</p>
+                                </div>
+                            </label>
+                            
+                            <label class="theme-option">
+                                <input type="radio" name="theme" value="thai">
+                                <div class="theme-preview" data-theme="thai">
+                                    <div class="theme-colors">
+                                        <div class="color" style="background: #FFD700;"></div>
+                                        <div class="color" style="background: #FF7F50;"></div>
+                                        <div class="color" style="background: #40E0D0;"></div>
+                                    </div>
+                                    <h4>Thai Gold</h4>
+                                    <p>Warm & einladend</p>
+                                </div>
+                            </label>
+                            
+                            <label class="theme-option">
+                                <input type="radio" name="theme" value="modern">
+                                <div class="theme-preview" data-theme="modern">
+                                    <div class="theme-colors">
+                                        <div class="color" style="background: #667EEA;"></div>
+                                        <div class="color" style="background: #764BA2;"></div>
+                                        <div class="color" style="background: #F093FB;"></div>
+                                    </div>
+                                    <h4>Modern</h4>
+                                    <p>Zeitgemäß & elegant</p>
+                                </div>
+                            </label>
+                            
+                            <label class="theme-option">
+                                <input type="radio" name="theme" value="nature">
+                                <div class="theme-preview" data-theme="nature">
+                                    <div class="theme-colors">
+                                        <div class="color" style="background: #56AB2F;"></div>
+                                        <div class="color" style="background: #A8E6CF;"></div>
+                                        <div class="color" style="background: #7F8C8D;"></div>
+                                    </div>
+                                    <h4>Nature</h4>
+                                    <p>Natürlich & beruhigend</p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <div class="section-header">
+                            <h3>Layout-Optionen</h3>
+                            <p>Anpassungen für die Darstellung</p>
+                        </div>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="header_style">Header-Stil</label>
+                                <select id="header_style" name="header_style">
+                                    <option value="gradient">Gradient (Standard)</option>
+                                    <option value="solid">Einfarbig</option>
+                                    <option value="minimal">Minimal</option>
+                                    <option value="professional">Professionell</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="card_style">Karten-Design</label>
+                                <select id="card_style" name="card_style">
+                                    <option value="rounded">Abgerundet (Standard)</option>
+                                    <option value="sharp">Eckig</option>
+                                    <option value="minimal">Minimal</option>
+                                    <option value="elevated">Erhöht</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="toggle-options">
+                            <label class="toggle-option">
+                                <input type="checkbox" name="show_animations" checked>
+                                <span class="toggle-label">Animationen aktivieren</span>
+                                <small>Sanfte Übergänge und Animationen</small>
+                            </label>
+                            
+                            <label class="toggle-option">
+                                <input type="checkbox" name="dark_mode_support">
+                                <span class="toggle-label">Dark Mode Support</span>
+                                <small>Automatische Dunkler-Modus-Erkennung</small>
+                            </label>
+                            
+                            <label class="toggle-option">
+                                <input type="checkbox" name="high_contrast">
+                                <span class="toggle-label">Barrierefreiheit</span>
+                                <small>Hohe Kontraste für bessere Lesbarkeit</small>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <div class="section-header">
+                            <h3>Logo & Branding</h3>
+                            <p>Personalisieren Sie das Erscheinungsbild</p>
+                        </div>
+                        
+                        <div class="logo-upload-section">
+                            <div class="logo-preview">
+                                <div class="logo-placeholder">
+                                    <i class="fas fa-stethoscope text-4xl text-gray-400"></i>
+                                    <p>Standard-Icon</p>
+                                </div>
+                            </div>
+                            
+                            <div class="upload-controls">
+                                <input type="file" id="logo_upload" name="logo" accept="image/*" style="display: none;">
+                                <button type="button" class="btn btn-outline" onclick="document.getElementById('logo_upload').click()">
+                                    <i class="fas fa-upload mr-2"></i>Logo hochladen
+                                </button>
+                                <button type="button" class="btn btn-outline" onclick="resetLogo()">
+                                    <i class="fas fa-undo mr-2"></i>Zurücksetzen
+                                </button>
+                                <small class="form-help">
+                                    PNG oder SVG, max. 2MB, empfohlen: 200x200px
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="design-preview">
+                        <h3>Vorschau</h3>
+                        <div class="preview-container" id="design-preview">
+                            <!-- Live preview will be rendered here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5: Kiosk Configuration -->
+            <div class="wizard-step" data-step="5">
+                <div class="step-content">
+                    <h2 class="step-title">
+                        <i class="fas fa-desktop mr-3"></i>
+                        Kiosk-Modi konfigurieren
+                    </h2>
+                    
+                    <div class="form-section">
+                        <div class="section-header">
+                            <h3>Kiosk-Modi aktivieren</h3>
+                            <p>Welche Display-Modi sollen verfügbar sein?</p>
+                        </div>
+                        
+                        <div class="kiosk-modes-grid">
+                            <label class="kiosk-mode-option">
+                                <input type="checkbox" name="kiosk_modes" value="single" checked>
+                                <div class="mode-preview">
+                                    <div class="mode-mockup single-mode">
+                                        <div class="mock-header"></div>
+                                        <div class="mock-content">
+                                            <div class="mock-status"></div>
+                                            <div class="mock-time"></div>
+                                        </div>
+                                    </div>
+                                    <h4>Single Mode</h4>
+                                    <p>Fokussierte Einzelansicht</p>
+                                    <ul>
+                                        <li>✓ Aktueller Status</li>
+                                        <li>✓ Heutige Zeiten</li>
+                                        <li>✓ Große Schrift</li>
+                                    </ul>
+                                </div>
+                            </label>
+                            
+                            <label class="kiosk-mode-option">
+                                <input type="checkbox" name="kiosk_modes" value="triple" checked>
+                                <div class="mode-preview">
+                                    <div class="mode-mockup triple-mode">
+                                        <div class="mock-header"></div>
+                                        <div class="mock-columns">
+                                            <div class="mock-col"></div>
+                                            <div class="mock-col"></div>
+                                            <div class="mock-col"></div>
+                                        </div>
+                                    </div>
+                                    <h4>Triple Mode</h4>
+                                    <p>Übersichtliche 3-Spalten-Ansicht</p>
+                                    <ul>
+                                        <li>✓ Heute | Woche | Vorschau</li>
+                                        <li>✓ Maximale Information</li>
+                                        <li>✓ Für große Displays</li>
+                                    </ul>
+                                </div>
+                            </label>
+                            
+                            <label class="kiosk-mode-option">
+                                <input type="checkbox" name="kiosk_modes" value="rotation">
+                                <div class="mode-preview">
+                                    <div class="mode-mockup rotation-mode">
+                                        <div class="mock-header"></div>
+                                        <div class="mock-rotating">
+                                            <div class="mock-slide active"></div>
+                                            <div class="mock-slide"></div>
+                                            <div class="mock-slide"></div>
+                                        </div>
+                                    </div>
+                                    <h4>Rotation Mode</h4>
+                                    <p>Automatischer Wechsel</p>
+                                    <ul>
+                                        <li>✓ Rotierende Inhalte</li>
+                                        <li>✓ Anpassbare Intervalle</li>
+                                        <li>✓ Ideal für Wartebereiche</li>
+                                    </ul>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <div class="section-header">
+                            <h3>Kiosk-Verhalten</h3>
+                            <p>Technische Einstellungen für den Kiosk-Betrieb</p>
+                        </div>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="kiosk_refresh_interval">Auto-Refresh (Sekunden)</label>
+                                <input type="number" id="kiosk_refresh_interval" name="kiosk_refresh_interval" 
+                                       min="30" max="600" value="120">
+                                <small class="form-help">Automatische Aktualisierung alle X Sekunden</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="kiosk_font_scale">Schriftgröße</label>
+                                <select id="kiosk_font_scale" name="kiosk_font_scale">
+                                    <option value="0.8">Klein (80%)</option>
+                                    <option value="1.0" selected>Normal (100%)</option>
+                                    <option value="1.2">Groß (120%)</option>
+                                    <option value="1.5">Sehr groß (150%)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="toggle-options">
+                            <label class="toggle-option">
+                                <input type="checkbox" name="kiosk_fullscreen" checked>
+                                <span class="toggle-label">Auto-Vollbild</span>
+                                <small>Automatisch in Vollbildmodus wechseln</small>
+                            </label>
+                            
+                            <label class="toggle-option">
+                                <input type="checkbox" name="kiosk_disable_zoom" checked>
+                                <span class="toggle-label">Zoom deaktivieren</span>
+                                <small>Verhindert ungewolltes Zoomen</small>
+                            </label>
+                            
+                            <label class="toggle-option">
+                                <input type="checkbox" name="kiosk_show_qr" checked>
+                                <span class="toggle-label">QR-Code anzeigen</span>
+                                <small>QR-Code für mobile Nutzer einblenden</small>
+                            </label>
+                            
+                            <label class="toggle-option">
+                                <input type="checkbox" name="kiosk_hide_cursor">
+                                <span class="toggle-label">Cursor verbergen</span>
+                                <small>Mauszeiger nach Inaktivität ausblenden</small>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <div class="section-header">
+                            <h3>Display-Anpassungen</h3>
+                            <p>Optimierungen für verschiedene Bildschirmgrößen</p>
+                        </div>
+                        
+                        <div class="display-presets">
+                            <div class="preset-option">
+                                <h4>24" Monitor (1920x1080)</h4>
+                                <button type="button" class="btn btn-outline" onclick="applyDisplayPreset('monitor-24')">
+                                    Einstellungen übernehmen
+                                </button>
+                            </div>
+                            
+                            <div class="preset-option">
+                                <h4>32" TV (1920x1080)</h4>
+                                <button type="button" class="btn btn-outline" onclick="applyDisplayPreset('tv-32')">
+                                    Einstellungen übernehmen
+                                </button>
+                            </div>
+                            
+                            <div class="preset-option">
+                                <h4>43" TV (3840x2160)</h4>
+                                <button type="button" class="btn btn-outline" onclick="applyDisplayPreset('tv-43-4k')">
+                                    Einstellungen übernehmen
+                                </button>
+                            </div>
+                            
+                            <div class="preset-option">
+                                <h4>Tablet (1024x768)</h4>
+                                <button type="button" class="btn btn-outline" onclick="applyDisplayPreset('tablet')">
+                                    Einstellungen übernehmen
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 6: System Settings -->
+            <div class="wizard-step" data-step="6">
+                <div class="step-content">
+                    <h2 class="step-title">
+                        <i class="fas fa-cog mr-3"></i>
+                        Erweiterte Systemeinstellungen
+                    </h2>
+                    
+                    <div class="form-section">
+                        <div class="section-header">
+                            <h3>Performance & Caching</h3>
+                            <p>Optimierungen für bessere Leistung</p>
+                        </div>
+                        
+                        <div class="toggle-options">
+                            <label class="toggle-option">
+                                <input type="checkbox" name="enable_caching" checked>
+                                <span class="toggle-label">Caching aktivieren</span>
+                                <small>Verbessert die Ladezeiten</small>
+                            </label>
+                            
+                            <label class="toggle-option">
+                                <input type="checkbox" name="compress_responses" checked>
+                                <span class="toggle-label">Komprimierung</span>
+                                <small>Reduziert Datenverbrauch</small>
+                            </label>
+                            
+                            <label class="toggle-option">
+                                <input type="checkbox" name="preload_resources">
+                                <span class="toggle-label">Resource Preloading</span>
+                                <small>Lädt Ressourcen im Voraus</small>
+                            </label>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="cache_duration">Cache-Dauer (Minuten)</label>
+                            <input type="number" id="cache_duration" name="cache_duration" 
+                                   min="1" max="1440" value="60">
+                            <small class="form-help">Wie lange sollen Daten zwischengespeichert werden?</small>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <div class="section-header">
+                            <h3>Sicherheitseinstellungen</h3>
+                            <p>Schutz und Zugriffskontrolle</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="admin_password" class="required">Admin-Passwort</label>
+                            <input type="password" id="admin_password" name="admin_password" 
+                                   placeholder="Sicheres Passwort eingeben" required>
+                            <div class="password-strength" id="password-strength">
+                                <div class="strength-bar"></div>
+                                <span class="strength-text">Passwortstärke</span>
+                            </div>
+                            <small class="form-help">Minimum 8 Zeichen, Groß-/Kleinbuchstaben, Zahlen</small>
+                        </div>
+                        
+                        <div class="toggle-options">
+                            <label class="toggle-option">
+                                <input type="checkbox" name="enable_rate_limiting" checked>
+                                <span class="toggle-label">Rate Limiting</span>
+                                <small>Schutz vor zu vielen Anfragen</small>
+                            </label>
+                            
+                            <label class="toggle-option">
+                                <input type="checkbox" name="enable_csrf_protection" checked>
+                                <span class="toggle-label">CSRF-Schutz</span>
+                                <small>Schutz vor Cross-Site-Angriffen</small>
+                            </label>
+                            
+                            <label class="toggle-option">
+                                <input type="checkbox" name="log_admin_actions" checked>
+                                <span class="toggle-label">Admin-Aktionen protokollieren</span>
+                                <small>Alle Änderungen werden aufgezeichnet</small>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <div class="section-header">
+                            <h3>Backup & Wartung</h3>
+                            <p>Datensicherung und Systemwartung</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="auto_backup">Automatische Backups</label>
+                            <select id="auto_backup" name="auto_backup">
+                                <option value="disabled">Deaktiviert</option>
+                                <option value="daily" selected>Täglich</option>
+                                <option value="weekly">Wöchentlich</option>
+                                <option value="monthly">Monatlich</option>
+                            </select>
+                        </div>
+                        
+                        <div class="toggle-options">
+                            <label class="toggle-option">
+                                <input type="checkbox" name="auto_cleanup" checked>
+                                <span class="toggle-label">Automatische Bereinigung</span>
+                                <small>Alte Logs und temporäre Dateien entfernen</small>
+                            </label>
+                            
+                            <label class="toggle-option">
+                                <input type="checkbox" name="health_monitoring">
+                                <span class="toggle-label">System-Monitoring</span>
+                                <small>Überwachung der Systemleistung</small>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <div class="section-header">
+                            <h3>QR-Code Konfiguration</h3>
+                            <p>Einstellungen für QR-Code Generierung</p>
+                        </div>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="qr_size">Standard QR-Code Größe</label>
+                                <select id="qr_size" name="qr_size">
+                                    <option value="100">Klein (100x100px)</option>
+                                    <option value="150" selected>Normal (150x150px)</option>
+                                    <option value="200">Groß (200x200px)</option>
+                                    <option value="300">Sehr groß (300x300px)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="qr_error_correction">Fehlerkorrektur</label>
+                                <select id="qr_error_correction" name="qr_error_correction">
+                                    <option value="L">Niedrig (7%)</option>
+                                    <option value="M" selected>Normal (15%)</option>
+                                    <option value="Q">Hoch (25%)</option>
+                                    <option value="H">Sehr hoch (30%)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="toggle-options">
+                            <label class="toggle-option">
+                                <input type="checkbox" name="qr_include_logo">
+                                <span class="toggle-label">Logo in QR-Code einbetten</span>
+                                <small>Fügt Ihr Logo in die Mitte des QR-Codes ein</small>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 7: Final Review & Completion -->
+            <div class="wizard-step" data-step="7">
+                <div class="step-content">
+                    <h2 class="step-title">
+                        <i class="fas fa-check mr-3"></i>
+                        Konfiguration abschließen
+                    </h2>
+                    
+                    <div class="completion-summary">
+                        <div class="summary-section">
+                            <h3>Zusammenfassung Ihrer Einstellungen</h3>
+                            <div id="config-summary">
+                                <!-- Summary will be populated by JavaScript -->
+                            </div>
+                        </div>
+                        
+                        <div class="final-actions">
+                            <div class="action-cards">
+                                <div class="action-card">
+                                    <i class="fas fa-rocket text-3xl text-blue-500 mb-4"></i>
+                                    <h4>Konfiguration speichern</h4>
+                                    <p>Alle Einstellungen werden angewendet und das Portal ist bereit</p>
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="fas fa-save mr-2"></i>
+                                        Jetzt speichern & starten
+                                    </button>
+                                </div>
+                                
+                                <div class="action-card">
+                                    <i class="fas fa-eye text-3xl text-green-500 mb-4"></i>
+                                    <h4>Vorschau testen</h4>
+                                    <p>Sehen Sie sich das Portal mit Ihren Einstellungen an</p>
+                                    <button type="button" class="btn btn-outline btn-lg" onclick="openPreview()">
+                                        <i class="fas fa-external-link-alt mr-2"></i>
+                                        Vorschau öffnen
+                                    </button>
+                                </div>
+                                
+                                <div class="action-card">
+                                    <i class="fas fa-download text-3xl text-purple-500 mb-4"></i>
+                                    <h4>Backup erstellen</h4>
+                                    <p>Sichern Sie Ihre Konfiguration für später</p>
+                                    <button type="button" class="btn btn-outline btn-lg" onclick="downloadConfig()">
+                                        <i class="fas fa-download mr-2"></i>
+                                        Config herunterladen
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="next-steps">
+                        <h3>Nächste Schritte nach dem Setup:</h3>
+                        <div class="steps-grid">
+                            <div class="next-step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h4>QR-Codes drucken</h4>
+                                    <p>Erstellen und drucken Sie QR-Codes für Ihre Eingangstür</p>
+                                </div>
+                            </div>
+                            
+                            <div class="next-step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h4>Kiosk-Displays einrichten</h4>
+                                    <p>Konfigurieren Sie Tablets oder Monitore für den Kiosk-Modus</p>
+                                </div>
+                            </div>
+                            
+                            <div class="next-step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h4>Status & Zeiten pflegen</h4>
+                                    <p>Halten Sie Öffnungszeiten und Status aktuell</p>
+                                </div>
+                            </div>
+                            
+                            <div class="next-step">
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <h4>Feedback sammeln</h4>
+                                    <p>Beobachten Sie die Nutzung und optimieren Sie bei Bedarf</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- Wizard Navigation -->
+    <div class="wizard-navigation">
+        <button type="button" id="btn-previous" class="btn btn-outline" disabled>
+            <i class="fas fa-arrow-left mr-2"></i>Zurück
+        </button>
+        
+        <div class="nav-info">
+            <span id="step-counter">Schritt 1 von 7</span>
+        </div>
+        
+        <button type="button" id="btn-next" class="btn btn-primary">
+            Weiter<i class="fas fa-arrow-right ml-2"></i>
+        </button>
+    </div>
+</div>
+
+<!-- Modals -->
+<div id="map-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Standort auf Karte wählen</h3>
+            <button type="button" class="modal-close" onclick="closeMapModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div id="map-container" style="height: 400px;"></div>
+            <p class="mt-4">Klicken Sie auf die Karte, um Ihren Standort zu markieren.</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline" onclick="closeMapModal()">Abbrechen</button>
+            <button type="button" class="btn btn-primary" onclick="confirmMapSelection()">Übernehmen</button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/setup-wizard.js') }}"></script>
+{% endblock %}

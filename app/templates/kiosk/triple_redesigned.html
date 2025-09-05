@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="{{ i18n.get_current_language() }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>{{ config.site.name }} - Triple Kiosk</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Thai-optimized fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;800&family=Kanit:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'medical-primary': '#00A86B',
+                        'medical-secondary': '#0056B3', 
+                        'thai-accent': '#B8860B',
+                        'status-open': '#059669',
+                        'status-closed': '#DC2626',
+                        'status-warning': '#D97706',
+                        'thai-respect': '#4A5568',
+                        'thai-calm': '#F7FAFC'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #F7FAFC 0%, #EDF2F7 50%, #E2E8F0 100%);
+            font-family: 'Sarabun', sans-serif;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        
+        /* THAI-FIRST TYPOGRAPHY */
+        .thai-primary {
+            font-family: 'Sarabun', sans-serif;
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+            font-weight: 700;
+            line-height: 1.3;
+            letter-spacing: 0.01em;
+        }
+        
+        .german-secondary {
+            font-family: 'Inter', -apple-system, sans-serif;
+            font-size: clamp(1rem, 2vw, 1.5rem);
+            font-weight: 600;
+            opacity: 0.85;
+        }
+        
+        .english-tertiary {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(0.8rem, 1.5vw, 1.2rem);
+            font-weight: 500;
+            opacity: 0.7;
+        }
+        
+        /* 3-COLUMN LAYOUT */
+        .triple-grid {
+            height: calc(100vh - 120px);
+            display: grid;
+            grid-template-columns: 35% 35% 30%;
+            gap: 2rem;
+            padding: 1rem;
+        }
+        
+        .column {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            overflow-y: auto;
+            border: 2px solid #E2E8F0;
+        }
+        
+        .column-header {
+            background: linear-gradient(135deg, #00A86B, #0056B3);
+            color: white;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        /* STATUS INDICATORS */
+        .status-indicator {
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .status-open { background: linear-gradient(135deg, #059669, #10B981); color: white; }
+        .status-closed { background: linear-gradient(135deg, #DC2626, #EF4444); color: white; }
+        .status-warning { background: linear-gradient(135deg, #D97706, #F59E0B); color: white; }
+        
+        /* WEEK SCHEDULE STYLING */
+        .week-day {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            border-radius: 0.5rem;
+            border: 1px solid #E2E8F0;
+        }
+        
+        .week-day.today {
+            background: linear-gradient(135deg, #00A86B20, #0056B320);
+            border-color: #00A86B;
+        }
+        
+        /* AVAILABILITY SLOTS */
+        .availability-slot {
+            background: linear-gradient(135deg, #F0FDF4, #E0F2FE);
+            border: 1px solid #00A86B40;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+        
+        /* MEGA CLOCK */
+        .mega-clock {
+            font-family: 'Kanit', monospace;
+            font-size: clamp(1.5rem, 4vw, 3rem);
+            font-weight: 800;
+            color: #0056B3;
+        }
+        
+        /* PERFORMANCE OPTIMIZATIONS */
+        .no-flicker {
+            will-change: transform;
+            backface-visibility: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+    </style>
+</head>
+<body class="no-flicker">
+    <!-- HEADER: Zeit & Titel -->
+    <header class="bg-white/90 backdrop-blur-sm py-4 border-b border-gray-200">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <div>
+                <div class="thai-primary text-medical-primary">
+                    🩺 ห้องปฏิบัติการพัทยา
+                </div>
+                <div class="german-secondary text-gray-600">
+                    Labor Pattaya • Medical Laboratory
+                </div>
+            </div>
+            <div class="text-right">
+                <div class="mega-clock" id="live-clock">{{ now.strftime('%H:%M:%S') }}</div>
+                <div class="german-secondary text-gray-600">Bangkok Zeit</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 3-COLUMN MAIN CONTENT -->
+    <main class="triple-grid">
+        
+        <!-- SPALTE 1: HEUTE FOKUS (35%) -->
+        <section class="column">
+            <div class="column-header">
+                <div class="thai-primary mb-2">วันนี้</div>
+                <div class="german-secondary">Heute</div>
+                <div class="english-tertiary">Today</div>
+            </div>
+            
+            <!-- STATUS MEGA DISPLAY -->
+            {% if status.status_type == 'ANWESEND' %}
+                <div class="status-indicator status-open">
+                    <div class="text-4xl mb-2">
+                        <i class="fas fa-heart-pulse"></i>
+                    </div>
+                    <div class="thai-primary mb-1">เปิดให้บริการ</div>
+                    <div class="german-secondary mb-1">Geöffnet</div>
+                    <div class="english-tertiary">Open</div>
+                </div>
+            {% elif status.status_type == 'URLAUB' %}
+                <div class="status-indicator status-closed">
+                    <div class="text-4xl mb-2">
+                        <i class="fas fa-spa"></i>
+                    </div>
+                    <div class="thai-primary mb-1">ปิดทำการชั่วคราว</div>
+                    <div class="german-secondary mb-1">Urlaub</div>
+                    <div class="english-tertiary">On Vacation</div>
+                </div>
+            {% elif status.status_type == 'BILDUNGSURLAUB' %}
+                <div class="status-indicator status-warning">
+                    <div class="text-4xl mb-2">
+                        <i class="fas fa-microscope"></i>
+                    </div>
+                    <div class="thai-primary mb-1">อบรมเพิ่มพูนความรู้</div>
+                    <div class="german-secondary mb-1">Fortbildung</div>
+                    <div class="english-tertiary">Training</div>
+                </div>
+            {% else %}
+                <div class="status-indicator status-closed">
+                    <div class="text-4xl mb-2">
+                        <i class="fas fa-moon"></i>
+                    </div>
+                    <div class="thai-primary mb-1">ปิดทำการ</div>
+                    <div class="german-secondary mb-1">Geschlossen</div>
+                    <div class="english-tertiary">Closed</div>
+                </div>
+            {% endif %}
+            
+            <!-- HEUTE DETAILS -->
+            <div class="mt-6">
+                <div class="thai-primary text-lg mb-4 text-gray-800 border-b pb-2">
+                    เวลาทำการวันนี้ • Heutige Öffnungszeiten
+                </div>
+                
+                {% if today_hours and status.status_type == 'ANWESEND' %}
+                    {% for hour_range in today_hours %}
+                        <div class="availability-slot">
+                            <div class="text-2xl font-bold text-medical-primary">{{ hour_range }}</div>
+                            <div class="thai-primary text-sm mt-1">เปิดให้บริการ</div>
+                            <div class="german-secondary text-xs text-gray-600">Geöffnet</div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="bg-gray-100 rounded-lg p-4 text-center">
+                        <div class="text-3xl text-gray-400 mb-2">
+                            <i class="fas fa-calendar-times"></i>
+                        </div>
+                        <div class="thai-primary text-gray-600">ปิดวันนี้</div>
+                        <div class="german-secondary text-gray-500">Heute geschlossen</div>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- NÄCHSTE VERFÜGBARKEIT -->
+            {% if status.status_type != 'ANWESEND' and status.to_date %}
+            <div class="mt-6 p-4 bg-blue-50 rounded-lg">
+                <div class="thai-primary text-blue-800 mb-2">กลับมาให้บริการ</div>
+                <div class="german-secondary text-blue-700">Nächster Termin:</div>
+                <div class="text-xl font-bold text-blue-900 mt-1">{{ status.to_date.strftime('%d.%m.%Y') }}</div>
+            </div>
+            {% endif %}
+        </section>
+        
+        <!-- SPALTE 2: WOCHE VOLLSTÄNDIG (35%) -->
+        <section class="column">
+            <div class="column-header">
+                <div class="thai-primary mb-2">สัปดาห์นี้</div>
+                <div class="german-secondary">Diese Woche</div>
+                <div class="english-tertiary">This Week</div>
+            </div>
+            
+            <!-- WOCHENPLAN -->
+            <div class="space-y-2">
+                {% set today_weekday = now.weekday() %}
+                {% set weekdays = [
+                    {'th': 'จันทร์', 'de': 'Mo', 'en': 'Mon', 'key': 'mon'},
+                    {'th': 'อังคาร', 'de': 'Di', 'en': 'Tue', 'key': 'tue'},
+                    {'th': 'พุธ', 'de': 'Mi', 'en': 'Wed', 'key': 'wed'},
+                    {'th': 'พฤหัสบดี', 'de': 'Do', 'en': 'Thu', 'key': 'thu'},
+                    {'th': 'ศุกร์', 'de': 'Fr', 'en': 'Fri', 'key': 'fri'},
+                    {'th': 'เสาร์', 'de': 'Sa', 'en': 'Sat', 'key': 'sat'},
+                    {'th': 'อาทิตย์', 'de': 'So', 'en': 'Sun', 'key': 'sun'}
+                ] %}
+                
+                {% for day in weekdays %}
+                    {% set day_index = loop.index0 %}
+                    <div class="week-day {{ 'today' if day_index == today_weekday else '' }}">
+                        <div>
+                            <div class="thai-primary">{{ day.th }}</div>
+                            <div class="german-secondary text-sm">{{ day.de }}</div>
+                        </div>
+                        <div class="text-right">
+                            {% if week_schedule and week_schedule.get(day.key) %}
+                                {% for hour_range in week_schedule[day.key] %}
+                                    <div class="font-mono text-sm font-bold text-medical-primary">{{ hour_range }}</div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="thai-primary text-red-600">ปิด</div>
+                                <div class="german-secondary text-red-500 text-xs">Geschlossen</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            <!-- SPEZIELLE HINWEISE -->
+            {% if announcements %}
+            <div class="mt-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                <div class="thai-primary text-yellow-800 mb-3 flex items-center">
+                    <i class="fas fa-bullhorn mr-2"></i>
+                    ประกาศสำคัญ • Wichtige Hinweise
+                </div>
+                {% for announcement in announcements[:3] %}
+                    <div class="mb-2 p-2 bg-white rounded border">
+                        <div class="thai-primary text-sm font-bold">{{ announcement.title }}</div>
+                        <div class="german-secondary text-xs text-gray-600">{{ announcement.body[:100] }}...</div>
+                    </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </section>
+        
+        <!-- SPALTE 3: AUSBLICK & TERMINE (30%) -->
+        <section class="column">
+            <div class="column-header">
+                <div class="thai-primary mb-2">การนัดหมาย</div>
+                <div class="german-secondary">Termine</div>
+                <div class="english-tertiary">Appointments</div>
+            </div>
+            
+            <!-- VERFÜGBARE TERMINE -->
+            <div class="mb-6">
+                <div class="thai-primary text-lg mb-3 text-gray-800 border-b pb-2">
+                    🩸 ตรวจเลือด • Blutabnahme
+                </div>
+                
+                <div class="availability-slot">
+                    <div class="text-lg font-bold text-medical-primary">Morgen 09:00</div>
+                    <div class="thai-primary text-sm">ว่าง • Verfügbar</div>
+                    <div class="german-secondary text-xs text-gray-600">Available</div>
+                </div>
+                
+                <div class="availability-slot">
+                    <div class="text-lg font-bold text-medical-primary">Heute 14:00</div>
+                    <div class="thai-primary text-sm">ว่าง • Verfügbar</div>
+                    <div class="german-secondary text-xs text-gray-600">Available</div>
+                </div>
+            </div>
+            
+            <!-- LABORERGEBNISSE -->
+            <div class="mb-6">
+                <div class="thai-primary text-lg mb-3 text-gray-800 border-b pb-2">
+                    🔬 ผลตรวจ • Ergebnisse
+                </div>
+                
+                <div class="availability-slot">
+                    <div class="text-lg font-bold text-medical-secondary">Heute ab 14:00</div>
+                    <div class="thai-primary text-sm">รับผลตรวจ • Abholung</div>
+                    <div class="german-secondary text-xs text-gray-600">Results Ready</div>
+                </div>
+            </div>
+            
+            <!-- BERATUNG -->
+            <div class="mb-6">
+                <div class="thai-primary text-lg mb-3 text-gray-800 border-b pb-2">
+                    📋 ปรึกษา • Beratung
+                </div>
+                
+                <div class="availability-slot">
+                    <div class="text-lg font-bold text-thai-accent">Nach Vereinbarung</div>
+                    <div class="thai-primary text-sm">นัดหมายล่วงหน้า</div>
+                    <div class="german-secondary text-xs text-gray-600">By Appointment</div>
+                </div>
+            </div>
+            
+            <!-- KONTAKT & QR -->
+            <div class="mt-auto">
+                <div class="bg-medical-primary/5 rounded-lg p-4 text-center">
+                    <div class="text-2xl mb-3">
+                        <i class="fas fa-qrcode text-medical-primary"></i>
+                    </div>
+                    <div class="thai-primary text-sm mb-1">สแกนเพิ่มเติม</div>
+                    <div class="german-secondary text-xs text-gray-600">Scan für Portal</div>
+                    
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                        <div class="flex justify-center space-x-4 text-sm">
+                            {% if config.contact.phone %}
+                                <div class="flex items-center">
+                                    <i class="fas fa-phone text-medical-primary mr-1"></i>
+                                    <span class="font-mono">{{ config.contact.phone }}</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+    </main>
+
+    <!-- PERFORMANCE-OPTIMIZED SCRIPTS -->
+    <script>
+        // ANTI-FLICKER CLOCK UPDATE
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('th-TH', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit', 
+                timeZone: 'Asia/Bangkok'
+            });
+            
+            const clockElement = document.getElementById('live-clock');
+            if (clockElement && clockElement.textContent !== timeString) {
+                clockElement.textContent = timeString;
+            }
+        }
+        
+        // Update every second
+        setInterval(updateClock, 1000);
+        
+        // SMOOTH AUTO-REFRESH (3 minutes for triple mode)
+        setTimeout(() => {
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+                position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+                background: linear-gradient(135deg, #F7FAFC, #EDF2F7);
+                display: flex; align-items: center; justify-content: center;
+                z-index: 10000; opacity: 0; transition: opacity 1s ease;
+            `;
+            overlay.innerHTML = `
+                <div style="text-align: center; color: #00A86B; font-family: 'Sarabun', sans-serif;">
+                    <div style="font-size: 3rem; margin-bottom: 1.5rem;">
+                        <i class="fas fa-sync-alt fa-spin"></i>
+                    </div>
+                    <div style="font-size: 1.8rem; font-weight: 700; margin-bottom: 0.5rem;">
+                        กำลังปรับปรุงข้อมูล
+                    </div>
+                    <div style="font-size: 1rem; opacity: 0.7;">
+                        Aktualisierung der Informationen
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+            requestAnimationFrame(() => {
+                overlay.style.opacity = '1';
+                setTimeout(() => window.location.reload(), 1500);
+            });
+        }, 180000); // 3 minutes
+        
+        // COLUMN SYNC SCROLL (Optional enhancement)
+        const columns = document.querySelectorAll('.column');
+        columns.forEach((column, index) => {
+            column.addEventListener('scroll', () => {
+                // Optional: Sync scroll between related columns
+                if (performance.now() % 100 < 5) { // Throttle
+                    console.log(`Column ${index + 1} scrolled`);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

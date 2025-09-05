@@ -1,0 +1,308 @@
+/* ==============================================
+   KIOSK RESPONSIVE & MOBILE OPTIMIZATION
+   Version: 1.0
+   Purpose: Fix scrolling and zoom issues for all devices
+   ============================================== */
+
+/* ==============================================
+   BASE RESPONSIVE FIXES
+   ============================================== */
+
+/* Enable proper scrolling for all kiosk modes */
+body.kiosk-mode, 
+body.kiosk-triple-mode,
+body.kiosk-single-mode {
+    overflow-x: hidden;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    height: auto !important;
+    min-height: 100vh;
+}
+
+/* Fix viewport meta issues */
+html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+}
+
+/* ==============================================
+   KIOSK TRIPLE MODE RESPONSIVE
+   ============================================== */
+
+.kiosk-triple-container {
+    min-height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.kiosk-grid {
+    display: grid;
+    min-height: 100vh;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+/* Desktop: 3 columns */
+@media (min-width: 1200px) {
+    .kiosk-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 1.5rem;
+        padding: 1.5rem;
+    }
+}
+
+/* Tablet Landscape: 2 columns */
+@media (max-width: 1199px) and (min-width: 768px) {
+    .kiosk-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+}
+
+/* Mobile: 1 column */
+@media (max-width: 767px) {
+    .kiosk-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+        padding: 0.75rem;
+    }
+}
+
+/* ==============================================
+   FLEXIBLE FONT SIZING
+   ============================================== */
+
+/* Base font sizes that scale with viewport */
+.kiosk-title {
+    font-size: clamp(1.5rem, 4vw, 3rem);
+    line-height: 1.2;
+}
+
+.kiosk-subtitle {
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    line-height: 1.4;
+}
+
+.kiosk-text {
+    font-size: clamp(0.9rem, 2vw, 1.25rem);
+    line-height: 1.5;
+}
+
+.kiosk-time {
+    font-size: clamp(2rem, 6vw, 4rem);
+    font-weight: 700;
+}
+
+/* Thai text specific sizing */
+.thai-primary {
+    font-size: clamp(1.2rem, 3vw, 2rem);
+}
+
+.en-subtitle {
+    font-size: clamp(0.8rem, 1.5vw, 1rem);
+}
+
+/* ==============================================
+   CARD & COMPONENT RESPONSIVE
+   ============================================== */
+
+.enhanced-card,
+.kiosk-card {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+    .enhanced-card,
+    .kiosk-card {
+        padding: 0.75rem;
+        margin-bottom: 0.75rem;
+        border-radius: 0.5rem;
+    }
+}
+
+/* ==============================================
+   QR CODE RESPONSIVE
+   ============================================== */
+
+.qr-kiosk {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    z-index: 1000;
+    background: white;
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 768px) {
+    .qr-kiosk {
+        position: static;
+        margin: 1rem auto 0;
+        width: fit-content;
+    }
+}
+
+.qr-kiosk img {
+    width: 100px;
+    height: 100px;
+}
+
+@media (min-width: 1200px) {
+    .qr-kiosk img {
+        width: 150px;
+        height: 150px;
+    }
+}
+
+/* ==============================================
+   TOUCH & INTERACTION IMPROVEMENTS
+   ============================================== */
+
+/* Better touch targets with performance optimization */
+.kiosk-interactive,
+.kiosk-button,
+.kiosk-link {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0.75rem;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(0, 168, 107, 0.3);
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    will-change: transform;
+    transform: translateZ(0); /* GPU acceleration */
+}
+
+/* Optimize touch interactions for tablets/large phones */
+@media (pointer: coarse) {
+    .kiosk-interactive,
+    .kiosk-button {
+        min-height: 56px; /* Larger touch targets for fingers */
+        min-width: 56px;
+        padding: 1rem;
+    }
+    
+    /* Faster touch feedback */
+    .kiosk-interactive:active,
+    .kiosk-button:active {
+        transform: scale(0.98) translateZ(0);
+        transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+}
+
+/* Performance optimizations for touch devices */
+@media (hover: none) and (pointer: coarse) {
+    /* Disable hover effects on touch devices */
+    .kiosk-interactive:hover,
+    .kiosk-button:hover,
+    .kiosk-time-card:hover,
+    .kiosk-day-card:hover {
+        transform: none !important;
+        box-shadow: inherit !important;
+    }
+    
+    /* Optimize scroll performance */
+    .kiosk-week-grid,
+    .kiosk-preview-list {
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        scroll-behavior: smooth;
+    }
+}
+
+/* Hover states for non-touch devices */
+@media (hover: hover) {
+    .kiosk-interactive:hover,
+    .kiosk-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        transition: all 0.2s ease;
+    }
+}
+
+/* Focus states for accessibility */
+.kiosk-interactive:focus,
+.kiosk-button:focus {
+    outline: 2px solid #00A86B;
+    outline-offset: 2px;
+}
+
+/* ==============================================
+   ZOOM & VIEWPORT FIXES
+   ============================================== */
+
+/* Fix zoom issues at different scales */
+@media screen and (min-resolution: 2dppx) {
+    .kiosk-grid {
+        transform-origin: top left;
+    }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2) {
+    .kiosk-text,
+    .thai-primary,
+    .en-subtitle {
+        font-weight: 500;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+}
+
+/* ==============================================
+   ACCESSIBILITY IMPROVEMENTS
+   ============================================== */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .enhanced-card,
+    .kiosk-card {
+        border: 2px solid #000;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+    
+    .kiosk-text,
+    .thai-primary {
+        font-weight: 600;
+    }
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ==============================================
+   PRINT STYLES (for kiosk printouts)
+   ============================================== */
+
+@media print {
+    .kiosk-grid {
+        display: block;
+        overflow: visible;
+    }
+    
+    .enhanced-card,
+    .kiosk-card {
+        break-inside: avoid;
+        page-break-inside: avoid;
+        margin-bottom: 1rem;
+    }
+    
+    .qr-kiosk {
+        position: static;
+        margin: 1rem 0;
+    }
+}

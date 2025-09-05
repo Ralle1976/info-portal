@@ -1,0 +1,256 @@
+/* ==============================================
+   FONT LOADING OPTIMIZATIONS FOR THAI KIOSK
+   Version: 1.0
+   Purpose: Optimize Thai font loading and rendering
+   ============================================== */
+
+/* ==============================================
+   FONT FACE DECLARATIONS WITH OPTIMIZATION
+   ============================================== */
+
+/* Sarabun Thai Font - Optimized Loading Strategy */
+@font-face {
+    font-family: 'Sarabun';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap; /* Show fallback font immediately, swap when loaded */
+    src: url('https://fonts.gstatic.com/s/sarabun/v13/DtVhJx26TKEqsc-swy9gJyNYoJ5GoyLjz9aGYA.woff2') format('woff2');
+    unicode-range: U+0E01-0E5B, U+200C-200D, U+25CC; /* Thai characters only */
+}
+
+@font-face {
+    font-family: 'Sarabun';
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url('https://fonts.gstatic.com/s/sarabun/v13/DtVjJx26TKEqsc-swy9gJyNa-TI-EgqGbKQT4lAI.woff2') format('woff2');
+    unicode-range: U+0E01-0E5B, U+200C-200D, U+25CC;
+}
+
+@font-face {
+    font-family: 'Sarabun';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url('https://fonts.gstatic.com/s/sarabun/v13/DtVjJx26TKEqsc-swy9gJyNa-W48EgqGbKQT4lAI.woff2') format('woff2');
+    unicode-range: U+0E01-0E5B, U+200C-200D, U+25CC;
+}
+
+/* ==============================================
+   FALLBACK FONT STACK OPTIMIZATION
+   ============================================== */
+
+:root {
+    /* Optimized font stacks for different script types */
+    --font-thai-primary: 'Sarabun', 'Noto Sans Thai', 'Leelawadee UI', 'Tahoma', sans-serif;
+    --font-latin-primary: 'Sarabun', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-mono-optimized: 'SF Mono', 'Monaco', 'Cascadia Code', 'Roboto Mono', 'Courier New', monospace;
+}
+
+/* ==============================================
+   THAI-FIRST FONT ASSIGNMENT
+   ============================================== */
+
+/* Base body font with Thai support */
+body {
+    font-family: var(--font-thai-primary);
+    font-weight: 400;
+    font-feature-settings: 
+        "kern" 1,      /* Kerning */
+        "liga" 1,      /* Ligatures */
+        "calt" 1;      /* Contextual alternates */
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Thai text specific optimizations */
+[lang="th"], 
+.thai-text,
+.thai-primary {
+    font-family: var(--font-thai-primary);
+    line-height: 1.6; /* Thai text needs more line height */
+    word-break: break-word; /* Thai doesn't use spaces */
+    overflow-wrap: break-word;
+}
+
+/* English/Latin text optimizations */
+[lang="en"],
+.english-text,
+.en-subtitle {
+    font-family: var(--font-latin-primary);
+    line-height: 1.4; /* Tighter line height for Latin text */
+}
+
+/* Monospace for time displays */
+.kiosk-clock,
+.kiosk-time-text,
+.enhanced-clock {
+    font-family: var(--font-mono-optimized);
+    font-variant-numeric: tabular-nums; /* Aligned numbers */
+    font-feature-settings: "tnum" 1;
+}
+
+/* ==============================================
+   FONT LOADING PERFORMANCE OPTIMIZATIONS
+   ============================================== */
+
+/* Critical text should remain visible during font load */
+.kiosk-title,
+.kiosk-status-title,
+.thai-primary,
+.kiosk-clock {
+    font-display: swap;
+}
+
+/* Preload critical fonts */
+.font-preload-critical {
+    font-display: block; /* Block rendering until font loads for critical text */
+}
+
+/* ==============================================
+   FONT SIZE SCALING FOR KIOSK DISPLAYS
+   ============================================== */
+
+/* Responsive font scaling for different display sizes */
+@media (min-width: 1920px) {
+    :root {
+        --font-scale-large: 1.2;
+    }
+    
+    .thai-primary {
+        font-size: calc(1rem * var(--font-scale-large));
+    }
+    
+    .kiosk-clock {
+        font-size: calc(4rem * var(--font-scale-large));
+    }
+}
+
+@media (min-width: 2560px) {
+    :root {
+        --font-scale-ultra: 1.5;
+    }
+    
+    .thai-primary {
+        font-size: calc(1rem * var(--font-scale-ultra));
+    }
+    
+    .kiosk-clock {
+        font-size: calc(4rem * var(--font-scale-ultra));
+    }
+}
+
+/* ==============================================
+   HIGH DPI DISPLAY OPTIMIZATIONS
+   ============================================== */
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 2dppx) {
+    body {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        font-smoothing: antialiased;
+    }
+    
+    .thai-primary,
+    .kiosk-title {
+        font-weight: 500; /* Slightly bolder for high DPI */
+    }
+}
+
+/* ==============================================
+   FONT LOADING STATES
+   ============================================== */
+
+/* Show loading state for critical text */
+.font-loading .kiosk-title,
+.font-loading .thai-primary {
+    visibility: hidden; /* Hide until font loads */
+}
+
+.fonts-loaded .kiosk-title,
+.fonts-loaded .thai-primary {
+    visibility: visible;
+    animation: font-fade-in 0.3s ease-out;
+}
+
+@keyframes font-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ==============================================
+   FALLBACK OPTIMIZATIONS
+   ============================================== */
+
+/* If Sarabun fails to load, ensure Thai text is still readable */
+@supports not (font-family: 'Sarabun') {
+    [lang="th"],
+    .thai-primary {
+        font-family: 'Noto Sans Thai', 'Leelawadee UI', 'Tahoma', sans-serif;
+        font-size: 1.1em; /* Slightly larger for system fonts */
+    }
+}
+
+/* ==============================================
+   PERFORMANCE MONITORING
+   ============================================== */
+
+/* CSS Custom Properties for font metrics */
+:root {
+    --font-load-time: 0ms;
+    --font-render-time: 0ms;
+}
+
+/* Debug font loading issues in development */
+@media (prefers-reduced-data: no-preference) {
+    .font-debug::after {
+        content: "Font: " attr(data-font-family) " | Weight: " attr(data-font-weight);
+        position: absolute;
+        top: -1rem;
+        left: 0;
+        font-size: 0.6rem;
+        color: #666;
+        pointer-events: none;
+    }
+}
+
+/* ==============================================
+   ACCESSIBILITY IMPROVEMENTS
+   ============================================== */
+
+/* Respect user's font size preferences */
+@media (prefers-reduced-motion: no-preference) {
+    .thai-primary,
+    .en-subtitle {
+        transition: font-size 0.2s ease;
+    }
+}
+
+/* High contrast mode font adjustments */
+@media (prefers-contrast: high) {
+    .thai-primary,
+    .kiosk-title {
+        font-weight: 700; /* Bolder text for better contrast */
+        text-shadow: none; /* Remove text shadows */
+    }
+}
+
+/* ==============================================
+   PRINT OPTIMIZATIONS
+   ============================================== */
+
+@media print {
+    * {
+        font-family: 'Sarabun', 'Times New Roman', serif !important;
+    }
+    
+    .thai-primary {
+        font-size: 12pt;
+        line-height: 1.4;
+    }
+    
+    .kiosk-clock {
+        font-family: 'Courier New', monospace;
+    }
+}

@@ -1,0 +1,147 @@
+name: 🔒 Security Vulnerability Report
+description: Report a security vulnerability (use GitHub Security Advisories for sensitive issues)
+title: "[SECURITY] "
+labels: ["security", "vulnerability", "needs-triage"]
+assignees: ["Ralle1976"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## ⚠️ Important Security Notice
+        
+        **For sensitive security vulnerabilities, please use [GitHub Security Advisories](../../security/advisories/new) instead of this public form.**
+        
+        This form is for non-sensitive security improvements and general security-related discussions.
+
+  - type: dropdown
+    id: vulnerability-type
+    attributes:
+      label: Vulnerability Type
+      description: What type of security issue are you reporting?
+      options:
+        - Cross-Site Scripting (XSS)
+        - SQL Injection
+        - Authentication/Authorization
+        - Information Disclosure
+        - Insecure Configuration
+        - Dependency Vulnerability
+        - Container Security Issue
+        - Infrastructure Security
+        - Other (please specify)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity Assessment
+      description: How would you rate the severity of this issue?
+      options:
+        - Critical (Remote Code Execution, Authentication Bypass)
+        - High (Data Exposure, Privilege Escalation)
+        - Medium (Information Disclosure, DoS)
+        - Low (Security Improvement, Best Practice)
+        - Info (Security Question/Discussion)
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Vulnerability Description
+      description: Provide a clear and concise description of the security issue
+      placeholder: Describe what the security vulnerability is...
+    validations:
+      required: true
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: Potential Impact
+      description: What could an attacker achieve by exploiting this vulnerability?
+      placeholder: Describe the potential impact...
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Detailed steps to reproduce the vulnerability
+      placeholder: |
+        1. Go to...
+        2. Enter...
+        3. Submit...
+        4. See vulnerability...
+    validations:
+      required: false
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment Details
+      description: Relevant environment information
+      placeholder: |
+        - OS: [e.g. Ubuntu 20.04, Windows 10]
+        - Browser: [e.g. Chrome 91, Firefox 89]
+        - App Version: [e.g. 1.0.0]
+        - Deployment: [e.g. Docker, local development]
+    validations:
+      required: false
+
+  - type: textarea
+    id: suggested-fix
+    attributes:
+      label: Suggested Fix
+      description: If you have ideas for how to fix this issue, please share them
+      placeholder: Describe your suggested approach to fix this vulnerability...
+    validations:
+      required: false
+
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: Links to relevant security resources, CVEs, or documentation
+      placeholder: |
+        - https://cwe.mitre.org/data/definitions/...
+        - https://owasp.org/...
+        - CVE-YYYY-NNNN
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Security Report Checklist
+      description: Please confirm you have completed these steps
+      options:
+        - label: I have checked if this issue has already been reported
+          required: true
+        - label: I have considered whether this should be reported privately via Security Advisories
+          required: true
+        - label: I have provided sufficient detail for the security team to assess the issue
+          required: true
+        - label: I understand that this report will be public and have not included sensitive information
+          required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        
+        ## What Happens Next?
+        
+        1. **Triage** (< 24h): Security team will review and classify the report
+        2. **Assessment** (< 72h): Technical assessment and impact analysis  
+        3. **Response** (< 7d): Initial response with timeline and next steps
+        4. **Resolution** (< 30d): Security fix implemented and released
+        
+        ## Need Help?
+        
+        - 📖 [Security Policy](../../security/policy)
+        - 🛡️ [Security Best Practices](../../blob/main/docs/SECURITY.md)
+        - 📧 Contact: security@[your-domain] for sensitive issues
+        
+        Thank you for helping to keep QR Info Portal secure! 🔒

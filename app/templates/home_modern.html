@@ -1,0 +1,573 @@
+{% extends "base_minimal.html" %}
+
+{% block extra_head %}
+<!-- Modern Medical Design CSS -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/modern-medical-design.css') }}">
+{% endblock %}
+
+{% block content %}
+<!-- Language Switcher -->
+<div class="mb-6 flex justify-end">
+    {% include 'components/language_switcher.html' %}
+</div>
+
+<!-- Status Banner - Modernized -->
+{% if status %}
+<div class="card-modern animate-slide-up-modern mb-6
+    {% if status.type == 'ANWESEND' %}card-service-consultation
+    {% elif status.type == 'URLAUB' %}card-service-followup
+    {% elif status.type == 'BILDUNGSURLAUB' %}card-service-vaccination
+    {% elif status.type == 'KONGRESS' %}card-service-blood
+    {% else %}border-l-4 border-gray-400{% endif %}"
+     data-help-tooltip="{{ get_tooltip_text('status_banner', 'home') }}">
+    <div class="card-body-modern">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <div class="service-icon
+                    {% if status.type == 'ANWESEND' %}service-icon-consultation
+                    {% elif status.type == 'URLAUB' %}service-icon-followup  
+                    {% elif status.type == 'BILDUNGSURLAUB' %}service-icon-vaccination
+                    {% elif status.type == 'KONGRESS' %}service-icon-blood
+                    {% else %}bg-gray-500{% endif %}">
+                    {% if status.type == 'ANWESEND' %}
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 3H14.82C14.4 1.84 13.3 1 12 1S9.6 1.84 9.18 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM12 3C12.55 3 13 3.45 13 4S12.55 5 12 5 11 4.55 11 4 11.45 3 12 3ZM19 19H5V5H7V7H17V5H19V19Z"/>
+                            <path d="M10 17L6 13L7.41 11.59L10 14.17L16.59 7.58L18 9L10 17Z"/>
+                        </svg>
+                    {% elif status.type == 'URLAUB' %}
+                        <i class="fas fa-umbrella-beach text-white"></i>
+                    {% elif status.type == 'BILDUNGSURLAUB' %}
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M17 15C15.34 15 14 16.34 14 18S15.34 21 17 21 20 19.66 20 18 18.66 15 17 15ZM17 19C16.45 19 16 18.55 16 18S16.45 17 17 17 18 17.45 18 18 17.55 19 17 19Z"/>
+                            <rect x="8" y="6" width="4" height="12" rx="2"/>
+                        </svg>
+                    {% elif status.type == 'KONGRESS' %}
+                        <i class="fas fa-users text-white"></i>
+                    {% else %}
+                        <i class="fas fa-door-closed text-white"></i>
+                    {% endif %}
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-gray-800">
+                        {{ t('status') }}: 
+                        {% if status.type == 'ANWESEND' %}
+                            <span class="text-medical-secondary">{{ t('open') }}</span>
+                        {% elif status.type == 'URLAUB' %}
+                            <span class="text-thai-coral">{{ t('on_vacation') }}</span>
+                        {% elif status.type == 'BILDUNGSURLAUB' %}
+                            <span class="text-service-vaccination">{{ t('educational_leave') }}</span>
+                        {% elif status.type == 'KONGRESS' %}
+                            <span class="text-medical-primary">{{ t('congress') }}</span>
+                        {% else %}
+                            <span class="text-gray-600">{{ t('other') }}</span>
+                        {% endif %}
+                    </h3>
+                    {% if status.description %}
+                        <p class="text-gray-600 mt-1 text-sm">{{ status.description }}</p>
+                    {% endif %}
+                    {% if status.next_return %}
+                        <div class="mt-2 flex items-center text-sm text-gray-500">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
+                            </svg>
+                            {{ t('back_on') }}: {{ status.next_return.strftime('%d.%m.%Y') }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% if status.type == 'ANWESEND' %}
+                <div class="status-modern status-open-modern">
+                    {{ t('ui_common.available_now') }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Today's Hours - Modernized -->
+<div class="card-modern animate-slide-up-modern mb-6">
+    <div class="card-header-modern">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="service-icon service-icon-consultation">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-medical-primary">
+                        {{ t('today') }}
+                    </h2>
+                    <p class="text-gray-600">{{ today.strftime('%d.%m.%Y') }}</p>
+                </div>
+            </div>
+            <!-- Live Clock Display -->
+            <div class="text-right">
+                <div class="text-2xl font-mono font-bold text-thai-turquoise" id="live-time">
+                    --:--:--
+                </div>
+                <div class="text-sm text-gray-500">{{ t('ui_common.bangkok_time') }}</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card-body-modern">
+        {% if today_hours.closed %}
+            <div class="text-center py-8">
+                <div class="service-icon service-icon-results mb-4 mx-auto">
+                    <i class="fas fa-door-closed text-white text-2xl"></i>
+                </div>
+                <div class="text-red-600 font-semibold text-xl mb-2">
+                    {{ t('closed') }}
+                </div>
+                {% if today_hours.note %}
+                    <p class="text-gray-600 bg-gray-50 rounded-lg p-3 border border-gray-200">
+                        <i class="fas fa-info-circle mr-2 text-thai-turquoise"></i>{{ today_hours.note }}
+                    </p>
+                {% endif %}
+            </div>
+        {% else %}
+            <div class="space-y-4">
+                <h3 class="font-semibold text-lg text-gray-800 flex items-center">
+                    <svg class="w-5 h-5 text-thai-turquoise mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
+                    </svg>
+                    {{ t('ui_common.todays_hours') }}
+                </h3>
+                <div class="grid gap-3">
+                    {% for time_range in today_hours.time_ranges %}
+                        <div class="flex items-center justify-between bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg p-4 border border-gray-200 hover:shadow-md transition">
+                            <div class="flex items-center">
+                                <div class="service-icon service-icon-consultation mr-3" style="width: 2rem; height: 2rem;">
+                                    <svg viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                    </svg>
+                                </div>
+                                <span class="text-lg font-medium text-gray-800">{{ time_range }}</span>
+                            </div>
+                            {% if is_open %}
+                                <div class="status-modern status-open-modern">
+                                    {{ t('ui_common.currently_open_status') }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+        
+        {% if next_open and not is_open %}
+            <div class="mt-6 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg p-4 border border-blue-200">
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 text-blue-600 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
+                    </svg>
+                    <div>
+                        <p class="font-medium text-blue-800">{{ t('next_available') }}:</p>
+                        <p class="text-blue-600">
+                            {{ next_open.date.strftime('%d.%m.%Y') }} um {{ next_open.time }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Services - Modernized with Individual Icons -->
+<div class="card-modern animate-slide-up-modern mb-6">
+    <div class="card-header-modern">
+        <div class="flex items-center space-x-3">
+            <div class="service-icon service-icon-consultation">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M15.5 2C17.4 2 19 3.6 19 5.5C19 7.4 17.4 9 15.5 9C13.6 9 12 7.4 12 5.5C12 3.6 13.6 2 15.5 2ZM15.5 4C14.7 4 14 4.7 14 5.5C14 6.3 14.7 7 15.5 7C16.3 7 17 6.3 17 5.5C17 4.7 16.3 4 15.5 4Z"/>
+                    <path d="M8.5 2C10.4 2 12 3.6 12 5.5C12 7.4 10.4 9 8.5 9C6.6 9 5 7.4 5 5.5C5 3.6 6.6 2 8.5 2ZM8.5 4C7.7 4 7 4.7 7 5.5C7 6.3 7.7 7 8.5 7C9.3 7 10 6.3 10 5.5C10 4.7 9.3 4 8.5 4Z"/>
+                    <circle cx="19" cy="16" r="2"/>
+                </svg>
+            </div>
+            <div>
+                <h2 class="text-xl font-bold text-gray-800">{{ t('services') }}</h2>
+                <p class="text-gray-600 text-sm">{{ t('ui_common.our_services') }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card-body-modern">
+        <div class="services-grid-modern">
+            {% for service in services %}
+            <div class="service-item-modern" data-service-type="{{ service }}" data-hover-effect="modern">
+                <div class="service-icon-container">
+                    {% if service == 'Blutabnahme' or 'Blood' in service or 'เจาะเลือด' in service %}
+                        <div class="service-icon service-icon-blood">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C10.9 2 10 2.9 10 4C10 5.1 10.9 6 12 6C13.1 6 14 5.1 14 4C14 2.9 13.1 2 12 2Z"/>
+                                <path d="M12 8C8.13 8 5 11.13 5 15C5 18.87 8.13 22 12 22C15.87 22 19 18.87 19 15C19 11.13 15.87 8 12 8ZM12 20C9.24 20 7 17.76 7 15C7 12.24 9.24 10 12 10C14.76 10 17 12.24 17 15C17 17.76 14.76 20 12 20Z"/>
+                                <circle cx="12" cy="15" r="2"/>
+                            </svg>
+                        </div>
+                    {% elif service == 'Impfung' or 'Vaccination' in service or 'วัคซีน' in service %}
+                        <div class="service-icon service-icon-vaccination">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3.5 8L8 3.5L9.5 5L5.83 8.67L7.24 10.08L10.91 6.41L12.33 7.83L8.66 11.5L10.08 12.91L13.75 9.24L15.17 10.66L11.5 14.33L12.91 15.75L16.58 12.08L18 13.5L13.5 18L12 16.5V18.5H4V10.5L3.5 8Z"/>
+                            </svg>
+                        </div>
+                    {% elif service == 'Nachgespräch' or 'Follow' in service or 'ติดตาม' in service %}
+                        <div class="service-icon service-icon-followup">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M20 2H4C2.9 2 2 2.9 2 4V16C2 17.1 2.9 18 4 18H6L10 22L14 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2ZM20 16H13.17L10 19.17L6.83 16H4V4H20V16Z"/>
+                                <path d="M11 6H13V10H17V12H13V16H11V12H7V10H11V6Z"/>
+                            </svg>
+                        </div>
+                    {% else %}
+                        <div class="service-icon service-icon-consultation">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M15.5 2C17.4 2 19 3.6 19 5.5C19 7.4 17.4 9 15.5 9C13.6 9 12 7.4 12 5.5C12 3.6 13.6 2 15.5 2Z"/>
+                                <circle cx="19" cy="16" r="2"/>
+                            </svg>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="service-content">
+                    <div class="service-title">{{ service }}</div>
+                    <div class="service-description">
+                        {% if service == 'Blutabnahme' %}
+                            {{ t('ui_common.blood_test_description', 'Professionelle Blutentnahme für Laboranalysen') }}
+                        {% elif service == 'Vorgespräch' %}
+                            {{ t('ui_common.consultation_description', 'Ausführliche medizinische Beratung') }}
+                        {% elif service == 'Nachgespräch' %}
+                            {{ t('ui_common.followup_description', 'Besprechung der Untersuchungsergebnisse') }}
+                        {% elif service == 'Impfung' %}
+                            {{ t('ui_common.vaccination_description', 'Schutzimpfungen nach aktuellen Empfehlungen') }}
+                        {% else %}
+                            {{ t('ui_common.service_description', 'Medizinische Leistung auf höchstem Niveau') }}
+                        {% endif %}
+                    </div>
+                </div>
+                <svg class="w-5 h-5 text-gray-400 ml-auto transition-colors group-hover:text-medical-primary" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                </svg>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="mt-8 bg-gradient-to-r from-thai-turquoise/10 to-medical-secondary/10 rounded-xl p-6 border border-thai-turquoise/20">
+            <div class="flex items-center">
+                <svg class="w-6 h-6 text-thai-turquoise mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                </svg>
+                <div>
+                    <p class="text-gray-700 font-medium">
+                        {{ t('ui_common.additional_services') }}
+                    </p>
+                    <p class="text-gray-600 text-sm mt-1">
+                        {{ t('ui_common.individual_consultation') }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Announcements - Modernized -->
+{% if announcements %}
+<div class="card-modern animate-slide-up-modern mb-6">
+    <div class="card-header-modern">
+        <h2 class="text-xl font-bold text-gray-800 flex items-center">
+            <svg class="w-6 h-6 text-thai-turquoise mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+            </svg>
+            {{ t('announcements') }}
+        </h2>
+    </div>
+    <div class="card-body-modern">
+        <div class="space-y-4">
+            {% for announcement in announcements %}
+            <div class="bg-gradient-to-r from-blue-50 to-cyan-50 border-l-4 border-medical-primary p-4 rounded-r-lg">
+                <h3 class="font-semibold text-medical-primary">{{ announcement.title }}</h3>
+                <p class="text-gray-700 mt-1">{{ announcement.body }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Social Media Section - Modernized -->
+{% if social_platforms and social_platforms|length > 0 %}
+<div class="card-modern animate-slide-up-modern mb-6" style="background: linear-gradient(135deg, var(--thai-turquoise), var(--medical-primary)); color: white;">
+    <div class="card-body-modern">
+        <h2 class="text-2xl font-bold mb-4 text-white">{{ t('follow_us') }}</h2>
+        <p class="mb-6 opacity-90">{{ t('follow_for_updates') }}</p>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {% for platform in social_platforms %}
+            <a href="{{ platform.url }}" 
+               target="_blank"
+               class="bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-lg p-4 text-center transition duration-300 group">
+                <div class="flex justify-center mb-2">
+                    <i class="{{ platform.icon }} text-2xl group-hover:scale-110 transition-transform"></i>
+                </div>
+                <div class="text-sm font-medium">{{ platform.display_name }}</div>
+                {% if platform.username %}
+                    <div class="text-xs opacity-75 mt-1">{{ platform.username }}</div>
+                {% endif %}
+                {% if platform.qr_enabled %}
+                    <div class="mt-2">
+                        <span class="inline-block bg-white/20 rounded px-2 py-1 text-xs">
+                            📱 {{ t('scan_to_follow') }}
+                        </span>
+                    </div>
+                {% endif %}
+            </a>
+            {% endfor %}
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <a href="{{ url_for('public.social_media') }}" 
+               class="bg-white/20 hover:bg-white/30 rounded-lg p-3 text-center transition">
+                <div class="text-sm font-medium">🔗 {{ t('social_qr_codes') }}</div>
+            </a>
+            <a href="/social/qr-batch?size=medium" 
+               class="bg-white/20 hover:bg-white/30 rounded-lg p-3 text-center transition">
+                <div class="text-sm font-medium">📥 {{ t('download_qr') }}</div>
+            </a>
+            <a href="{{ url_for('public.social_share', content='Check out our laboratory!', url=request.url_root) }}" 
+               class="bg-white/20 hover:bg-white/30 rounded-lg p-3 text-center transition">
+                <div class="text-sm font-medium">📤 {{ t('share') }}</div>
+            </a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Contact & Location - Modernized -->
+<div class="grid md:grid-cols-2 gap-6">
+    <!-- Contact Card -->
+    <div class="card-modern animate-slide-up-modern">
+        <div class="card-header-modern">
+            <div class="flex items-center space-x-3">
+                <div class="service-icon service-icon-consultation">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-gray-800">{{ t('contact') }}</h2>
+                    <p class="text-gray-600 text-sm">{{ t('ui_common.contact_us') }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-body-modern space-y-4">
+            <!-- Phone -->
+            {% if contact.phone %}
+            <a href="tel:{{ contact.phone }}" 
+               class="service-item-modern group"
+               data-help-tooltip="{{ get_tooltip_text('phone_link', 'home') }}">
+                <div class="service-icon-container">
+                    <div class="service-icon service-icon-consultation">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="service-content">
+                    <div class="service-title">{{ t('phone') }}</div>
+                    <div class="service-description text-thai-turquoise font-semibold">{{ contact.phone }}</div>
+                </div>
+                <svg class="w-5 h-5 text-gray-400 group-hover:text-thai-turquoise transition-colors" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"></path>
+                    <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"></path>
+                </svg>
+            </a>
+            {% endif %}
+            
+            <!-- Email -->
+            {% if contact.email %}
+            <a href="mailto:{{ contact.email }}" 
+               class="service-item-modern group"
+               data-help-tooltip="{{ get_tooltip_text('email_link', 'home') }}">
+                <div class="service-icon-container">
+                    <div class="service-icon service-icon-results">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="service-content">
+                    <div class="service-title">{{ t('email') }}</div>
+                    <div class="service-description text-thai-coral font-semibold">{{ contact.email }}</div>
+                </div>
+                <svg class="w-5 h-5 text-gray-400 group-hover:text-thai-coral transition-colors" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"></path>
+                    <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"></path>
+                </svg>
+            </a>
+            {% endif %}
+            
+            <!-- Social Contact Quick Access -->
+            {% if social_platforms and social_platforms|length > 0 %}
+            <div class="border-t pt-4">
+                <div class="text-sm font-medium text-gray-700 mb-3 flex items-center">
+                    <svg class="w-4 h-4 text-gray-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z"></path>
+                    </svg>
+                    {{ t('ui_common.quick_social_contact') }}
+                </div>
+                <div class="flex space-x-3">
+                    {% for platform in social_platforms %}
+                    {% if platform.name in ['line', 'whatsapp', 'facebook'] and platform.url %}
+                    <a href="{{ platform.url }}" 
+                       target="_blank"
+                       class="inline-flex items-center justify-center w-12 h-12 rounded-full text-white shadow-modern-lg transition-all hover:scale-110 hover:shadow-modern-xl"
+                       style="background: linear-gradient(135deg, {{ platform.color }}, {{ platform.color }}dd);"
+                       title="{{ t('contact_via') }} {{ platform.display_name }}">
+                        <i class="{{ platform.icon }} text-lg"></i>
+                    </a>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Location Card -->
+    <div class="card-modern animate-slide-up-modern">
+        <div class="card-header-modern">
+            <div class="flex items-center space-x-3">
+                <div class="service-icon service-icon-vaccination">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-gray-800">{{ t('address') }}</h2>
+                    <p class="text-gray-600 text-sm">{{ t('ui_common.our_location') }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-body-modern">
+            <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg p-4 mb-4 border border-gray-200">
+                <div class="flex items-start">
+                    <svg class="w-5 h-5 text-medical-secondary mt-1 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                    </svg>
+                    <div class="flex-1">
+                        <p class="text-gray-800 font-medium mb-1">{{ t('ui_common.address_label') }}</p>
+                        <p class="text-gray-600">{{ location.address }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            {% if location.maps_link and location.latitude and location.longitude %}
+            <a href="{{ location.maps_link }}" 
+               target="_blank"
+               class="btn-modern btn-thai-modern w-full justify-center group mb-4">
+                <svg class="w-5 h-5 mr-2 group-hover:animate-bounce" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                </svg>
+                {{ t('navigate') }}
+                <svg class="w-4 h-4 ml-2 text-white/75" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"></path>
+                </svg>
+            </a>
+            {% endif %}
+            
+            {% if location.parking_available or location.barrier_free or location.public_transport %}
+            <div class="grid 
+                {% if location.parking_available and location.barrier_free %}grid-cols-2
+                {% elif location.parking_available or location.barrier_free %}grid-cols-1
+                {% else %}grid-cols-1{% endif %} 
+                gap-3">
+                {% if location.parking_available %}
+                <div class="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg p-3 text-center border border-blue-200">
+                    <svg class="w-6 h-6 text-blue-600 mx-auto mb-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4zM18 9H2v5a2 2 0 002 2h1a3 3 0 006 0h2a3 3 0 006 0h1a2 2 0 002-2V9zM8 13a1 1 0 11-2 0 1 1 0 012 0zm6 0a1 1 0 11-2 0 1 1 0 012 0z"></path>
+                    </svg>
+                    <div class="font-medium text-blue-800 text-sm">{{ t('ui_common.parking') }}</div>
+                    <div class="text-blue-600 text-xs">{{ t('ui_common.parking_available') }}</div>
+                </div>
+                {% endif %}
+                {% if location.barrier_free %}
+                <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-3 text-center border border-green-200">
+                    <svg class="w-6 h-6 text-green-600 mx-auto mb-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
+                        <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path>
+                    </svg>
+                    <div class="font-medium text-green-800 text-sm">{{ t('ui_common.access') }}</div>
+                    <div class="text-green-600 text-xs">{{ t('ui_common.barrier_free') }}</div>
+                </div>
+                {% endif %}
+                {% if location.public_transport %}
+                <div class="bg-gradient-to-r from-purple-50 to-violet-50 rounded-lg p-3 text-center col-span-full border border-purple-200">
+                    <svg class="w-6 h-6 text-purple-600 mx-auto mb-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M4 5a2 2 0 00-2 2v6a2 2 0 002 2V9a2 2 0 012-2h8a2 2 0 012 2v6a2 2 0 002-2V7a2 2 0 00-2-2H4zm2 4a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
+                    </svg>
+                    <div class="font-medium text-purple-800 text-sm">{{ t('ui_common.public_transport') }}</div>
+                    <div class="text-purple-600 text-xs">{{ location.public_transport }}</div>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Booking Widget (only show if feature is enabled) -->
+{% if booking_feature_enabled %}
+<div class="mt-8 card-modern animate-slide-up-modern">
+    {% include 'components/booking_widget.html' %}
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_scripts %}
+<!-- Medical Icons JavaScript -->
+<script src="{{ url_for('static', filename='js/medical-icons.js') }}"></script>
+
+<script>
+    // Update live time display
+    function updateLiveTime() {
+        const now = new Date();
+        const bangkokTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Bangkok"}));
+        const timeString = bangkokTime.toLocaleTimeString('th-TH', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+        });
+        
+        const liveTimeElement = document.getElementById('live-time');
+        if (liveTimeElement) {
+            liveTimeElement.textContent = timeString;
+        }
+    }
+    
+    // Update every second
+    setInterval(updateLiveTime, 1000);
+    updateLiveTime(); // Initial call
+
+    // Add enhanced hover effects for service items
+    document.querySelectorAll('.service-item-modern').forEach(item => {
+        item.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-4px) scale(1.02)';
+            this.style.boxShadow = '0 25px 50px -12px rgba(0, 0, 0, 0.25)';
+        });
+        
+        item.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+            this.style.boxShadow = '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1)';
+        });
+    });
+
+    // Progressive enhancement for cards
+    document.querySelectorAll('.card-modern').forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.1}s`;
+        card.classList.add('animate-fade-in-scale');
+    });
+</script>
+{% endblock %}

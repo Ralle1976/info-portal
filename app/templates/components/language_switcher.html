@@ -1,0 +1,88 @@
+<!-- Language Switcher Component (Reusable) - Thai-First Implementation -->
+<div class="language-switcher flex items-center space-x-4" role="navigation" aria-label="Language selection">
+    <div class="flex space-x-2">
+        <!-- Thai Button - Always first -->
+        <a href="?lang=th" 
+           class="lang-button px-3 py-1 rounded-md text-sm font-medium {{ 'bg-medical-green text-white border-medical-green' if i18n.get_current_language() == 'th' else 'text-gray-600 hover:text-gray-900 hover:bg-gray-100 border-gray-300' }} border"
+           aria-label="เปลี่ยนเป็นภาษาไทย">
+            🇹🇭 ไทย
+        </a>
+        <!-- English Button - Secondary option -->
+        <a href="?lang=en" 
+           class="lang-button px-3 py-1 rounded-md text-sm font-medium {{ 'bg-medical-blue text-white border-medical-blue' if i18n.get_current_language() == 'en' else 'text-gray-600 hover:text-gray-900 hover:bg-gray-100 border-gray-300' }} border"
+           aria-label="Switch to English">
+            🇬🇧 EN
+        </a>
+        <!-- German Button - Only show in admin context, hidden in kiosk -->
+        <a href="?lang=de" 
+           class="lang-button lang-de px-3 py-1 rounded-md text-sm font-medium {{ 'bg-gray-600 text-white border-gray-600' if i18n.get_current_language() == 'de' else 'text-gray-600 hover:text-gray-900 hover:bg-gray-100 border-gray-300' }} border"
+           aria-label="Auf Deutsch wechseln">
+            🇩🇪 DE
+        </a>
+    </div>
+</div>
+
+<style>
+.language-switcher .lang-button {
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.language-switcher .lang-button:hover {
+    border-color: #40E0D0;
+    transform: translateY(-1px);
+}
+
+/* Mobile responsive */
+@media (max-width: 640px) {
+    .language-switcher {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        z-index: 50;
+        background: white;
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .language-switcher .lang-button {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.75rem;
+    }
+}
+
+/* Kiosk mode: Larger buttons, hide German */
+body[data-kiosk] .language-switcher .lang-button {
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+/* Hide German button in kiosk modes - Thai-First policy */
+body[data-kiosk] .language-switcher .lang-de {
+    display: none !important;
+}
+
+/* Hide German in kiosk URLs */
+.kiosk-view .lang-de {
+    display: none !important;
+}
+
+/* Medical theme colors for language buttons */
+.lang-button.bg-medical-green {
+    background-color: #00A86B !important;
+}
+
+.lang-button.bg-medical-blue {
+    background-color: #0056B3 !important;
+}
+
+.lang-button.border-medical-green {
+    border-color: #00A86B !important;
+}
+
+.lang-button.border-medical-blue {
+    border-color: #0056B3 !important;
+}
+</style>

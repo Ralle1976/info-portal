@@ -1,0 +1,199 @@
+{
+  "timestamp": "2025-08-27T20:14:09.208985",
+  "base_url": "http://127.0.0.1:5000",
+  "public_pages": [
+    {
+      "page": "Homepage",
+      "path": "/",
+      "status_code": 200,
+      "response_time_ms": 203.4,
+      "content_length": 24272,
+      "content_type": "text/html; charset=utf-8",
+      "status": "pass",
+      "has_status_banner": true,
+      "has_navigation": true
+    },
+    {
+      "page": "Week View",
+      "path": "/week",
+      "status_code": 200,
+      "response_time_ms": 77.62,
+      "content_length": 28695,
+      "content_type": "text/html; charset=utf-8",
+      "status": "pass"
+    },
+    {
+      "page": "Month View",
+      "path": "/month",
+      "status_code": 200,
+      "response_time_ms": 337.77,
+      "content_length": 22775,
+      "content_type": "text/html; charset=utf-8",
+      "status": "pass"
+    },
+    {
+      "page": "Kiosk Single",
+      "path": "/kiosk/single",
+      "status_code": 200,
+      "response_time_ms": 57.36,
+      "content_length": 9510,
+      "content_type": "text/html; charset=utf-8",
+      "status": "pass",
+      "is_fullscreen_ready": true
+    },
+    {
+      "page": "Kiosk Triple",
+      "path": "/kiosk/triple",
+      "status_code": 200,
+      "response_time_ms": 318.14,
+      "content_length": 55740,
+      "content_type": "text/html; charset=utf-8",
+      "status": "pass",
+      "is_fullscreen_ready": true
+    },
+    {
+      "page": "QR Code PNG",
+      "path": "/qr",
+      "status_code": 200,
+      "response_time_ms": 65.99,
+      "content_length": 822,
+      "content_type": "image/png",
+      "status": "pass",
+      "is_image": true
+    },
+    {
+      "page": "QR Code SVG",
+      "path": "/qr.svg",
+      "status_code": 200,
+      "response_time_ms": 14.96,
+      "content_length": 5226,
+      "content_type": "image/svg+xml; charset=utf-8",
+      "status": "pass",
+      "is_svg": true
+    },
+    {
+      "page": "Health Check",
+      "path": "/healthz",
+      "status_code": 200,
+      "response_time_ms": 5.98,
+      "content_length": 57,
+      "content_type": "application/json",
+      "status": "pass"
+    }
+  ],
+  "hours_structure": {
+    "timestamp": "2025-08-27T20:14:10.562895",
+    "source": "web_request",
+    "html_size": 85404,
+    "javascript_present": true,
+    "functions_found": [
+      "syncCheckboxStates",
+      "debugCheckboxState",
+      "applyBulkHours"
+    ],
+    "checkbox_elements": [
+      "bulk-start-time",
+      "bulk-end-time",
+      "bulk-monday",
+      "bulk-tuesday",
+      "bulk-wednesday",
+      "bulk-thursday",
+      "bulk-friday",
+      "bulk-saturday",
+      "bulk-sunday",
+      "bulk-selection-info"
+    ],
+    "fixes_implemented": {
+      "explicit_checkbox_updates": true,
+      "event_dispatching": true,
+      "debug_logging": true,
+      "state_synchronization": true
+    },
+    "critical_sections": {
+      "bulk_function_improved": true,
+      "render_function_present": true,
+      "event_listeners_setup": true,
+      "csrf_token_handling": true
+    }
+  },
+  "mobile_responsive": [
+    {
+      "page": "/",
+      "status": "pass",
+      "viewport_meta": true,
+      "tailwind_responsive": true,
+      "mobile_friendly_nav": true,
+      "font_size_adequate": true,
+      "touch_friendly": false,
+      "mobile_score": 1.0
+    },
+    {
+      "page": "/week",
+      "status": "pass",
+      "viewport_meta": true,
+      "tailwind_responsive": true,
+      "mobile_friendly_nav": true,
+      "font_size_adequate": true,
+      "touch_friendly": false,
+      "mobile_score": 1.0
+    },
+    {
+      "page": "/month",
+      "status": "pass",
+      "viewport_meta": true,
+      "tailwind_responsive": true,
+      "mobile_friendly_nav": true,
+      "font_size_adequate": false,
+      "touch_friendly": false,
+      "mobile_score": 0.6666666666666666
+    },
+    {
+      "page": "/kiosk/single",
+      "status": "pass",
+      "viewport_meta": true,
+      "tailwind_responsive": true,
+      "mobile_friendly_nav": true,
+      "font_size_adequate": true,
+      "touch_friendly": false,
+      "mobile_score": 1.0
+    }
+  ],
+  "qr_generation": [
+    {
+      "endpoint": "/qr",
+      "status_code": 200,
+      "content_type": "image/png",
+      "content_length": 822,
+      "expected_type": "image/png",
+      "type_match": true,
+      "status": "pass"
+    },
+    {
+      "endpoint": "/qr.svg",
+      "status_code": 200,
+      "content_type": "image/svg+xml; charset=utf-8",
+      "content_length": 5226,
+      "expected_type": "image/svg+xml",
+      "type_match": true,
+      "status": "pass"
+    },
+    {
+      "endpoint": "/qr?target=/week",
+      "status_code": 200,
+      "content_type": "image/png",
+      "content_length": 673,
+      "expected_type": "image/png",
+      "type_match": true,
+      "status": "pass"
+    },
+    {
+      "endpoint": "/qr?target=/month",
+      "status_code": 200,
+      "content_type": "image/png",
+      "content_length": 666,
+      "expected_type": "image/png",
+      "type_match": true,
+      "status": "pass"
+    }
+  ]
+}

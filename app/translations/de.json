@@ -1,0 +1,1278 @@
+{
+  "FLASK_ENV": "Flask Umgebung",
+  "address": "Adresse",
+  "address_placeholder": "Hinzufügen",
+  "admin": {
+    "announcements_management": {
+      "actions": {
+        "activate": "Aktivieren",
+        "deactivate": "Deaktivieren",
+        "delete": "Löschen",
+        "edit": "Bearbeiten",
+        "preview": "Vorschau"
+      },
+      "add_new": "Neue Ankündigung hinzufügen",
+      "create": {
+        "form": "Ankündigung erstellen Formular",
+        "title": "Ankündigung erstellen"
+      },
+      "current_announcements": "Aktuelle Ankündigungen",
+      "delete": {
+        "confirm": "Sind Sie sicher, dass Sie diese Ankündigung löschen möchten?",
+        "title": "Ankündigung löschen"
+      },
+      "edit": {
+        "form": "Ankündigung bearbeiten Formular",
+        "title": "Ankündigung bearbeiten"
+      },
+      "filters": {
+        "active": "Aktiv",
+        "all": "Alle",
+        "all_languages": "Alle Sprachen",
+        "all_status": "Alle Status",
+        "by_date": "Nach Datum",
+        "english": "Englisch",
+        "german": "Deutsch",
+        "inactive": "Inaktiv",
+        "thai": "Thai",
+        "title": "Filter"
+      },
+      "form": {
+        "content": "Inhalt",
+        "end_date": "Enddatum",
+        "language": "Sprache",
+        "priority": "Priorität",
+        "start_date": "Startdatum",
+        "status": "Status",
+        "title": "Titel"
+      },
+      "list": {
+        "active": "Aktiv",
+        "created": "Erstellt am",
+        "from": "Von",
+        "inactive": "Inaktiv",
+        "until": "Bis"
+      },
+      "messages": {
+        "delete_confirm": "Sind Sie sicher, dass Sie die Ankündigung '{title}' löschen möchten?",
+        "delete_error": "Fehler beim Löschen:",
+        "delete_network_error": "Netzwerkfehler beim Löschen",
+        "delete_success": "Ankündigung erfolgreich gelöscht!",
+        "load_error": "Fehler beim Laden der Ankündigungen",
+        "network_error": "Netzwerkfehler",
+        "save_error": "Fehler beim Speichern:",
+        "save_success_create": "Ankündigung erfolgreich erstellt!",
+        "save_success_update": "Ankündigung erfolgreich aktualisiert!",
+        "toggle_activated": "aktiviert",
+        "toggle_deactivated": "deaktiviert",
+        "toggle_error": "Fehler beim Ändern des Status:",
+        "toggle_network_error": "Netzwerkfehler beim Ändern des Status",
+        "toggle_success": "Status erfolgreich geändert zu {status}"
+      },
+      "modal": {
+        "add": "Hinzufügen",
+        "category_label": "Kategorie",
+        "category_options": {
+          "emergency": "Notfall",
+          "general": "Allgemein",
+          "holiday": "Feiertag",
+          "maintenance": "Wartung",
+          "schedule": "Zeitplan",
+          "service": "Service"
+        },
+        "create": {
+          "title": "Neue Ankündigung erstellen"
+        },
+        "delete": {
+          "title": "Löschen bestätigen"
+        },
+        "edit": {
+          "title": "Ankündigung bearbeiten"
+        },
+        "language_label": "Sprache",
+        "message_label": "Nachricht",
+        "message_placeholder": "Inhalt der Ankündigung eingeben...",
+        "priority_label": "Prioritätsstufe",
+        "priority_options": {
+          "high": "Hoch",
+          "low": "Niedrig",
+          "normal": "Normal",
+          "urgent": "Dringend"
+        },
+        "publish_from": "Veröffentlichen ab",
+        "publish_immediately": "Sofort veröffentlichen",
+        "publish_until": "Veröffentlichen bis",
+        "save": "Speichern",
+        "title_add": "Neue Ankündigung hinzufügen",
+        "title_edit": "Ankündigung bearbeiten",
+        "title_label": "Titel",
+        "title_placeholder": "Titel der Ankündigung eingeben..."
+      },
+      "no_announcements": {
+        "create_first": "Erste Ankündigung erstellen",
+        "message": "Es wurden noch keine Ankündigungen erstellt",
+        "title": "Keine Ankündigungen"
+      },
+      "preview_modal": {
+        "close": "Schließen",
+        "title": "Ankündigung Vorschau"
+      },
+      "search": {
+        "placeholder": "Ankündigungen suchen...",
+        "results": "Suchergebnisse"
+      },
+      "search_placeholder": "Ankündigungen suchen...",
+      "status": {
+        "archived": "Archiviert",
+        "draft": "Entwurf",
+        "published": "Veröffentlicht"
+      },
+      "subtitle": "Ankündigungen und Nachrichten für Besucher verwalten",
+      "title": "Ankündigungsverwaltung",
+      "validation": {
+        "content_required": "Inhalt ist erforderlich",
+        "end_after_start": "Enddatum muss nach Startdatum liegen",
+        "title_required": "Titel ist erforderlich"
+      }
+    },
+    "availability_management": {
+      "add_slot": "Zeitfenster hinzufügen",
+      "bulk_operations": "Stapeloperationen",
+      "calendar": "Kalender",
+      "calendar_view": {
+        "month": "Monat",
+        "navigation": "Navigation",
+        "title": "Kalenderansicht",
+        "today": "Heute",
+        "week": "Woche"
+      },
+      "clear_data": {
+        "clear_all": "Alle löschen",
+        "clear_past": "Vergangene Daten löschen",
+        "title": "Daten löschen"
+      },
+      "copy_timerange": {
+        "copy": "Kopieren",
+        "title": "Zeitbereich kopieren"
+      },
+      "day_detail_modal": {
+        "add_slot": "Zeitfenster hinzufügen",
+        "capacity_text": "Kapazität:",
+        "close": "Schließen",
+        "no_slots": "Keine Zeitfenster für diesen Tag",
+        "title": "Tagesdetails"
+      },
+      "day_headers": {
+        "friday": "Freitag",
+        "monday": "Montag",
+        "saturday": "Samstag",
+        "sunday": "Sonntag",
+        "thursday": "Donnerstag",
+        "tuesday": "Dienstag",
+        "wednesday": "Mittwoch"
+      },
+      "list": "Liste",
+      "list_view": {
+        "add": "Hinzufügen",
+        "create_first": "Erstes Zeitfenster erstellen",
+        "create_message": "Zeitfenster für diesen Monat erstellen",
+        "filters": "Filter",
+        "no_availability": "Keine Verfügbarkeit",
+        "search": "Suchen",
+        "sort": "Sortieren",
+        "title": "Listenansicht"
+      },
+      "messages": {
+        "clear_all_confirm": "Möchten Sie ALLE Zeitfenster löschen?",
+        "clear_all_error": "Fehler beim Löschen:",
+        "clear_all_final_confirm": "Sind Sie sicher? Alle Daten gehen verloren!",
+        "clear_all_network_error": "Netzwerkfehler beim Löschen",
+        "clear_all_success": "Alle {count} Zeitfenster gelöscht.",
+        "clear_past_confirm": "Möchten Sie alle vergangenen Zeitfenster löschen?",
+        "clear_past_error": "Fehler beim Löschen:",
+        "clear_past_network_error": "Netzwerkfehler beim Löschen",
+        "clear_past_success": "{count} vergangene Zeitfenster gelöscht.",
+        "copy_confirm": "Möchten Sie alle Zeitfenster von {from} bis {to} in den aktuellen Monat kopieren?",
+        "copy_date_order_error": "Das 'Bis'-Datum muss nach dem 'Von'-Datum liegen",
+        "copy_dates_error": "Bitte wählen Sie beide Daten aus",
+        "copy_error": "Fehler beim Kopieren:",
+        "copy_network_error": "Netzwerkfehler beim Kopieren",
+        "copy_success": "Zeitfenster erfolgreich kopiert! {count} Zeitfenster erstellt.",
+        "delete_confirm": "Sind Sie sicher, dass Sie das Zeitfenster {time} am {date} löschen möchten?",
+        "delete_error": "Fehler beim Löschen:",
+        "delete_network_error": "Netzwerkfehler beim Löschen",
+        "delete_success": "Zeitfenster erfolgreich gelöscht!",
+        "error": "Fehler aufgetreten",
+        "load_error": "Fehler beim Laden der Verfügbarkeitsdaten",
+        "loading": "Laden...",
+        "network_error": "Netzwerkfehler",
+        "no_availability": "Keine Verfügbarkeit",
+        "save_error": "Fehler beim Speichern:",
+        "save_success_create": "Zeitfenster erfolgreich erstellt!",
+        "save_success_update": "Zeitfenster erfolgreich aktualisiert!",
+        "success": "Erfolgreich gespeichert",
+        "template_confirm": "Möchten Sie die Vorlage '{template}' für den aktuellen Monat anwenden?",
+        "template_error": "Fehler beim Anwenden der Vorlage:",
+        "template_network_error": "Netzwerkfehler beim Anwenden der Vorlage",
+        "template_select_error": "Bitte wählen Sie eine Vorlage aus",
+        "template_success": "Vorlage erfolgreich angewendet! {count} Zeitfenster erstellt.",
+        "time_validation": "Endzeit muss nach Startzeit liegen"
+      },
+      "month_names": [
+        "Januar",
+        "Februar",
+        "März",
+        "April",
+        "Mai",
+        "Juni",
+        "Juli",
+        "August",
+        "September",
+        "Oktober",
+        "November",
+        "Dezember"
+      ],
+      "slot_modal": {
+        "active_label": "Aktiv",
+        "cancel": "Abbrechen",
+        "capacity_help": "Maximale Anzahl Personen",
+        "capacity_label": "Kapazität",
+        "date_label": "Datum",
+        "end_label": "Endzeit",
+        "note_label": "Notiz",
+        "note_placeholder": "Zusätzliche Notizen...",
+        "recurring_label": "Wiederkehrend",
+        "recurring_options": {
+          "biweekly": "Alle 2 Wochen",
+          "monthly": "Monatlich",
+          "type_label": "Wiederholungstyp",
+          "until_label": "Wiederholen bis",
+          "weekly": "Wöchentlich"
+        },
+        "save": "Speichern",
+        "start_label": "Startzeit",
+        "title_add": "Zeitfenster hinzufügen",
+        "title_edit": "Zeitfenster bearbeiten",
+        "type_label": "Typ",
+        "type_options": {
+          "blood_draw": "Blutabnahme",
+          "consultation": "Beratung",
+          "follow_up": "Nachkontrolle",
+          "general": "Allgemein"
+        }
+      },
+      "subtitle": "Verfügbare Zeitfenster für Termine verwalten",
+      "tabs": {
+        "bulk": "Stapelverarbeitung",
+        "calendar": "Kalender",
+        "list": "Liste",
+        "templates": "Vorlagen"
+      },
+      "templates": {
+        "apply": "Vorlage anwenden",
+        "create": "Vorlage erstellen",
+        "manage": "Vorlagen verwalten",
+        "title": "Vorlagen"
+      },
+      "time_slot_modal": {
+        "available": "Verfügbar",
+        "capacity": "Kapazität",
+        "date": "Datum",
+        "end_time": "Endzeit",
+        "notes": "Notizen",
+        "start_time": "Startzeit",
+        "title": "Zeitfenster"
+      },
+      "title": "Verfügbarkeitsverwaltung",
+      "view_mode": "Ansichtsmodus",
+      "weekly_template": {
+        "apply": "Vorlage anwenden",
+        "compact": "Kompakt",
+        "extended": "Erweitert",
+        "select_placeholder": "Vorlage auswählen",
+        "standard": "Standard",
+        "title": "Wöchentliche Vorlage"
+      }
+    },
+    "bangkok_time": "Bangkok Zeit",
+    "bangkok_time_label": "Bangkok Zeit",
+    "change_status": "Status ändern",
+    "closed": "Geschlossen",
+    "common": {
+      "back": "Zurück",
+      "cancel": "Abbrechen",
+      "close": "Schließen",
+      "confirm": "Bestätigen",
+      "create": "Erstellen",
+      "delete": "Löschen",
+      "edit": "Bearbeiten",
+      "error": "Fehler",
+      "info": "Information",
+      "loading": "Laden...",
+      "next": "Weiter",
+      "previous": "Zurück",
+      "save": "Speichern",
+      "success": "Erfolgreich",
+      "update": "Aktualisieren",
+      "warning": "Warnung"
+    },
+    "current_announcements": "Aktuelle Ankündigungen",
+    "current_status": "Aktueller Status",
+    "dashboard": {
+      "title": "Admin Dashboard"
+    },
+    "export_data": "Daten exportieren",
+    "generate_qr": "QR-Code generieren",
+    "hours_management": {
+      "current_week": "Aktuelle Woche",
+      "current_week_days": [
+        "Montag",
+        "Dienstag",
+        "Mittwoch",
+        "Donnerstag",
+        "Freitag",
+        "Samstag",
+        "Sonntag"
+      ],
+      "exception_modal": {
+        "add": "Hinzufügen",
+        "cancel": "Abbrechen",
+        "closed_all_day": "Ganztägig geschlossen",
+        "date_label": "Datum",
+        "note_label": "Notiz (optional)",
+        "note_placeholder": "z.B. Feiertag, Fortbildung, etc.",
+        "opening_hours": "Öffnungszeiten",
+        "title": "Ausnahme hinzufügen",
+        "to": "bis"
+      },
+      "exceptions": {
+        "add": "Ausnahme hinzufügen",
+        "closed": "Geschlossen",
+        "delete": "Ausnahme löschen",
+        "edit": "Ausnahme bearbeiten",
+        "no_exceptions": "Keine Ausnahmen definiert",
+        "subtitle": "Spezielle Öffnungszeiten für bestimmte Tage",
+        "title": "Ausnahmen"
+      },
+      "form": {
+        "break_end": "Pausenende",
+        "break_start": "Pausenbeginn",
+        "closed_all_day": "Ganztägig geschlossen",
+        "end_time": "Schließzeit",
+        "start_time": "Öffnungszeit"
+      },
+      "messages": {
+        "date_required": "Bitte wählen Sie ein Datum aus",
+        "exception_add_error": "Fehler beim Hinzufügen der Ausnahme",
+        "exception_add_network_error": "Netzwerkfehler beim Hinzufügen der Ausnahme",
+        "exception_add_success": "Ausnahme erfolgreich hinzugefügt",
+        "exception_delete_confirm": "Möchten Sie die Ausnahme für {date} wirklich löschen?",
+        "exception_delete_error": "Fehler beim Löschen der Ausnahme",
+        "exception_delete_network_error": "Netzwerkfehler beim Löschen der Ausnahme",
+        "exception_delete_success": "Ausnahme erfolgreich gelöscht",
+        "hours_required": "Bitte geben Sie Öffnungszeiten an oder wählen Sie \"Ganztägig geschlossen\"",
+        "network_error": "Netzwerkfehler. Bitte versuchen Sie es erneut.",
+        "reset_confirm": "Möchten Sie wirklich alle Öffnungszeiten auf die Standardwerte zurücksetzen?",
+        "save_error": "Fehler beim Speichern der Öffnungszeiten",
+        "save_success": "Öffnungszeiten erfolgreich gespeichert"
+      },
+      "modal": {
+        "closed": "Geschlossen",
+        "custom_hours": "Benutzerdefinierte Zeiten",
+        "date": "Datum",
+        "reason": "Grund",
+        "title": "Öffnungszeiten verwalten"
+      },
+      "regular": {
+        "friday": "Freitag",
+        "monday": "Montag",
+        "saturday": "Samstag",
+        "sunday": "Sonntag",
+        "thursday": "Donnerstag",
+        "title": "Reguläre Zeiten",
+        "tuesday": "Dienstag",
+        "wednesday": "Mittwoch"
+      },
+      "regular_hours": {
+        "add_timeslot": "Zeitfenster hinzufügen",
+        "closed": "Geschlossen",
+        "friday": "Freitag",
+        "monday": "Montag",
+        "reset": "Zurücksetzen",
+        "saturday": "Samstag",
+        "save": "Speichern",
+        "subtitle": "Standardöffnungszeiten für jeden Wochentag festlegen",
+        "sunday": "Sonntag",
+        "thursday": "Donnerstag",
+        "title": "Reguläre Öffnungszeiten",
+        "to": "bis",
+        "tuesday": "Dienstag",
+        "wednesday": "Mittwoch"
+      },
+      "subtitle": "Verwalten Sie reguläre Öffnungszeiten und Ausnahmen",
+      "title": "Öffnungszeitenverwaltung",
+      "validation": {
+        "break_within_hours": "Pause muss innerhalb der Öffnungszeiten liegen",
+        "end_after_start": "Schließzeit muss nach Öffnungszeit liegen",
+        "time_required": "Zeit ist erforderlich"
+      }
+    },
+    "language_switcher": {
+      "current_language": "Aktuelle Sprache"
+    },
+    "logout": "Abmelden",
+    "navigation": {
+      "announcements": "Ankündigungen",
+      "availability": "Verfügbarkeit",
+      "change_password": "Passwort ändern",
+      "dashboard": "Dashboard",
+      "legal_compliance": "Rechtliche Compliance",
+      "opening_hours": "Öffnungszeiten",
+      "settings": "Einstellungen",
+      "status": "Status"
+    },
+    "open_portal": "Portal öffnen",
+    "password_change": {
+      "confirm_password": "Passwort bestätigen",
+      "confirm_password_placeholder": "Bestätigen Sie das neue Passwort",
+      "current_password": "Aktuelles Passwort",
+      "match": {
+        "invalid": "Passwörter stimmen nicht überein",
+        "valid": "Passwörter stimmen überein"
+      },
+      "new_password": "Neues Passwort",
+      "requirements": {
+        "lowercase": "Ein Kleinbuchstabe",
+        "min_length": "Mindestens 8 Zeichen",
+        "number": "Eine Zahl",
+        "special": "Ein Sonderzeichen",
+        "uppercase": "Ein Großbuchstabe"
+      },
+      "security_notice": "Sicherheitshinweis: Verwenden Sie ein starkes Passwort",
+      "subtitle": "Ändern Sie Ihr Administratorpasswort",
+      "title": "Passwort ändern"
+    },
+    "portal_management": "Portal-Verwaltung",
+    "portal_open": "Portal geöffnet",
+    "quick_actions": "Schnellaktionen",
+    "refresh_data": "Daten aktualisieren",
+    "restart_server": "Server neustarten",
+    "rollback_changes": "Änderungen rückgängig machen",
+    "settings_management": {
+      "actions": {
+        "cancel": "Abbrechen",
+        "reset": "Zurücksetzen",
+        "save": "Speichern"
+      },
+      "appearance_tab": {
+        "branding": {
+          "favicon_url": "Favicon URL",
+          "logo_help": "URL zu Ihrem Logo-Bild",
+          "logo_url": "Logo URL",
+          "preview": "Vorschau",
+          "title": "Branding"
+        },
+        "font_sizes": {
+          "large": "Groß",
+          "medium": "Mittel",
+          "small": "Klein"
+        },
+        "preview": {
+          "announcement": "Willkommen in unserem Labor!",
+          "hours": "Mo-Fr 8:00-17:00",
+          "title": "Vorschau"
+        },
+        "theme": {
+          "color_scheme": "Farbschema",
+          "colors": {
+            "blue": "Blau",
+            "coral": "Koralle",
+            "teal": "Türkis"
+          },
+          "dark_mode": "Dunkler Modus",
+          "default": "Standard",
+          "description": "Wählen Sie ein Design für die Benutzeroberfläche",
+          "font_size": "Schriftgröße",
+          "font_sizes": {
+            "large": "Groß",
+            "medium": "Mittel",
+            "small": "Klein",
+            "xl": "Sehr groß"
+          },
+          "high_contrast": "Hoher Kontrast",
+          "title": "Design-Schema"
+        }
+      },
+      "contact_tab": {
+        "address": "Adresse",
+        "contact_info": "Kontaktinformationen",
+        "coordinates": "Koordinaten",
+        "directions": "Wegbeschreibung",
+        "email": "E-Mail",
+        "latitude": "Breitengrad",
+        "location_info": "Standortinformationen",
+        "location_services": "Standortdienste",
+        "longitude": "Längengrad",
+        "phone": "Telefonnummer",
+        "services": {
+          "add": "Hinzufügen",
+          "new_service": "Admin-Einstellungen",
+          "title": "Angebotene Services"
+        },
+        "show_location": "Standort anzeigen",
+        "site_name": "Website-Name",
+        "title": "Kontaktinformationen",
+        "tooltips": {
+          "email": "Admin-Einstellungen",
+          "phone": "Admin-Einstellungen",
+          "site_name": "Admin-Einstellungen"
+        },
+        "use_current_location": "Aktuellen Standort verwenden",
+        "website": "Website"
+      },
+      "description": "Systemeinstellungen verwalten",
+      "help_modal": {
+        "close": "Schließen",
+        "contact_support": "Support kontaktieren",
+        "faq": "Häufig gestellte Fragen",
+        "keyboard_shortcuts": "Tastaturkürzel",
+        "sections": {
+          "appearance": {
+            "descriptions": {
+              "branding": "Admin-Einstellungen",
+              "color_scheme": "Admin-Einstellungen",
+              "font_size": "Admin-Einstellungen",
+              "high_contrast": "Admin-Einstellungen"
+            },
+            "fields": {
+              "branding": "Admin-Einstellungen",
+              "color_scheme": "Admin-Einstellungen",
+              "font_size": "Admin-Einstellungen",
+              "high_contrast": "Admin-Einstellungen"
+            },
+            "title": "Admin-Einstellungen"
+          },
+          "contact": {
+            "descriptions": {
+              "address": "Hinzufügen",
+              "coordinates": "Admin-Einstellungen",
+              "directions": "Admin-Einstellungen",
+              "email": "Admin-Einstellungen",
+              "name": "Admin-Einstellungen",
+              "phone": "Admin-Einstellungen",
+              "services": "Admin-Einstellungen",
+              "website": "Admin-Einstellungen"
+            },
+            "fields": {
+              "address": "Hinzufügen",
+              "coordinates": "Admin-Einstellungen",
+              "directions": "Admin-Einstellungen",
+              "email": "Admin-Einstellungen",
+              "name": "Admin-Einstellungen",
+              "phone": "Admin-Einstellungen",
+              "services": "Admin-Einstellungen",
+              "website": "Admin-Einstellungen"
+            },
+            "title": "Admin-Einstellungen"
+          },
+          "logs": {
+            "descriptions": {
+              "date": "Admin-Einstellungen",
+              "download": "Admin-Einstellungen",
+              "log_level": "Admin-Einstellungen",
+              "source": "Admin-Einstellungen"
+            },
+            "fields": {
+              "date": "Admin-Einstellungen",
+              "download": "Admin-Einstellungen",
+              "log_level": "Admin-Einstellungen",
+              "source": "Admin-Einstellungen"
+            },
+            "title": "Admin-Einstellungen"
+          },
+          "system": {
+            "descriptions": {
+              "clear_cache": "Admin-Einstellungen",
+              "create_backup": "Admin-Einstellungen",
+              "export_settings": "Admin-Einstellungen",
+              "regenerate_qr": "Admin-Einstellungen"
+            },
+            "fields": {
+              "clear_cache": "Admin-Einstellungen",
+              "create_backup": "Admin-Einstellungen",
+              "export_settings": "Admin-Einstellungen",
+              "regenerate_qr": "Admin-Einstellungen"
+            },
+            "title": "Admin-Einstellungen"
+          }
+        },
+        "tips": {
+          "items": {
+            "color_schemes": "Admin-Einstellungen",
+            "gps_coordinates": "Admin-Einstellungen",
+            "high_contrast": "Admin-Einstellungen",
+            "monitor_logs": "Admin-Einstellungen",
+            "regular_backups": "Admin-Einstellungen"
+          },
+          "title": "Admin-Einstellungen"
+        },
+        "title": "Hilfe und Leitfaden",
+        "user_guide": "Benutzerhandbuch",
+        "warnings": {
+          "items": {
+            "backup_security": "Admin-Einstellungen",
+            "cache_performance": "Admin-Einstellungen",
+            "immediate_changes": "Admin-Einstellungen",
+            "qr_reprint": "Admin-Einstellungen"
+          },
+          "title": "Admin-Einstellungen"
+        }
+      },
+      "help_tips": "Hilfe und Tipps",
+      "import_export": {
+        "backup_data": "Daten sichern",
+        "export": "Exportieren",
+        "import": "Importieren",
+        "restore_data": "Daten wiederherstellen",
+        "title": "Daten importieren/exportieren"
+      },
+      "import_modal": {
+        "file_label": "Admin-Einstellungen",
+        "import": "Admin-Einstellungen",
+        "title": "Admin-Einstellungen"
+      },
+      "logs_tab": {
+        "actions": {
+          "clear": "Löschen",
+          "download": "Herunterladen",
+          "refresh": "Aktualisieren"
+        },
+        "filters": {
+          "all_levels": "Alle Level",
+          "all_sources": "Alle Quellen"
+        },
+        "levels": {
+          "debug": "Debug",
+          "error": "Fehler",
+          "info": "Info",
+          "warning": "Warnung"
+        },
+        "loading": "Laden...",
+        "sources": {
+          "admin": "Admin",
+          "api": "API",
+          "public": "Öffentlich",
+          "system": "System"
+        },
+        "stats": {
+          "errors": "Fehler",
+          "info": "Info",
+          "total": "Gesamt",
+          "warnings": "Warnungen"
+        }
+      },
+      "messages": {
+        "appearance_save_success": "Speichern",
+        "backup_error": "Fehler",
+        "backup_success": "Erfolgreich",
+        "cache_clear_error": "Fehler",
+        "cache_clear_network_error": "Fehler",
+        "cache_clear_success": "Erfolgreich",
+        "confirm_clear_cache": "Möchten Sie wirklich den Cache leeren?",
+        "confirm_clear_logs": "Möchten Sie wirklich alle Logs löschen?",
+        "contact_save_success": "Speichern",
+        "coordinates_required": "Koordinaten sind erforderlich",
+        "export_error": "Fehler",
+        "export_success": "Erfolgreich",
+        "geolocation_not_supported": "Standortbestimmung wird nicht unterstützt",
+        "import_error": "Fehler",
+        "import_network_error": "Fehler",
+        "import_success": "Erfolgreich",
+        "location_error": "Fehler",
+        "location_success": "Erfolgreich",
+        "logs_clear_error": "Fehler",
+        "logs_clear_network_error": "Fehler",
+        "logs_clear_success": "Erfolgreich",
+        "logs_download_error": "Fehler",
+        "logs_download_success": "Erfolgreich",
+        "logs_load_error": "Fehler",
+        "network_error": "Fehler",
+        "no_logs": "Keine Logs vorhanden",
+        "qr_regenerate_error": "Fehler",
+        "qr_regenerate_network_error": "Fehler",
+        "qr_regenerate_success": "Erfolgreich",
+        "save_error": "Speichern",
+        "select_file": "Bitte wählen Sie eine Datei aus"
+      },
+      "system_tab": {
+        "backup": {
+          "create": "Erstellen",
+          "full_backup": "Vollständiges Backup",
+          "full_backup_desc": "Sichert alle Einstellungen und Daten",
+          "title": "Backup"
+        },
+        "clear_cache": "Cache leeren",
+        "database": "Datenbank",
+        "maintenance": {
+          "clear_cache": "Cache leeren",
+          "export_settings": "Einstellungen exportieren",
+          "import_settings": "Einstellungen importieren",
+          "regenerate_qr": "QR-Codes neu generieren",
+          "title": "Wartung",
+          "validate_translations": "Übersetzungen validieren"
+        },
+        "restore": "Wiederherstellung",
+        "security": {
+          "change_password": "Passwort ändern",
+          "password_requirements": "Passwort-Anforderungen",
+          "title": "Sicherheit"
+        },
+        "storage": "Speicher",
+        "system_info": {
+          "database": "Datenbank",
+          "timezone": "Zeitzone",
+          "title": "Systeminformationen",
+          "uptime": "Laufzeit",
+          "version": "Version"
+        },
+        "title": "Systemkonfiguration",
+        "uptime": "Betriebszeit",
+        "version": "Version"
+      },
+      "tabs": {
+        "appearance": "Design",
+        "contact": "Kontakt",
+        "contact_location": "Kontakt & Standort",
+        "design_theme": "Design & Theme",
+        "system": "System",
+        "system_logs": "System-Protokolle"
+      },
+      "title": "Systemeinstellungen"
+    },
+    "status_management": {
+      "title": "Status aktualisieren",
+      "update_button": "Status aktualisieren"
+    },
+    "setup": {
+      "color_scheme": {
+        "title": "Farbschema wählen",
+        "description": "Wählen Sie ein Farbschema, das zu Ihrer Einrichtung passt"
+      }
+    },
+    "system_info": "Systeminformationen",
+    "system_online": "System online",
+    "todays_hours": "Heutige Öffnungszeiten"
+  },
+  "admin_setup_wizard": "Admin-Setup-Assistent",
+  "admin_wizard_description": "Willkommen zum Setup-Assistenten",
+  "america_new_york": "Amerika/New York",
+  "announcements": "Hinweise",
+  "appointment_booking": "Terminbuchung",
+  "asia_bangkok": "Asien/Bangkok",
+  "available_slots": "Verfügbare Zeiten",
+  "back_on": "Zurück am",
+  "back_to_home": "Nicht angegeben",
+  "basic_info_description": "Nicht angegeben",
+  "basic_information": "Nicht angegeben",
+  "blood_test": "Blutabnahme",
+  "book_appointment": "Termin buchen",
+  "call_now": "Nicht angegeben",
+  "chat_with_us": "Chatten Sie mit uns",
+  "check_current_status": "Nicht angegeben",
+  "close": "Schließen",
+  "closed": "Geschlossen",
+  "closed_today": "Heute geschlossen",
+  "closes_at": "Schließt um",
+  "common": {
+    "activate": "Aktivieren",
+    "active": "Aktiv",
+    "deactivate": "Deaktivieren",
+    "edit": "Bearbeiten",
+    "inactive": "Inaktiv",
+    "minutes": "Minuten"
+  },
+  "configuration_summary": "Nicht angegeben",
+  "confirm_skip_wizard": "Nicht angegeben",
+  "congress": "Kongress",
+  "consultation": "Beratung",
+  "contact": "Kontakt",
+  "contact_description": "Nicht angegeben",
+  "contact_practice": "Nicht angegeben",
+  "contact_via": "Kontakt über",
+  "core_features": "Nicht angegeben",
+  "currently_closed": "Aktuell geschlossen",
+  "currently_open": "Aktuell geöffnet",
+  "date_from": "Nicht angegeben",
+  "date_to": "Nicht angegeben",
+  "day_abbreviations": {
+    "friday": "Fr",
+    "monday": "Mo",
+    "saturday": "Sa",
+    "sunday": "So",
+    "thursday": "Do",
+    "tuesday": "Di",
+    "wednesday": "Mi"
+  },
+  "default_language": "Standardsprache",
+  "description": "Beschreibung",
+  "display_screens": "Nicht angegeben",
+  "div": "Bereich",
+  "download_qr": "QR herunterladen",
+  "educational_content": "Bildungsinhalte",
+  "educational_leave": "Bildungsurlaub",
+  "email": "E-Mail",
+  "email_address": "Hinzufügen",
+  "essential_feature": "Nicht angegeben",
+  "europe_berlin": "Europa/Berlin",
+  "extended_availability": "Nicht angegeben",
+  "facebook_page": "Facebook Seite",
+  "features_and_settings": "Nicht angegeben",
+  "features_description": "Nicht angegeben",
+  "finish_setup": "Nicht angegeben",
+  "first_time": "Nicht angegeben",
+  "follow_for_updates": "Folgen für Updates",
+  "follow_up": "Nachgespräch",
+  "follow_us": "Folgen Sie uns",
+  "friday": "Freitag",
+  "generate_qr_codes": "Nicht angegeben",
+  "get_directions": "Nicht angegeben",
+  "google_business": "Google Business",
+  "half_day": "Nicht angegeben",
+  "health_tips": "Gesundheitstipps",
+  "home": "Nicht angegeben",
+  "hours_format_example": "Nicht angegeben",
+  "hours_format_help": "Nicht angegeben",
+  "hours_view_description": "Nicht angegeben",
+  "input": "Eingabe",
+  "instagram_account": "Instagram",
+  "kiosk": {
+    "closed_today_big": "Heute geschlossen",
+    "congress_big": "Kongress",
+    "education_big": "Bildungsurlaub",
+    "educational_leave_note": "Für bessere Behandlung",
+    "enhanced": {
+      "accessibility": {
+        "high_contrast_available": "Hoher Kontrast verfügbar",
+        "large_display_optimized": "Für große Displays optimiert",
+        "multilingual_support": "Mehrsprachige Unterstützung",
+        "screen_reader_compatible": "Screenreader-kompatibel",
+        "touch_friendly": "Touch-freundlich"
+      },
+      "auto_refresh": "Automatische Aktualisierung",
+      "bangkok_timezone": "Bangkok Zeit",
+      "blood_tests_available": "Blutuntersuchungen verfügbar",
+      "contact_information": "Kontaktinformationen",
+      "current_status": "Aktueller Status",
+      "day_status": {
+        "holiday": "Feiertag",
+        "next_week": "Nächste Woche",
+        "this_month": "Diesen Monat",
+        "this_week": "Diese Woche",
+        "today": "Heute",
+        "tomorrow": "Morgen",
+        "weekend": "Wochenende",
+        "working_day": "Arbeitstag"
+      },
+      "medical_laboratory": "Medizinisches Labor",
+      "minutes_remaining": "Minuten verbleibend",
+      "network_status": "Netzwerkstatus",
+      "opening_times": "Öffnungszeiten",
+      "performance_optimal": "Leistung optimal",
+      "professional_service": "Professioneller Service",
+      "scan_qr_portal": "QR-Code für Portal scannen",
+      "services": {
+        "appointment_booking": "Terminvereinbarung",
+        "blood_collection": "Blutentnahme",
+        "consultation": "Beratung",
+        "emergency_service": "Notdienst",
+        "follow_up": "Nachkontrolle",
+        "health_checkup": "Gesundheitscheck",
+        "laboratory_analysis": "Laboranalyse",
+        "results_collection": "Ergebnisabholung"
+      },
+      "status_messages": {
+        "at_conference": "Auf Kongress",
+        "by_appointment": "Nach Vereinbarung",
+        "closing_soon": "Schließt bald",
+        "currently_closed": "Aktuell geschlossen",
+        "currently_open": "Aktuell geöffnet",
+        "emergency_only": "Nur Notfälle",
+        "in_training": "In Fortbildung",
+        "on_vacation": "Im Urlaub",
+        "opening_soon": "Öffnet bald"
+      },
+      "system_info": {
+        "connection_stable": "Verbindung stabil",
+        "data_current": "Daten aktuell",
+        "display_optimized": "Display optimiert",
+        "last_updated": "Zuletzt aktualisiert",
+        "portal_version": "Portal Version",
+        "system_status": "Systemstatus"
+      },
+      "system_online": "System Online",
+      "time_periods": {
+        "afternoon": "Nachmittag",
+        "early_morning": "Früh morgens",
+        "evening": "Abend",
+        "late_evening": "Spät abends",
+        "morning": "Vormittag",
+        "night": "Nacht"
+      },
+      "upcoming_availability": "Kommende Verfügbarkeit",
+      "weekly_schedule": "Wochenplan"
+    },
+    "full_day_open": "Ganztag geöffnet",
+    "half_day_open": "Halbtag geöffnet",
+    "next_week": "Nächste Woche",
+    "notice": "Hinweis",
+    "open_and_available": "Heute geöffnet und verfügbar",
+    "preview_title": "VORSCHAU",
+    "scan_for_info": "Scannen für mehr Informationen →",
+    "see_notice": "Siehe Aushang",
+    "this_week_title": "DIESE WOCHE",
+    "today_title": "HEUTE",
+    "todays_opening_hours": "Heutige Öffnungszeiten",
+    "vacation_big": "Im Urlaub",
+    "vacation_return": "Zurück:",
+    "we_are_here": "Wir sind für Sie da!"
+  },
+  "kiosk_mode": "Nicht angegeben",
+  "kiosk_texts": {
+    "back_on_date": "Zurück am",
+    "back_soon": "Bald zurück",
+    "for_better_treatment": "Für bessere Behandlung",
+    "information": "Information",
+    "please_note": "Bitte beachten Sie unsere Hinweise",
+    "scan_for_info": "Scannen für<br>weitere Infos"
+  },
+  "laboratory_updates": "Labor-Updates",
+  "language": "Sprache",
+  "language_description": "Wählen Sie Ihre bevorzugte Sprache",
+  "launch_description": "Nicht angegeben",
+  "legal": {
+    "admin": {
+      "active_consents": "Aktive Einwilligungen",
+      "cleanup_data": "Daten bereinigen",
+      "compliance_logs": "Compliance-Protokolle",
+      "compliance_score": "Compliance-Score",
+      "dashboard": "Legal Compliance Dashboard",
+      "data_requests": "Datenanfragen",
+      "date_formats": "Datumsformate",
+      "documents": "Rechtsdokumente",
+      "export_config": "Konfiguration exportieren",
+      "import_config": "Konfiguration importieren",
+      "label_management": "Label-Verwaltung",
+      "language_settings": "Spracheinstellungen",
+      "missing_documents": "Fehlende Dokumente",
+      "overdue_requests": "Überfällige Anfragen",
+      "pending_requests": "Ausstehende Anfragen",
+      "preview": "Vorschau",
+      "reset_defaults": "Auf Standard zurücksetzen",
+      "retention_policies": "Aufbewahrungsrichtlinien",
+      "save_changes": "Änderungen speichern",
+      "settings": "Rechtliche Einstellungen"
+    },
+    "banner": {
+      "accept_all": "Alle akzeptieren",
+      "always_active": "Immer aktiv",
+      "analytics_data": "Anonymisierte Nutzungsstatistiken",
+      "analytics_description": "Diese Cookies helfen uns, die Website zu verbessern durch anonyme Nutzungsstatistiken.",
+      "analytics_third_parties": "Keine",
+      "close": "Schließen",
+      "compliance_notice": "Diese Website entspricht der Thailand PDPA und EU DSGVO",
+      "consent_error": "Fehler beim Speichern der Einstellungen",
+      "consent_saved": "Einstellungen erfolgreich gespeichert",
+      "data_processed": "Verarbeitete Daten",
+      "description": "Diese Website verwendet Cookies und verarbeitet personenbezogene Daten gemäß Thailand PDPA und EU DSGVO. Bitte wählen Sie Ihre Präferenzen.",
+      "functional_data": "Benutzerpräferenzen, UI-Einstellungen",
+      "functional_description": "Diese Cookies verbessern die Nutzererfahrung durch Speicherung von Präferenzen.",
+      "functional_retention": "12 Monate",
+      "impressum": "Impressum",
+      "legal_basis": "Rechtsgrundlage",
+      "marketing_data": "Nutzungsprofil, Interessen",
+      "marketing_description": "Diese Cookies ermöglichen personalisierte Werbung und Social Media Funktionen.",
+      "marketing_third_parties": "Social Media Partner",
+      "medical_disclaimer_text": "Ich verstehe, dass diese Website nur allgemeine Informationen über Laborleistungen bereitstellt und keinen Ersatz für eine medizinische Beratung darstellt.",
+      "necessary_data": "Session-ID, Spracheinstellung, Consent-Status",
+      "necessary_description": "Diese Cookies sind für das Funktionieren der Website unerlässlich und können nicht deaktiviert werden.",
+      "necessary_legal_basis": "Berechtigte Interessen (Art. 6 Abs. 1 lit. f DSGVO)",
+      "privacy_policy": "Datenschutzerklärung",
+      "reject_optional": "Nur notwendige",
+      "retention": "Speicherdauer",
+      "save_preferences": "Auswahl speichern",
+      "terms": "Nutzungsbedingungen",
+      "third_parties": "Drittanbieter",
+      "title": "Cookie-Einstellungen"
+    },
+    "compliance": {
+      "data_protection": "Datenschutz",
+      "eu_gdpr": "EU DSGVO konform",
+      "medical_standards": "Medizinische Standards",
+      "pdpa_thailand": "Thailand PDPA konform",
+      "title": "Legal Compliance"
+    },
+    "consent": {
+      "analytics": "Analytik",
+      "expires_at": "Läuft ab am",
+      "functional": "Funktional",
+      "given_at": "Erteilt am",
+      "language": "Sprache",
+      "marketing": "Marketing",
+      "medical_disclaimer": "Medizinischer Haftungsausschluss",
+      "necessary": "Notwendig",
+      "update": "Aktualisieren",
+      "version": "Version",
+      "withdraw": "Zurückziehen"
+    },
+    "consent_management": "Einwilligungsverwaltung",
+    "contact": {
+      "data_protection_officer": "Datenschutzbeauftragter",
+      "legal_department": "Rechtsabteilung",
+      "privacy_email": "Datenschutz E-Mail",
+      "privacy_questions": "Fragen zum Datenschutz"
+    },
+    "cookie_settings": "Cookie-Einstellungen",
+    "data_request": {
+      "access": "Auskunft über meine Daten",
+      "access_description": "Ich möchte wissen, welche Daten über mich gespeichert sind.",
+      "description": "Hier können Sie Ihre Rechte nach Thailand PDPA und EU DSGVO ausüben.",
+      "details": "Details Ihrer Anfrage",
+      "details_placeholder": "Bitte beschreiben Sie Ihre Anfrage detailliert...",
+      "email": "E-Mail-Adresse",
+      "email_placeholder": "ihre.email@beispiel.com",
+      "erasure": "Löschung meiner Daten",
+      "erasure_description": "Ich möchte, dass meine Daten gelöscht werden.",
+      "objection": "Widerspruch gegen Verarbeitung",
+      "objection_description": "Ich widerspreche der Verarbeitung meiner Daten.",
+      "portability": "Übertragung meiner Daten",
+      "portability_description": "Ich möchte meine Daten in einem übertragbaren Format erhalten.",
+      "processing_time": "Bearbeitungszeit: 30 Tage",
+      "rectification": "Berichtigung meiner Daten",
+      "rectification_description": "Ich möchte, dass falsche Daten über mich korrigiert werden.",
+      "restriction": "Einschränkung der Verarbeitung",
+      "restriction_description": "Ich möchte die Verarbeitung meiner Daten einschränken.",
+      "submit": "Anfrage einreichen",
+      "submitted": "Anfrage erfolgreich eingereicht",
+      "title": "Betroffenenanfrage",
+      "type": "Art der Anfrage",
+      "verification_failed": "Bestätigung fehlgeschlagen",
+      "verification_required": "E-Mail-Bestätigung erforderlich",
+      "verification_sent": "Bestätigungslink wurde an Ihre E-Mail gesendet"
+    },
+    "data_subject_request": "Betroffenenanfrage",
+    "impressum": "Impressum",
+    "legal_notice": "Rechtliche Hinweise",
+    "medical_disclaimer": "Medizinischer Haftungsausschluss",
+    "messages": {
+      "completed": "Abgeschlossen",
+      "created": "Erstellt",
+      "deleted": "Gelöscht",
+      "error": "Fehler",
+      "info": "Information",
+      "processing": "Wird bearbeitet",
+      "saved": "Gespeichert",
+      "success": "Erfolgreich",
+      "updated": "Aktualisiert",
+      "warning": "Warnung"
+    },
+    "privacy_policy": "Datenschutzerklärung",
+    "rights": {
+      "access": "Recht auf Auskunft",
+      "data_protection_authority": "Datenschutzbehörde",
+      "erasure": "Recht auf Löschung",
+      "exercise_rights": "Rechte ausüben",
+      "objection": "Widerspruchsrecht",
+      "portability": "Recht auf Datenübertragbarkeit",
+      "rectification": "Recht auf Berichtigung",
+      "restriction": "Recht auf Einschränkung der Verarbeitung",
+      "title": "Ihre Rechte",
+      "withdraw_consent": "Einwilligung zurückziehen"
+    },
+    "terms_of_service": "Nutzungsbedingungen",
+    "validation": {
+      "consent_required": "Einwilligung erforderlich",
+      "invalid_email": "Ungültige E-Mail-Adresse",
+      "invalid_format": "Ungültiges Format",
+      "min_length": "Mindestlänge nicht erreicht",
+      "required_field": "Dieses Feld ist erforderlich"
+    }
+  },
+  "like_and_follow": "Liken und Folgen",
+  "line_facebook_whatsapp": "Nicht angegeben",
+  "line_official": "LINE Official",
+  "medical_hours": "Nicht angegeben",
+  "mobile_description": "Nicht angegeben",
+  "mobile_friendly": "Nicht angegeben",
+  "mobile_optimized": "Nicht angegeben",
+  "mon_fri_8_5": "Nicht angegeben",
+  "monday": "Montag",
+  "month": "Monat",
+  "months": {
+    "april": "April",
+    "august": "August",
+    "december": "Dezember",
+    "february": "Februar",
+    "january": "Januar",
+    "july": "Juli",
+    "june": "Juni",
+    "march": "März",
+    "may": "Mai",
+    "november": "November",
+    "october": "Oktober",
+    "september": "September"
+  },
+  "morning_only": "Nicht angegeben",
+  "multi_language": "Nicht angegeben",
+  "multi_language_support": "Nicht angegeben",
+  "multiple_languages": "Nicht angegeben",
+  "navigate": "Navigation",
+  "next": "Weiter",
+  "next_available": "Nächster Termin",
+  "next_steps": "Nicht angegeben",
+  "no_appointments": "Keine Termine verfügbar",
+  "no_social_platforms": "Nicht angegeben",
+  "no_social_platforms_desc": "Nicht angegeben",
+  "not_set": "Nicht angegeben",
+  "of": "von",
+  "on_vacation": "Im Urlaub",
+  "online_appointments": "Nicht angegeben",
+  "open": "Geöffnet",
+  "opening_hours": "Öffnungszeiten",
+  "opening_hours_description": "Nicht angegeben",
+  "opens_at": "Öffnet um",
+  "opens_on": "Öffnet am",
+  "optional_features": "Nicht angegeben",
+  "other": "Sonstiges",
+  "phone": "Telefon",
+  "phone_number": "Nicht angegeben",
+  "practice_name": "Nicht angegeben",
+  "practice_name_placeholder": "Nicht angegeben",
+  "previous": "Zurück",
+  "print_door_sign": "Nicht angegeben",
+  "print_qr": "QR drucken",
+  "qr_code_access": "Nicht angegeben",
+  "qr_code_generation": "Nicht angegeben",
+  "qr_code_integration": "Nicht angegeben",
+  "quick_contact": "Schnellkontakt",
+  "quick_templates": "Nicht angegeben",
+  "ready_to_launch": "Nicht angegeben",
+  "real_time_info": "Nicht angegeben",
+  "real_time_updates": "Nicht angegeben",
+  "realtime_description": "Nicht angegeben",
+  "saturday": "Samstag",
+  "scan_qr": "QR-Code scannen",
+  "scan_qr_description": "Nicht angegeben",
+  "scan_to_follow": "Scannen zum Folgen",
+  "services": "Leistungen",
+  "share": "Teilen",
+  "share_on": "Teilen auf",
+  "share_with_staff": "Nicht angegeben",
+  "site_title": "Labor Pattaya",
+  "skip_wizard": "Nicht angegeben",
+  "social_media": "Social Media",
+  "social_media_integration": "Nicht angegeben",
+  "social_qr_codes": "Social QR-Codes",
+  "span": "Abschnitt",
+  "special_note": "Nicht angegeben",
+  "standard_hours": "Nicht angegeben",
+  "status": "Status",
+  "status_changed": "Nicht angegeben",
+  "status_check_description": "Nicht angegeben",
+  "step": "Schritt",
+  "sunday": "Sonntag",
+  "tablet": "Nicht angegeben",
+  "test_mobile_access": "Nicht angegeben",
+  "this_week": "Nicht angegeben",
+  "thursday": "Donnerstag",
+  "tiktok_videos": "TikTok Videos",
+  "timezone": "Zeitzone",
+  "today": "Heute",
+  "todays_hours": "Nicht angegeben",
+  "tuesday": "Dienstag",
+  "ui_common": {
+    "access": "Zugang",
+    "additional_services": "Weitere Leistungen auf Anfrage.",
+    "address_label": "Adresse",
+    "available_now": "Jetzt verfügbar",
+    "bangkok_time": "Bangkok Zeit",
+    "barrier_free": "Barrierefrei",
+    "contact_us": "Kontaktieren Sie uns",
+    "currently_open_status": "Geöffnet",
+    "developed_by": "Entwickelt von Ralle1976 | Legal Compliance aktiv",
+    "exception": "Ausnahme",
+    "global_error": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+    "individual_consultation": "Kontaktieren Sie uns für individuelle Beratung.",
+    "legal_links_later": "Rechtliche Links werden später hinzugefügt",
+    "loading": "Wird geladen...",
+    "our_location": "Unser Standort in Pattaya",
+    "our_services": "Unsere medizinischen Leistungen",
+    "parking": "Parkplatz",
+    "parking_available": "Verfügbar",
+    "portal_online": "Portal Online",
+    "public_transport": "Öffentliche Verkehrsmittel",
+    "quick_social_contact": "Schneller Kontakt über soziale Medien:",
+    "todays_hours": "Heutige Öffnungszeiten",
+    "weekend": "Wochenende"
+  },
+  "usage_statistics": "Nicht angegeben",
+  "view_on_maps": "In Maps anzeigen",
+  "view_opening_hours": "Nicht angegeben",
+  "visitor_analytics": "Nicht angegeben",
+  "watch_videos": "Videos ansehen",
+  "wednesday": "Mittwoch",
+  "week": "Woche",
+  "weekdays": {
+    "friday": "Freitag",
+    "monday": "Montag",
+    "saturday": "Samstag",
+    "sunday": "Sonntag",
+    "thursday": "Donnerstag",
+    "tuesday": "Dienstag",
+    "wednesday": "Mittwoch"
+  },
+  "weekly_schedule": "Nicht angegeben",
+  "welcome_to_qr_portal": "Nicht angegeben",
+  "whatsapp_business": "WhatsApp Business",
+  "wizard": "Assistent",
+  "wizard_complete": "Setup abgeschlossen",
+  "wizard_complete_description": "Das Setup wurde erfolgreich abgeschlossen",
+  "wizard_completed": "Assistent abgeschlossen",
+  "wizard_started": "Assistent gestartet",
+  "wizard_welcome_description": "Lassen Sie uns Ihr System einrichten",
+  "youtube_channel": "YouTube Kanal",
+  "translation_validator": {
+    "title": "Übersetzungs-Validator",
+    "subtitle": "Prüfe alle Übersetzungsdateien auf Vollständigkeit und Probleme",
+    "refresh": "Aktualisieren",
+    "back_to_settings": "Zurück zu Einstellungen",
+    "completion_rate": "Abschlussrate",
+    "total_keys": "Gesamte Schlüssel",
+    "valid_translations": "Gültige Übersetzungen",
+    "placeholders": "Platzhalter",
+    "all_valid": "Alle Übersetzungen sind gültig!",
+    "issues_found": "{{count}} Probleme gefunden",
+    "valid": "Gültig",
+    "invalid": "Ungültig",
+    "total": "Gesamt",
+    "empty": "Leer",
+    "top_issues": "Häufigste Probleme",
+    "empty_key": "Leerer Schlüssel",
+    "and_more": "... und {{count}} weitere",
+    "file_missing": "Datei fehlt",
+    "fix_suggestions": "Lösungsvorschläge",
+    "fix": "Lösung",
+    "validating": "Validiere..."
+  },
+  "placeholder_current_password": "Geben Sie Ihr aktuelles Passwort ein",
+  "placeholder_new_password": "Geben Sie ein neues Passwort ein",
+  "placeholder_confirm_password": "Bestätigen Sie das neue Passwort",
+  "language_german": "Deutsch",
+  "language_thai": "Thai",
+  "language_english": "Englisch",
+  "timezone_thailand": "Thailand",
+  "timezone_germany": "Deutschland",
+  "timezone_usa_east": "USA Ost",
+  "timezone_usa_west": "USA West",
+  "timezone_japan": "Japan",
+  "timezone_utc": "Universalzeit"
+}

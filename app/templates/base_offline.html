@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="{{ lang or 'de' }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ get_translation('site_title') }}{% endblock %}</title>
+    
+    <!-- Local CSS only - no external requests -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/minimal.css') }}">
+    
+    <!-- Simple Icons as text -->
+    <style>
+        .icon-home::before { content: "🏠"; }
+        .icon-calendar::before { content: "📅"; }
+        .icon-week::before { content: "📋"; }
+        .icon-phone::before { content: "📞"; }
+        .icon-email::before { content: "📧"; }
+        .icon-location::before { content: "📍"; }
+        .icon-clock::before { content: "🕒"; }
+        .icon-status::before { content: "ℹ️"; }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container flex justify-between items-center">
+            <h1 class="text-xl font-bold">
+                <span class="icon-home"></span> Labor Pattaya - QR Info Portal
+            </h1>
+            <div class="flex space-x-4">
+                <a href="{{ url_for('public.home') }}">
+                    <span class="icon-home"></span> {{ get_translation('home') }}
+                </a>
+                <a href="{{ url_for('public.week_view') }}">
+                    <span class="icon-week"></span> {{ get_translation('week') }}
+                </a>
+                <a href="{{ url_for('public.month_view') }}">
+                    <span class="icon-calendar"></span> {{ get_translation('month') }}
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container">
+        <div class="mt-4">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Labor Pattaya - QR Info Portal</p>
+            <p class="text-sm mt-2">
+                <span class="icon-phone"></span> Telefon | 
+                <span class="icon-email"></span> E-Mail | 
+                <span class="icon-location"></span> Pattaya, Thailand
+            </p>
+        </div>
+    </footer>
+
+    <!-- No external JavaScript - page loads instantly -->
+    <script>
+        // Simple page functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('QR Info Portal loaded successfully');
+            
+            // Add current time display
+            function updateTime() {
+                const now = new Date();
+                const bangkokTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Bangkok"}));
+                const timeStr = bangkokTime.toLocaleTimeString('de-DE');
+                const dateStr = bangkokTime.toLocaleDateString('de-DE');
+                
+                const timeElements = document.querySelectorAll('.current-time');
+                timeElements.forEach(el => {
+                    el.textContent = `${dateStr} ${timeStr} (Bangkok)`;
+                });
+            }
+            
+            updateTime();
+            setInterval(updateTime, 1000);
+        });
+    </script>
+</body>
+</html>

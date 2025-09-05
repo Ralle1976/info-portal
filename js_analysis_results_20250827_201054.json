@@ -1,0 +1,158 @@
+{
+  "analysis_timestamp": "2025-08-27T20:10:54.648722",
+  "files_analyzed": [
+    {
+      "file": "app/templates/admin/hours.html",
+      "js_lines": 687,
+      "functions_found": [
+        "loadWeeklyHours",
+        "renderWeeklyHours",
+        "addTimeSlot",
+        "addTimeSlotElement",
+        "updateTimeSlot",
+        "removeTimeSlot",
+        "resetWeeklyHours",
+        "saveWeeklyHours",
+        "loadExceptions",
+        "renderExceptions",
+        "showAddExceptionModal",
+        "hideAddExceptionModal",
+        "addException",
+        "deleteException",
+        "loadCurrentWeek",
+        "renderCurrentWeek",
+        "checkFontAwesomeIcons",
+        "selectWeekdays",
+        "selectWeekend",
+        "selectAll",
+        "selectNone",
+        "updateBulkSelectionInfo",
+        "applyBulkHours",
+        "showNotification"
+      ],
+      "checkbox_related_code": [
+        "\\.checked\\s*=: 15 occurrences",
+        "day-closed-toggle: 1 occurrences",
+        "day-single-toggle: 1 occurrences",
+        "bulk-\\w+: 4 occurrences",
+        "singleToggle: 11 occurrences",
+        "closedToggle: 6 occurrences",
+        "✅ Single toggle logic present in renderWeeklyHours",
+        "✅ Closed toggle logic present in renderWeeklyHours"
+      ],
+      "state_management_issues": [],
+      "event_listeners": [
+        "DOMContentLoaded",
+        "change",
+        "change",
+        "change",
+        "click"
+      ],
+      "potential_race_conditions": [
+        "renderWeeklyHours() called 7 times - potential race condition",
+        "7 setTimeout calls without clearTimeout - potential memory leaks"
+      ]
+    },
+    {
+      "file": "app/templates/admin/hours.html",
+      "js_lines": 687,
+      "functions_found": [
+        "loadWeeklyHours",
+        "renderWeeklyHours",
+        "addTimeSlot",
+        "addTimeSlotElement",
+        "updateTimeSlot",
+        "removeTimeSlot",
+        "resetWeeklyHours",
+        "saveWeeklyHours",
+        "loadExceptions",
+        "renderExceptions",
+        "showAddExceptionModal",
+        "hideAddExceptionModal",
+        "addException",
+        "deleteException",
+        "loadCurrentWeek",
+        "renderCurrentWeek",
+        "checkFontAwesomeIcons",
+        "selectWeekdays",
+        "selectWeekend",
+        "selectAll",
+        "selectNone",
+        "updateBulkSelectionInfo",
+        "applyBulkHours",
+        "showNotification"
+      ],
+      "checkbox_related_code": [
+        "\\.checked\\s*=: 15 occurrences",
+        "day-closed-toggle: 1 occurrences",
+        "day-single-toggle: 1 occurrences",
+        "bulk-\\w+: 4 occurrences",
+        "singleToggle: 11 occurrences",
+        "closedToggle: 6 occurrences",
+        "✅ Single toggle logic present in renderWeeklyHours",
+        "✅ Closed toggle logic present in renderWeeklyHours"
+      ],
+      "state_management_issues": [],
+      "event_listeners": [
+        "DOMContentLoaded",
+        "change",
+        "change",
+        "change",
+        "click"
+      ],
+      "potential_race_conditions": [
+        "renderWeeklyHours() called 7 times - potential race condition",
+        "7 setTimeout calls without clearTimeout - potential memory leaks"
+      ]
+    }
+  ],
+  "checkbox_issues": [
+    {
+      "category": "Race Conditions",
+      "severity": "medium",
+      "issues": [
+        "renderWeeklyHours() called 7 times - potential race condition",
+        "7 setTimeout calls without clearTimeout - potential memory leaks"
+      ],
+      "description": "Multiple async operations may interfere with checkbox updates"
+    },
+    {
+      "category": "Event Listeners",
+      "severity": "medium",
+      "issues": [
+        "Missing event listener for: submit"
+      ],
+      "description": "Some user interactions may not be properly handled"
+    }
+  ],
+  "recommendations": [
+    {
+      "priority": "high",
+      "title": "Explicit Checkbox State Synchronization",
+      "description": "Add explicit checkbox state updates in all data-changing functions",
+      "implementation": "\n// Add this helper function:\nfunction syncCheckboxStates() {\n    Object.keys(weeklyHours).forEach(day => {\n        const closedCheckbox = document.getElementById(`${day}-closed`);\n        const singleCheckbox = document.getElementById(`${day}-single`);\n        \n        if (closedCheckbox) {\n            closedCheckbox.checked = (weeklyHours[day].length === 0);\n        }\n        \n        if (singleCheckbox) {\n            singleCheckbox.checked = (weeklyHours[day].length === 1);\n        }\n    });\n}\n\n// Call this function after:\n// - applyBulkHours()\n// - loadWeeklyHours()\n// - resetWeeklyHours()\n// - Any weeklyHours data changes\n",
+      "files_to_modify": [
+        "app/templates/admin/hours.html"
+      ]
+    },
+    {
+      "priority": "high",
+      "title": "Improve applyBulkHours() function",
+      "description": "Ensure bulk hours function properly updates checkbox states",
+      "implementation": "\n// Modify applyBulkHours() function:\nfunction applyBulkHours() {\n    // ... existing validation code ...\n    \n    // Apply to selected days\n    selectedDays.forEach(day => {\n        weeklyHours[day] = [timeStr];\n        \n        // CRITICAL: Explicit checkbox updates\n        const closedCheckbox = document.getElementById(`${day}-closed`);\n        const singleCheckbox = document.getElementById(`${day}-single`);\n        \n        if (closedCheckbox && closedCheckbox.checked) {\n            closedCheckbox.checked = false;\n            // Trigger change event to ensure UI updates\n            closedCheckbox.dispatchEvent(new Event('change'));\n        }\n        \n        if (singleCheckbox && !singleCheckbox.checked) {\n            singleCheckbox.checked = true;\n            // Trigger change event\n            singleCheckbox.dispatchEvent(new Event('change'));\n        }\n    });\n    \n    // Force UI update\n    renderWeeklyHours();\n    syncCheckboxStates(); // Call new helper function\n}\n",
+      "files_to_modify": [
+        "app/templates/admin/hours.html"
+      ]
+    },
+    {
+      "priority": "medium",
+      "title": "Add Debug Logging",
+      "description": "Add console logging to track checkbox state changes",
+      "implementation": "\n// Add debug function:\nfunction debugCheckboxState(day, action) {\n    const closedCheckbox = document.getElementById(`${day}-closed`);\n    const singleCheckbox = document.getElementById(`${day}-single`);\n    \n    console.log(`Checkbox Debug [${day}] ${action}:`, {\n        weeklyHours: weeklyHours[day],\n        closedChecked: closedCheckbox ? closedCheckbox.checked : 'not found',\n        singleChecked: singleCheckbox ? singleCheckbox.checked : 'not found',\n        expectedClosed: weeklyHours[day].length === 0,\n        expectedSingle: weeklyHours[day].length === 1\n    });\n}\n\n// Call debugCheckboxState(day, 'after_bulk') after bulk operations\n// Call debugCheckboxState(day, 'after_render') after renderWeeklyHours\n",
+      "files_to_modify": [
+        "app/templates/admin/hours.html"
+      ]
+    }
+  ],
+  "code_quality": {}
+}

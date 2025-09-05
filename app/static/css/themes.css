@@ -1,0 +1,152 @@
+/* Theme Variables */
+:root {
+  /* Default Thai Theme */
+  --primary-color: #40E0D0;
+  --primary-hover: #20D0C0;
+  --secondary-color: #FF7F50;
+  --accent-color: #FFD700;
+  --success-color: #10B981;
+  --warning-color: #F59E0B;
+  --error-color: #EF4444;
+  --info-color: #3B82F6;
+  
+  /* Background Colors */
+  --bg-primary: #F9FAFB;
+  --bg-secondary: #FFFFFF;
+  --bg-tertiary: #F3F4F6;
+  
+  /* Text Colors */
+  --text-primary: #111827;
+  --text-secondary: #6B7280;
+  --text-light: #9CA3AF;
+  
+  /* Border Colors */
+  --border-light: #E5E7EB;
+  --border-medium: #D1D5DB;
+  
+  /* Shadow */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+}
+
+/* Professional Blue Theme */
+[data-theme="professional"] {
+  --primary-color: #2563EB;
+  --primary-hover: #1D4ED8;
+  --secondary-color: #7C3AED;
+  --accent-color: #059669;
+  --bg-primary: #F8FAFC;
+}
+
+/* Medical Green Theme */
+[data-theme="medical"] {
+  --primary-color: #059669;
+  --primary-hover: #047857;
+  --secondary-color: #0891B2;
+  --accent-color: #DC2626;
+  --bg-primary: #F0FDF4;
+}
+
+/* Warm Orange Theme */
+[data-theme="warm"] {
+  --primary-color: #EA580C;
+  --primary-hover: #C2410C;
+  --secondary-color: #DC2626;
+  --accent-color: #7C2D12;
+  --bg-primary: #FFF7ED;
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+  --primary-color: #60A5FA;
+  --primary-hover: #3B82F6;
+  --secondary-color: #A78BFA;
+  --accent-color: #34D399;
+  --bg-primary: #111827;
+  --bg-secondary: #1F2937;
+  --bg-tertiary: #374151;
+  --text-primary: #F9FAFB;
+  --text-secondary: #D1D5DB;
+  --text-light: #9CA3AF;
+  --border-light: #374151;
+  --border-medium: #4B5563;
+}
+
+/* High Contrast Theme */
+[data-theme="contrast"] {
+  --primary-color: #000000;
+  --primary-hover: #1F2937;
+  --secondary-color: #374151;
+  --accent-color: #DC2626;
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F9FAFB;
+  --text-primary: #000000;
+  --border-light: #000000;
+  --border-medium: #000000;
+}
+
+/* Apply theme colors */
+.theme-primary { color: var(--primary-color) !important; }
+.theme-bg-primary { background-color: var(--bg-primary) !important; }
+.theme-bg-secondary { background-color: var(--bg-secondary) !important; }
+.theme-text-primary { color: var(--text-primary) !important; }
+.theme-text-secondary { color: var(--text-secondary) !important; }
+.theme-border { border-color: var(--border-light) !important; }
+
+/* Custom button styles */
+.btn-theme-primary {
+  background-color: var(--primary-color);
+  color: white;
+  transition: background-color 0.2s;
+}
+
+.btn-theme-primary:hover {
+  background-color: var(--primary-hover);
+}
+
+/* Status indicators */
+.status-open {
+  background-color: var(--success-color);
+  color: white;
+}
+
+.status-closed {
+  background-color: var(--error-color);
+  color: white;
+}
+
+.status-warning {
+  background-color: var(--warning-color);
+  color: white;
+}
+
+/* Animations */
+@keyframes pulse-theme {
+  0%, 100% { background-color: var(--primary-color); }
+  50% { background-color: var(--primary-hover); }
+}
+
+.pulse-theme {
+  animation: pulse-theme 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Font size options */
+.text-size-small { font-size: 0.875rem; }
+.text-size-normal { font-size: 1rem; }
+.text-size-large { font-size: 1.125rem; }
+.text-size-xl { font-size: 1.25rem; }
+
+/* Language-specific font adjustments */
+:lang(th) {
+  font-family: 'Sarabun', 'Noto Sans Thai', sans-serif;
+  line-height: 1.6;
+}
+
+:lang(de) {
+  font-family: 'Sarabun', 'Inter', sans-serif;
+}
+
+:lang(en) {
+  font-family: 'Sarabun', 'Inter', sans-serif;
+}

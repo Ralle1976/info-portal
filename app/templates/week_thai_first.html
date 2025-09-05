@@ -1,0 +1,190 @@
+{% extends "base_thai_first.html" %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <!-- Week Header -->
+    <div class="thai-card mb-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <h2 class="thai-primary text-3xl">ตารางเวลาประจำสัปดาห์</h2>
+                <p class="en-subtitle text-lg">Weekly Schedule</p>
+            </div>
+            
+            <!-- Week Navigation -->
+            <div class="flex items-center space-x-4">
+                <a href="{{ url_for('public.week_view', offset=week_offset-1) }}" 
+                   class="bg-thai-turquoise text-white px-4 py-2 rounded-lg hover:bg-thai-turquoise/90 transition">
+                    <i class="fas fa-chevron-left mr-2"></i>
+                    <span class="hidden sm:inline">สัปดาห์ก่อน</span>
+                </a>
+                
+                <span class="font-medium text-gray-700">
+                    สัปดาห์ที่ {{ week_schedule[0]['date'].strftime('%d/%m') }} - {{ week_schedule[6]['date'].strftime('%d/%m/%Y') }}
+                </span>
+                
+                <a href="{{ url_for('public.week_view', offset=week_offset+1) }}" 
+                   class="bg-thai-turquoise text-white px-4 py-2 rounded-lg hover:bg-thai-turquoise/90 transition">
+                    <span class="hidden sm:inline">สัปดาห์ถัดไป</span>
+                    <i class="fas fa-chevron-right ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Week Schedule Grid -->
+    <div class="grid gap-4">
+        {% set thai_days = {
+            'monday': 'วันจันทร์', 'tuesday': 'วันอังคาร', 'wednesday': 'วันพุธ',
+            'thursday': 'วันพฤหัสบดี', 'friday': 'วันศุกร์', 
+            'saturday': 'วันเสาร์', 'sunday': 'วันอาทิตย์'
+        } %}
+        {% set en_days = {
+            'monday': 'Monday', 'tuesday': 'Tuesday', 'wednesday': 'Wednesday',
+            'thursday': 'Thursday', 'friday': 'Friday', 
+            'saturday': 'Saturday', 'sunday': 'Sunday'
+        } %}
+        
+        {% for day_info in week_schedule %}
+            {% set is_today = day_info['date'] == today %}
+            {% set is_closed = day_info['closed'] %}
+            {% set weekday_idx = day_info['date'].weekday() %}
+            {% set day_names_list = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] %}
+            {% set day_name = day_names_list[weekday_idx] %}
+            
+            <div class="thai-card {% if is_today %}border-2 border-thai-turquoise bg-thai-sand{% endif %} transition-all hover:shadow-lg">
+                <div class="flex items-center justify-between">
+                    <!-- Day Info -->
+                    <div class="flex items-center space-x-4">
+                        <div class="{% if is_today %}bg-thai-turquoise{% elif is_closed %}bg-gray-400{% else %}bg-green-500{% endif %} 
+                                    rounded-full p-4 text-white">
+                            <i class="fas fa-calendar-day text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="thai-primary text-xl">
+                                {{ thai_days[day_name] }}
+                                {% if is_today %}
+                                    <span class="text-thai-turquoise">(วันนี้)</span>
+                                {% endif %}
+                            </h3>
+                            <p class="en-subtitle">
+                                {{ en_days[day_name] }}
+                                {% if is_today %}
+                                    <span class="text-thai-turquoise">(Today)</span>
+                                {% endif %}
+                            </p>
+                            <p class="text-gray-600 text-sm mt-1">{{ day_info['date'].strftime('%d/%m/%Y') }}</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Hours Display -->
+                    <div class="text-right">
+                        {% if is_closed %}
+                            <div class="text-red-600 font-semibold text-lg">
+                                <i class="fas fa-door-closed mr-2"></i>
+                                ปิดทำการ
+                            </div>
+                            <div class="en-subtitle">Closed</div>
+                            {% if day_info['note'] %}
+                                <p class="text-sm text-gray-600 mt-2">{{ day_info['note'] }}</p>
+                            {% endif %}
+                        {% else %}
+                            <div class="space-y-1">
+                                {% for time_range in day_info['time_ranges'] %}
+                                    <div class="text-green-600 font-semibold text-lg">
+                                        <i class="fas fa-clock text-sm mr-1"></i>
+                                        {{ time_range }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Available Slots Indicator -->
+                        {% if day_info.get('available_slots') %}
+                            <div class="mt-2 text-sm">
+                                <span class="bg-green-100 text-green-700 px-2 py-1 rounded-full">
+                                    {{ day_info['available_slots'] }} ช่วงเวลาว่าง
+                                </span>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Special Notes -->
+                {% if day_info.get('special_note') %}
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                        <p class="text-sm text-gray-700 bg-yellow-50 p-3 rounded-lg">
+                            <i class="fas fa-info-circle text-yellow-600 mr-2"></i>
+                            {{ day_info['special_note'] }}
+                        </p>
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Week Summary -->
+    <div class="mt-8 thai-card bg-gradient-to-r from-thai-turquoise/10 to-thai-coral/10">
+        <h3 class="thai-primary text-xl mb-4">
+            <i class="fas fa-chart-line text-thai-turquoise mr-2"></i>
+            สรุปสัปดาห์นี้
+        </h3>
+        <p class="en-subtitle -mt-2 mb-4">Week Summary</p>
+        
+        <div class="grid md:grid-cols-3 gap-6">
+            {% set total_days_open = week_schedule|rejectattr('closed')|list|length %}
+            {% set total_hours = 0 %}
+            {% for day in week_schedule if not day['closed'] %}
+                {% for time_range in day['time_ranges'] %}
+                    {% set hours = time_range.split('-') %}
+                    {% if hours|length == 2 %}
+                        {% set start = hours[0].split(':') %}
+                        {% set end = hours[1].split(':') %}
+                        {% set total_hours = total_hours + (end[0]|int - start[0]|int) + ((end[1]|int - start[1]|int) / 60) %}
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+            
+            <div class="text-center">
+                <div class="text-3xl font-bold text-thai-turquoise">{{ total_days_open }}</div>
+                <div class="text-gray-700">วันที่เปิด</div>
+                <div class="en-subtitle text-sm">Days Open</div>
+            </div>
+            
+            <div class="text-center">
+                <div class="text-3xl font-bold text-thai-coral">{{ "%.1f"|format(total_hours) }}</div>
+                <div class="text-gray-700">ชั่วโมงทำการ</div>
+                <div class="en-subtitle text-sm">Working Hours</div>
+            </div>
+            
+            <div class="text-center">
+                <div class="text-3xl font-bold text-green-600">
+                    {% if status.type == 'ANWESEND' %}
+                        <i class="fas fa-check-circle"></i>
+                    {% else %}
+                        <i class="fas fa-times-circle text-red-600"></i>
+                    {% endif %}
+                </div>
+                <div class="text-gray-700">สถานะปัจจุบัน</div>
+                <div class="en-subtitle text-sm">Current Status</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="mt-8 grid md:grid-cols-2 gap-4">
+        <a href="{{ url_for('public.home') }}" 
+           class="thai-card hover:shadow-lg transition flex items-center justify-center py-6">
+            <i class="fas fa-home text-thai-turquoise text-2xl mr-3"></i>
+            <span class="thai-primary">กลับหน้าแรก</span>
+            <span class="en-subtitle ml-2">(Back to Home)</span>
+        </a>
+        
+        <a href="{{ url_for('public.month_view') }}" 
+           class="thai-card hover:shadow-lg transition flex items-center justify-center py-6">
+            <i class="fas fa-calendar-alt text-thai-coral text-2xl mr-3"></i>
+            <span class="thai-primary">ดูปฏิทินเดือน</span>
+            <span class="en-subtitle ml-2">(View Month)</span>
+        </a>
+    </div>
+</div>
+{% endblock %}

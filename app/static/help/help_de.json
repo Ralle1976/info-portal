@@ -1,0 +1,311 @@
+{
+  "pages": {
+    "home": {
+      "title": "Startseite - Hilfe",
+      "description": "Die Hauptseite zeigt Ihnen alle wichtigen Informationen über das Labor in Pattaya auf einen Blick.",
+      "sections": [
+        {
+          "title": "🎯 Status-Banner verstehen",
+          "content": "Das farbige Banner oben zeigt den aktuellen Status:\n• 🟢 **Geöffnet** - Normal geöffnet, Termine möglich\n• 🔴 **Geschlossen** - Heute geschlossen\n• 🟡 **Urlaub** - Längere Abwesenheit mit Rückkehrdatum\n• 🔵 **Bildungsurlaub** - Fortbildung/Schulung\n• 🟠 **Kongress** - Medizinische Konferenz"
+        },
+        {
+          "title": "📅 Öffnungszeiten ablesen",
+          "content": "**Heute-Ansicht:** Zeigt die heutigen Öffnungszeiten\n**Woche-Ansicht:** Komplette Wochenübersicht\n**Monat-Ansicht:** Vollständiger Kalender mit Ausnahmen\n\n**Ausnahmen** werden immer rot markiert angezeigt."
+        },
+        {
+          "title": "🌍 Sprache wechseln",
+          "content": "Klicken Sie auf die Flaggensymbole oben rechts:\n• 🇩🇪 **DE** - Deutsch\n• 🇹🇭 **TH** - ไทย (Thai)\n• 🇺🇸 **EN** - English\n\nDie Spracheinstellung wird automatisch gespeichert."
+        },
+        {
+          "title": "📱 Kontakt & Navigation",
+          "content": "**Telefon anrufen:** Tippen Sie auf die Telefonnummer\n**E-Mail senden:** Tippen Sie auf die E-Mail-Adresse\n**Navigation:** Tippen Sie auf 'Route' für Google Maps\n**Social Media:** QR-Codes für Line, Facebook, WhatsApp"
+        }
+      ],
+      "quick_actions": [
+        {
+          "title": "📞 Termin vereinbaren",
+          "description": "Rufen Sie +66 38 123 456 an oder nutzen Sie WhatsApp"
+        },
+        {
+          "title": "🗺️ Anfahrt planen",
+          "description": "Tippen Sie auf 'Route' für GPS-Navigation"
+        },
+        {
+          "title": "📢 Aktuelle Hinweise",
+          "description": "Wichtige Mitteilungen finden Sie unter dem Status-Banner"
+        }
+      ],
+      "tooltips": {
+        "status_banner": "Aktueller Status des Labors - Klicken für Details",
+        "language_switch": "Sprache ändern - Ihre Auswahl wird gespeichert",
+        "phone_link": "Antippen zum Anrufen",
+        "email_link": "Antippen zum E-Mail senden",
+        "maps_link": "Antippen für GPS-Navigation",
+        "week_button": "Wochenansicht mit 7-Tage-Übersicht",
+        "month_button": "Monatsansicht mit vollständigem Kalender",
+        "qr_code": "QR-Code zum Teilen der Seite"
+      },
+      "faqs": [
+        {
+          "question": "Wie kann ich einen Termin vereinbaren?",
+          "answer": "Rufen Sie uns unter +66 38 123 456 an oder schreiben Sie uns auf WhatsApp. Online-Buchung ist derzeit nicht verfügbar."
+        },
+        {
+          "question": "Sind die Öffnungszeiten immer aktuell?",
+          "answer": "Ja! Die Zeiten werden vom Labor-Team täglich gepflegt. Ausnahmen und Feiertage werden sofort angezeigt."
+        },
+        {
+          "question": "Funktioniert die Seite ohne Internet?",
+          "answer": "Teilweise ja. Einmal geladene Inhalte bleiben verfügbar, aber Updates erfordern eine Internetverbindung."
+        }
+      ]
+    },
+    "admin_dashboard": {
+      "title": "Admin Dashboard - Hilfe",
+      "description": "Das Admin Dashboard ist Ihre Zentrale für die Verwaltung aller Portal-Inhalte. Alle Änderungen werden sofort öffentlich sichtbar.",
+      "sections": [
+        {
+          "title": "🚀 Erste Schritte nach dem Login",
+          "content": "1. **Status prüfen** - Ist der aktuelle Status korrekt?\n2. **Kontaktdaten aktualisieren** - Telefon, E-Mail, Adresse\n3. **Öffnungszeiten einstellen** - Wochenplan und Ausnahmen\n4. **Erste Mitteilung** erstellen für wichtige Hinweise"
+        },
+        {
+          "title": "⚡ Schnelle Statusänderung",
+          "content": "**Notfall-Änderungen** können direkt im Dashboard vorgenommen werden:\n• **Sofort schließen** - Bei technischen Problemen\n• **Status auf Urlaub** - Mit Rückkehrdatum\n• **Mitteilung hinzufügen** - Für wichtige Information\n\n⚠️ **Achtung:** Änderungen sind sofort für alle Besucher sichtbar!"
+        },
+        {
+          "title": "📊 Dashboard-Übersicht verstehen",
+          "content": "**Status-Karte:** Aktueller Status mit Schnelländerung\n**Öffnungszeiten:** Heute und nächste Tage\n**Mitteilungen:** Aktive Ankündigungen\n**Schnellzugriffe:** Häufige Aktionen\n**Aktivitätsverlauf:** Letzte Änderungen"
+        }
+      ],
+      "quick_actions": [
+        {
+          "title": "🔴 Notfall-Schließung",
+          "description": "Status sofort auf 'Geschlossen' setzen"
+        },
+        {
+          "title": "📝 Schnelle Mitteilung",
+          "description": "Wichtige Information für Besucher hinzufügen"
+        },
+        {
+          "title": "👀 Portal anzeigen",
+          "description": "Öffentliche Ansicht in neuem Tab öffnen"
+        }
+      ],
+      "tooltips": {
+        "status_card": "Aktueller Status - Klicken zum Ändern",
+        "hours_card": "Öffnungszeiten verwalten",
+        "announcements_card": "Mitteilungen bearbeiten",
+        "qr_card": "QR-Codes generieren und herunterladen",
+        "social_card": "Social Media Einstellungen",
+        "logout_button": "Sicher ausloggen",
+        "portal_link": "Öffentliche Seite in neuem Tab öffnen",
+        "save_button": "Änderungen sofort speichern und veröffentlichen"
+      },
+      "faqs": [
+        {
+          "question": "Werden Änderungen sofort sichtbar?",
+          "answer": "Ja, alle Änderungen im Admin-Bereich werden sofort auf der öffentlichen Seite angezeigt. Es gibt keine Verzögerung."
+        },
+        {
+          "question": "Was passiert wenn ich einen Fehler mache?",
+          "answer": "Sie können jederzeit Änderungen rückgängig machen. Bei größeren Problemen wenden Sie sich an den Support."
+        }
+      ]
+    },
+    "admin_status": {
+      "title": "Status-Verwaltung - Hilfe",
+      "description": "Hier verwalten Sie den aktuellen Status Ihrer Praxis. Dieser wird prominent auf der Startseite angezeigt.",
+      "sections": [
+        {
+          "title": "📍 Status-Typen und ihre Bedeutung",
+          "content": "**🟢 ANWESEND:** Normale Öffnungszeiten, Termine möglich\n**🔴 GESCHLOSSEN:** Heute geschlossen (Feiertag, Wartung)\n**🟡 URLAUB:** Längere Abwesenheit - Rückkehrdatum erforderlich\n**🔵 BILDUNGSURLAUB:** Fortbildung, Schulung - professioneller Eindruck\n**🟠 KONGRESS:** Medizinische Konferenz - zeigt Engagement\n**⚪ SONSTIGES:** Individueller Status für besondere Situationen"
+        },
+        {
+          "title": "⏰ Zeiträume richtig einstellen",
+          "content": "**Urlaub/Bildungsurlaub/Kongress:**\n• **Von-Datum:** Erster Tag der Abwesenheit\n• **Bis-Datum:** Letzter Tag der Abwesenheit\n• **Rückkehr:** Wird automatisch als 'nächster Arbeitstag' berechnet\n\n**Geschlossen:**\n• Meist nur für einen Tag\n• Grund angeben (Feiertag, Wartung, etc.)"
+        },
+        {
+          "title": "🌍 Mehrsprachige Beschreibungen",
+          "content": "**Deutsch:** Hauptsprache für administrative Zwecke\n**Thai:** Wichtig für lokale Patienten in Pattaya\n**Englisch:** Für internationale Besucher\n\n💡 **Tipp:** Nutzen Sie höfliche Formulierungen und geben Sie immer Kontaktinfo für Notfälle an."
+        }
+      ],
+      "tooltips": {
+        "status_select": "Wählen Sie den aktuellen Status",
+        "date_from": "Startdatum der Abwesenheit",
+        "date_to": "Enddatum der Abwesenheit",
+        "note_de": "Beschreibung auf Deutsch",
+        "note_th": "คำอธิบายภาษาไทย",
+        "note_en": "Description in English",
+        "preview_button": "Vorschau der öffentlichen Anzeige",
+        "save_status": "Status sofort aktivieren"
+      }
+    },
+    "admin_hours": {
+      "title": "Öffnungszeiten - Hilfe",
+      "description": "Verwalten Sie hier Ihre regulären Wochenöffnungszeiten und besondere Ausnahmen.",
+      "sections": [
+        {
+          "title": "📅 Wöchentliche Öffnungszeiten",
+          "content": "**Format:** 08:30-12:00, 13:00-16:00\n**Mehrere Zeiten:** Mit Komma trennen\n**Geschlossene Tage:** Feld leer lassen\n\n**Beispiele:**\n• Ganztagsöffnung: 08:00-17:00\n• Mit Mittagspause: 08:30-12:00, 13:00-16:00\n• Nur Vormittag: 08:30-12:00"
+        },
+        {
+          "title": "⚠️ Ausnahmen und Feiertage",
+          "content": "**Ausnahmen überschreiben** die regulären Öffnungszeiten:\n• **Einzelne Tage:** Verkürzte Zeiten, geschlossen\n• **Feiertage:** Automatische Thai-Feiertage verfügbar\n• **Sonderöffnungen:** Längere Zeiten bei Bedarf\n\n**Priorität:** Ausnahmen > Wochenplan > Standardzeiten"
+        }
+      ],
+      "tooltips": {
+        "monday_hours": "Montag Öffnungszeiten",
+        "add_exception": "Ausnahme für bestimmtes Datum hinzufügen",
+        "thai_holidays": "Thailändische Feiertage automatisch einfügen"
+      }
+    }
+  },
+  "contextual": {
+    "first_login": {
+      "message": "🎉 Willkommen im QR Info Portal Admin!",
+      "description": "Lassen Sie uns Ihre Praxis einrichten. Folgen Sie dieser Schritt-für-Schritt-Anleitung:",
+      "steps": [
+        {
+          "title": "1. Basis-Informationen",
+          "description": "Gehen Sie zu 'Einstellungen' und tragen Sie ein:",
+          "items": ["Praxis-Name", "Telefonnummer", "E-Mail-Adresse", "Vollständige Adresse"]
+        },
+        {
+          "title": "2. Öffnungszeiten festlegen",
+          "description": "Unter 'Öffnungszeiten' definieren Sie:",
+          "items": ["Wöchentliche Standardzeiten", "Mittagspausen", "Geschlossene Tage", "Kommende Feiertage"]
+        },
+        {
+          "title": "3. Aktuellen Status setzen",
+          "description": "In 'Status' wählen Sie:",
+          "items": ["ANWESEND für normalen Betrieb", "Oder passenden anderen Status", "Beschreibung in allen Sprachen"]
+        },
+        {
+          "title": "4. Erste Mitteilung erstellen",
+          "description": "Unter 'Mitteilungen' erstellen Sie:",
+          "items": ["Willkommensnachricht", "Wichtige Hinweise", "Aktuelle Informationen"]
+        }
+      ],
+      "completed_message": "🎊 Perfekt! Ihr Portal ist jetzt einsatzbereit. Testen Sie es, indem Sie auf 'Portal öffnen' klicken."
+    },
+    "status_change": {
+      "message": "⚡ Status wird sofort aktualisiert!",
+      "description": "Ihre Statusänderung wird unmittelbar für alle Besucher sichtbar sein.",
+      "tips": [
+        "💡 **Urlaub:** Geben Sie immer ein Rückkehrdatum an",
+        "📞 **Notfall:** Hinterlassen Sie Kontaktinfo für Notfälle",
+        "🌍 **Sprachen:** Beschreibung in Deutsch, Thai und Englisch ist ideal",
+        "👀 **Prüfen:** Schauen Sie sich die öffentliche Ansicht zur Kontrolle an"
+      ],
+      "warnings": [
+        "⚠️ Änderungen sind sofort live - keine Rückfrage",
+        "⚠️ Bei Tippfehlern müssen Sie erneut bearbeiten"
+      ]
+    },
+    "emergency_closure": {
+      "message": "🚨 Notfall-Schließung aktivieren",
+      "description": "Für sofortige Schließung bei unvorhergesehenen Ereignissen:",
+      "steps": [
+        "Status auf 'GESCHLOSSEN' setzen",
+        "Grund angeben (z.B. 'Technisches Problem')",
+        "Notfall-Kontakt hinterlassen",
+        "Voraussichtliche Wiedereröffnung, falls bekannt"
+      ],
+      "tips": [
+        "📱 Informieren Sie auch Social Media Kanäle",
+        "📞 Anrufbeantworter entsprechend besprechen",
+        "👥 Informieren Sie wartende Patienten vor Ort"
+      ]
+    }
+  },
+  "tooltips": {
+    "save_button": "💾 Änderungen sofort speichern und veröffentlichen",
+    "cancel_button": "❌ Änderungen verwerfen ohne zu speichern",
+    "delete_button": "🗑️ Element dauerhaft löschen - nicht rückgängig machbar",
+    "edit_button": "✏️ Element bearbeiten",
+    "preview_button": "👁️ Vorschau der öffentlichen Ansicht",
+    "duplicate_button": "📋 Element kopieren",
+    "help_button": "❓ Hilfe zu diesem Bereich anzeigen",
+    "refresh_button": "🔄 Aktuelle Daten neu laden",
+    "export_button": "📤 Daten exportieren",
+    "import_button": "📥 Daten importieren"
+  },
+  "quick_start": {
+    "visitor": {
+      "title": "🏥 Willkommen beim QR Info Portal",
+      "steps": [
+        {
+          "title": "Status prüfen",
+          "description": "Schauen Sie auf das farbige Banner oben - es zeigt ob wir geöffnet haben"
+        },
+        {
+          "title": "Öffnungszeiten finden",
+          "description": "Unter dem Status sehen Sie die heutigen Öffnungszeiten"
+        },
+        {
+          "title": "Kontakt nutzen",
+          "description": "Tippen Sie auf Telefon/WhatsApp für direkten Kontakt"
+        },
+        {
+          "title": "Sprache wählen",
+          "description": "Oben rechts können Sie zwischen Deutsch, Thai und Englisch wechseln"
+        }
+      ],
+      "completed_message": "Perfect! Sie können jetzt alle Informationen abrufen. Bei Fragen einfach anrufen!"
+    },
+    "admin": {
+      "title": "👨‍💼 Admin Schnellstart",
+      "steps": [
+        {
+          "title": "Dashboard verstehen",
+          "description": "Übersicht über aktuellen Status, Öffnungszeiten und aktive Mitteilungen"
+        },
+        {
+          "title": "Status verwalten",
+          "description": "Schnell zwischen geöffnet, geschlossen, Urlaub, etc. wechseln"
+        },
+        {
+          "title": "Öffnungszeiten anpassen",
+          "description": "Wöchentliche Zeiten und Ausnahmen/Feiertage verwalten"
+        },
+        {
+          "title": "Mitteilungen erstellen",
+          "description": "Wichtige Informationen für Besucher veröffentlichen"
+        }
+      ],
+      "completed_message": "Großartig! Sie können jetzt alle Aspekte Ihres Portals verwalten."
+    }
+  },
+  "faqs": [
+    {
+      "category": "Allgemein",
+      "question": "Wie funktioniert das QR-Code System?",
+      "answer": "Besucher scannen den QR-Code an Ihrer Türe mit dem Smartphone und gelangen direkt zu den aktuellen Informationen. Keine App-Installation nötig."
+    },
+    {
+      "category": "Allgemein", 
+      "question": "Welche Geräte werden unterstützt?",
+      "answer": "Alle modernen Smartphones, Tablets und Computer. Das Portal funktioniert in allen gängigen Browsern (Chrome, Safari, Firefox, Edge)."
+    },
+    {
+      "category": "Admin",
+      "question": "Wie ändere ich das Admin-Passwort?",
+      "answer": "Gehen Sie zu 'Einstellungen' → 'Sicherheit' und geben Sie ein neues Passwort ein. Verwenden Sie ein starkes Passwort mit Buchstaben, Zahlen und Sonderzeichen."
+    },
+    {
+      "category": "Admin",
+      "question": "Kann ich Änderungen rückgängig machen?",
+      "answer": "Ja, unter 'Einstellungen' → 'Systemverlauf' können Sie die letzten Änderungen einsehen und bei Bedarf wiederherstellen."
+    },
+    {
+      "category": "Technik",
+      "question": "Was passiert bei Internetausfall?",
+      "answer": "Einmal geladene Seiten bleiben verfügbar. Das Portal zeigt einen Offline-Hinweis, bis die Verbindung wiederhergestellt ist."
+    },
+    {
+      "category": "Technik",
+      "question": "Wie erstelle ich einen druckbaren QR-Code?",
+      "answer": "Gehen Sie zu 'QR-Codes' im Admin-Menü und wählen Sie 'Für Druck optimiert'. Sie erhalten eine hochauflösende PNG-Datei."
+    }
+  ]
+}

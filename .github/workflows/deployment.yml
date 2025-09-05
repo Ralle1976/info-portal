@@ -1,0 +1,310 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [ main ]
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+env:
+  PYTHON_VERSION: '3.11'
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment:
+      name: staging
+      url: https://qr-portal-staging.your-domain.com
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=sha,prefix=staging-
+      
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      
+      - name: Deploy to staging server
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.STAGING_HOST }}
+          username: ${{ secrets.STAGING_USER }}
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          script: |
+            # Stop existing container
+            docker stop qr-portal-staging || true
+            docker rm qr-portal-staging || true
+            
+            # Pull latest image
+            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main
+            
+            # Start new container
+            docker run -d \
+              --name qr-portal-staging \
+              --restart unless-stopped \
+              -p 8080:5000 \
+              -e FLASK_ENV=staging \
+              -e SECRET_KEY="${{ secrets.SECRET_KEY }}" \
+              -e ADMIN_USERNAME="${{ secrets.ADMIN_USERNAME }}" \
+              -e ADMIN_PASSWORD="${{ secrets.ADMIN_PASSWORD }}" \
+              -v /opt/qr-portal/data:/app/data \
+              -v /opt/qr-portal/logs:/app/logs \
+              ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main
+            
+            # Health check
+            sleep 10
+            curl -f http://localhost:8080/healthz || exit 1
+      
+      - name: Notify deployment status
+        uses: 8398a7/action-slack@v3
+        if: always()
+        with:
+          status: ${{ job.status }}
+          text: 'Staging deployment ${{ job.status }}'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v') || (github.event.inputs.environment == 'production')
+    environment:
+      name: production
+      url: https://qr-portal.your-domain.com
+    
+    needs: [deploy-staging]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=tag
+            type=sha,prefix=prod-
+      
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      
+      - name: Create deployment backup
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.PROD_HOST }}
+          username: ${{ secrets.PROD_USER }}
+          key: ${{ secrets.PROD_SSH_KEY }}
+          script: |
+            # Create backup
+            BACKUP_DIR="/opt/qr-portal/backups/$(date +%Y%m%d_%H%M%S)"
+            mkdir -p $BACKUP_DIR
+            
+            # Backup database
+            cp -r /opt/qr-portal/data $BACKUP_DIR/
+            
+            # Export current container
+            docker export qr-portal-prod > $BACKUP_DIR/container-backup.tar 2>/dev/null || true
+            
+            # Keep only last 5 backups
+            ls -t /opt/qr-portal/backups/ | tail -n +6 | xargs -I {} rm -rf /opt/qr-portal/backups/{}
+      
+      - name: Deploy to production server
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.PROD_HOST }}
+          username: ${{ secrets.PROD_USER }}
+          key: ${{ secrets.PROD_SSH_KEY }}
+          script: |
+            # Pull latest image
+            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}
+            
+            # Blue-green deployment
+            # Stop old container gracefully
+            docker stop qr-portal-prod || true
+            sleep 5
+            
+            # Start new container
+            docker run -d \
+              --name qr-portal-prod-new \
+              --restart unless-stopped \
+              -p 80:5000 \
+              -p 443:5000 \
+              -e FLASK_ENV=production \
+              -e SECRET_KEY="${{ secrets.SECRET_KEY }}" \
+              -e ADMIN_USERNAME="${{ secrets.ADMIN_USERNAME }}" \
+              -e ADMIN_PASSWORD="${{ secrets.ADMIN_PASSWORD }}" \
+              -v /opt/qr-portal/data:/app/data \
+              -v /opt/qr-portal/logs:/app/logs \
+              -v /opt/ssl:/app/ssl:ro \
+              ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}
+            
+            # Health check
+            sleep 15
+            curl -f http://localhost/healthz || exit 1
+            
+            # Switch containers
+            docker rm qr-portal-prod || true
+            docker rename qr-portal-prod-new qr-portal-prod
+      
+      - name: Run post-deployment tests
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.PROD_HOST }}
+          username: ${{ secrets.PROD_USER }}
+          key: ${{ secrets.PROD_SSH_KEY }}
+          script: |
+            # Test critical endpoints
+            curl -f http://localhost/healthz
+            curl -f http://localhost/ | grep -q "QR Info Portal"
+            curl -f http://localhost/week
+            curl -f http://localhost/month
+            
+            # Test QR code generation
+            curl -f http://localhost/qr.png > /dev/null
+            curl -f http://localhost/qr.svg > /dev/null
+      
+      - name: Notify successful deployment
+        uses: 8398a7/action-slack@v3
+        if: success()
+        with:
+          status: success
+          text: '🚀 Production deployment successful! Version: ${{ github.ref_name }}'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+      
+      - name: Rollback on failure
+        if: failure()
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.PROD_HOST }}
+          username: ${{ secrets.PROD_USER }}
+          key: ${{ secrets.PROD_SSH_KEY }}
+          script: |
+            # Stop failed deployment
+            docker stop qr-portal-prod || true
+            docker rm qr-portal-prod || true
+            
+            # Restore from latest backup
+            LATEST_BACKUP=$(ls -t /opt/qr-portal/backups/ | head -n 1)
+            if [ -n "$LATEST_BACKUP" ]; then
+              echo "Restoring from backup: $LATEST_BACKUP"
+              
+              # Restore data
+              cp -r /opt/qr-portal/backups/$LATEST_BACKUP/data/* /opt/qr-portal/data/
+              
+              # Start previous version (if backup container exists)
+              if [ -f "/opt/qr-portal/backups/$LATEST_BACKUP/container-backup.tar" ]; then
+                docker import /opt/qr-portal/backups/$LATEST_BACKUP/container-backup.tar qr-portal-rollback
+                docker run -d --name qr-portal-prod -p 80:5000 qr-portal-rollback
+              fi
+            fi
+      
+      - name: Notify rollback
+        if: failure()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: failure
+          text: '⚠️ Production deployment failed! Rollback initiated.'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+
+  update-github-pages:
+    name: Update GitHub Pages
+    runs-on: ubuntu-latest
+    needs: [deploy-production]
+    if: startsWith(github.ref, 'refs/tags/v')
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      
+      - name: Generate project documentation
+        run: |
+          mkdir -p github-pages
+          
+          # Copy documentation
+          cp -r docs/* github-pages/ 2>/dev/null || true
+          
+          # Generate API documentation
+          pip install flask sphinx sphinx-autoapi
+          cd github-pages
+          sphinx-quickstart -q -p "QR Info Portal" -a "Development Team" -v "${{ github.ref_name }}" --ext-autodoc --ext-viewcode
+          echo ".. automodule:: app" >> source/index.rst
+          make html
+          
+          # Create index.html with redirect
+          cat > index.html << EOF
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>QR Info Portal Documentation</title>
+            <meta http-equiv="refresh" content="0; url=_build/html/index.html">
+          </head>
+          <body>
+            <p><a href="_build/html/index.html">Go to documentation</a></p>
+          </body>
+          </html>
+          EOF
+      
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./github-pages
+          commit_message: "docs: Update documentation for ${{ github.ref_name }}"

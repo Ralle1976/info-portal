@@ -1,0 +1,14 @@
+{
+  "test_type": "quick_load_test",
+  "timestamp": "2025-08-27T20:51:50.163151",
+  "visitor_load": {
+    "ops_per_second": 9.47647072939325,
+    "avg_response_ms": 6.579356444509406,
+    "error_rate": 0.0
+  },
+  "admin_load": {
+    "ops_per_second": 1.9046409839405083,
+    "avg_response_ms": 3.4290671348571777,
+    "error_rate": 0.0
+  }
+}

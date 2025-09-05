@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="{{ current_language or 'de' }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rollback Management - Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Sarabun', sans-serif; }</style>
+    
+    <!-- Admin Internationalization System -->
+    <script src="{{ url_for('static', filename='js/admin-i18n.js') }}"></script>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen">
+        <!-- Header -->
+        <header class="bg-white shadow">
+            <div class="max-w-7xl mx-auto px-4 py-6">
+                <div class="flex justify-between items-center">
+                    <h1 class="text-3xl font-bold text-gray-900">Rollback Management</h1>
+                    <a href="{{ url_for('admin.dashboard') }}" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">
+                        ← Dashboard
+                    </a>
+                </div>
+            </div>
+        </header>
+        
+        <main class="max-w-6xl mx-auto py-6 px-4">
+            <!-- Info -->
+            <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-blue-700">
+                            Hier können Sie kürzlich durchgeführte Änderungen rückgängig machen. 
+                            <strong>Achtung:</strong> Ein Rollback erstellt einen neuen Eintrag und kann nicht selbst rückgängig gemacht werden.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Changes -->
+            <div class="bg-white rounded-lg shadow overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-lg font-semibold text-gray-900">Kürzlich durchgeführte Änderungen</h2>
+                </div>
+
+                {% if changes %}
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Zeitstempel
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Benutzer
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Aktion
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Tabelle
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Änderungen
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Aktionen
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            {% for change in changes %}
+                            <tr class="hover:bg-gray-50" id="change-{{ change.id }}">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {{ change.created_at.strftime('%d.%m.%Y %H:%M:%S') }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {{ change.admin_user }}
+                                    {% if change.admin_ip %}
+                                        <div class="text-xs text-gray-500">{{ change.admin_ip }}</div>
+                                    {% endif %}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                        {% if change.action == 'create' %}bg-green-100 text-green-800
+                                        {% elif change.action == 'update' %}bg-yellow-100 text-yellow-800
+                                        {% elif change.action == 'delete' %}bg-red-100 text-red-800
+                                        {% elif change.action == 'rollback' %}bg-blue-100 text-blue-800
+                                        {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                        {{ change.action }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {{ change.table_name }}
+                                    {% if change.record_id %}
+                                        <div class="text-xs text-gray-500">ID: {{ change.record_id }}</div>
+                                    {% endif %}
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-900">
+                                    <!-- Summary of changes -->
+                                    {% if change.new_data %}
+                                        <div class="max-w-xs">
+                                            {% if change.table_name == 'Status' %}
+                                                <div class="font-medium">{{ change.new_data.get('type', '') }}</div>
+                                                {% if change.new_data.get('description') %}
+                                                    <div class="text-xs text-gray-600 truncate">{{ change.new_data.get('description')[:50] }}...</div>
+                                                {% endif %}
+                                                {% if change.new_data.get('date_from') and change.new_data.get('date_to') %}
+                                                    <div class="text-xs text-gray-500">
+                                                        {{ change.new_data.get('date_from') }} - {{ change.new_data.get('date_to') }}
+                                                    </div>
+                                                {% endif %}
+                                            {% else %}
+                                                <div class="text-xs text-gray-600">Siehe Details</div>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                    
+                                    <!-- Expandable details -->
+                                    <button type="button" onclick="toggleDetails({{ change.id }})" 
+                                            class="mt-1 text-xs text-blue-600 hover:text-blue-800">
+                                        Details anzeigen
+                                    </button>
+                                    
+                                    <!-- Hidden details -->
+                                    <div id="details-{{ change.id }}" class="hidden mt-3 p-3 bg-gray-50 rounded text-xs">
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            {% if change.old_data %}
+                                            <div>
+                                                <div class="font-medium text-gray-700 mb-1">Alte Daten:</div>
+                                                <pre class="text-gray-600 whitespace-pre-wrap">{{ change.old_data | tojson(indent=2) }}</pre>
+                                            </div>
+                                            {% endif %}
+                                            {% if change.new_data %}
+                                            <div>
+                                                <div class="font-medium text-gray-700 mb-1">Neue Daten:</div>
+                                                <pre class="text-gray-600 whitespace-pre-wrap">{{ change.new_data | tojson(indent=2) }}</pre>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    {% if change.rollback_data and change.table_name == 'Status' %}
+                                    <button onclick="rollbackChange({{ change.id }})" 
+                                            class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs transition-colors"
+                                            id="rollback-btn-{{ change.id }}">
+                                        Rückgängig
+                                    </button>
+                                    {% else %}
+                                    <span class="text-gray-400 text-xs">Nicht verfügbar</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-12">
+                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <h3 class="mt-2 text-sm font-medium text-gray-900">Keine Änderungen</h3>
+                    <p class="mt-1 text-sm text-gray-500">Es wurden noch keine Änderungen vorgenommen.</p>
+                </div>
+                {% endif %}
+            </div>
+        </main>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div id="message-container" class="fixed top-4 right-4 z-50"></div>
+
+    <script>
+        function toggleDetails(changeId) {
+            const details = document.getElementById(`details-${changeId}`);
+            const button = details.previousElementSibling;
+            
+            if (details.classList.contains('hidden')) {
+                details.classList.remove('hidden');
+                button.textContent = 'Details ausblenden';
+            } else {
+                details.classList.add('hidden');
+                button.textContent = 'Details anzeigen';
+            }
+        }
+
+        async function rollbackChange(changeId) {
+            if (!confirm('Sind Sie sicher, dass Sie diese Änderung rückgängig machen möchten? Dies kann nicht rückgängig gemacht werden.')) {
+                return;
+            }
+
+            const button = document.getElementById(`rollback-btn-${changeId}`);
+            const originalText = button.textContent;
+            
+            try {
+                button.disabled = true;
+                button.textContent = 'Wird rückgängig gemacht...';
+                button.classList.add('opacity-50');
+
+                const response = await fetch(`/admin/api/rollback/${changeId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': getCsrfToken()
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showMessage('Änderung erfolgreich rückgängig gemacht', 'success');
+                    
+                    // Mark row as rolled back
+                    const row = document.getElementById(`change-${changeId}`);
+                    row.classList.add('bg-gray-100', 'opacity-75');
+                    button.textContent = 'Rückgängig gemacht';
+                    button.classList.remove('bg-red-500', 'hover:bg-red-600');
+                    button.classList.add('bg-gray-400', 'cursor-not-allowed');
+                    
+                    // Refresh page after 2 seconds to show updated status
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
+                } else {
+                    showMessage(result.error || 'Fehler beim Rückgängigmachen', 'error');
+                    button.disabled = false;
+                    button.textContent = originalText;
+                    button.classList.remove('opacity-50');
+                }
+
+            } catch (error) {
+                console.error('Rollback error:', error);
+                showMessage('Unerwarteter Fehler aufgetreten', 'error');
+                button.disabled = false;
+                button.textContent = originalText;
+                button.classList.remove('opacity-50');
+            }
+        }
+
+        function showMessage(message, type = 'info') {
+            const container = document.getElementById('message-container');
+            const messageDiv = document.createElement('div');
+            
+            const colorClasses = {
+                success: 'bg-green-500 text-white',
+                error: 'bg-red-500 text-white',
+                warning: 'bg-yellow-500 text-white',
+                info: 'bg-blue-500 text-white'
+            };
+
+            messageDiv.className = `px-6 py-4 rounded-lg shadow-lg mb-2 ${colorClasses[type]} transition-all duration-300 transform translate-x-full`;
+            messageDiv.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            ${type === 'success' ? 
+                                '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>' :
+                                '<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>'
+                            }
+                        </svg>
+                        <span>${message}</span>
+                    </div>
+                    <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-white hover:text-gray-200">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                        </svg>
+                    </button>
+                </div>
+            `;
+
+            container.appendChild(messageDiv);
+
+            // Slide in
+            setTimeout(() => {
+                messageDiv.classList.remove('translate-x-full');
+            }, 100);
+
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                messageDiv.classList.add('translate-x-full');
+                setTimeout(() => {
+                    if (messageDiv.parentNode) {
+                        messageDiv.remove();
+                    }
+                }, 300);
+            }, 5000);
+        }
+
+        function getCsrfToken() {
+            return '{{ csrf_token }}';
+        }
+
+        // Initialize Admin I18n System
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize with current language from Flask session
+            const currentLang = '{{ current_language }}' || 'de';
+            console.log('Initializing AdminI18n with language:', currentLang);
+            
+            if (window.adminI18n) {
+                window.adminI18n.init(currentLang).then(() => {
+                    console.log('AdminI18n initialized successfully');
+                }).catch(error => {
+                    console.error('AdminI18n initialization failed:', error);
+                });
+            } else {
+                console.error('AdminI18n not available');
+            }
+            
+            // Original initialization code
+            console.log('Rollback management loaded');
+        });
+    </script>
+</body>
+</html>

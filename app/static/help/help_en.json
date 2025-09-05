@@ -1,0 +1,135 @@
+{
+  "pages": {
+    "home": {
+      "title": "Homepage - Help",
+      "description": "The main page shows all important information about the laboratory in Pattaya at a glance.",
+      "sections": [
+        {
+          "title": "🎯 Understanding the Status Banner",
+          "content": "The colored banner at the top shows current status:\n• 🟢 **Open** - Normal operation, appointments available\n• 🔴 **Closed** - Closed today\n• 🟡 **Vacation** - Extended absence with return date\n• 🔵 **Educational Leave** - Training/education\n• 🟠 **Congress** - Medical conference attendance"
+        },
+        {
+          "title": "📅 Reading Opening Hours",
+          "content": "**Today View:** Shows today's opening hours\n**Week View:** Complete week overview\n**Month View:** Full calendar with exceptions\n\n**Exceptions** are always highlighted in red."
+        },
+        {
+          "title": "🌍 Switching Languages",
+          "content": "Click on the flag icons in the top right:\n• 🇺🇸 **EN** - English\n• 🇩🇪 **DE** - German\n• 🇹🇭 **TH** - ไทย (Thai)\n\nYour language setting is automatically saved."
+        },
+        {
+          "title": "📱 Contact & Navigation",
+          "content": "**Call:** Tap the phone number to call\n**Email:** Tap the email address to send message\n**Navigation:** Tap 'Route' for Google Maps\n**Social Media:** QR codes for Line, Facebook, WhatsApp"
+        }
+      ],
+      "quick_actions": [
+        {
+          "title": "📞 Make Appointment",
+          "description": "Call +66 38 123 456 or use WhatsApp"
+        },
+        {
+          "title": "🗺️ Plan Route",
+          "description": "Tap 'Route' for GPS navigation"
+        },
+        {
+          "title": "📢 Current Announcements",
+          "description": "Important notices are below the status banner"
+        }
+      ],
+      "tooltips": {
+        "status_banner": "Current laboratory status - click for details",
+        "language_switch": "Change language - your choice is saved",
+        "phone_link": "Tap to call",
+        "email_link": "Tap to send email",
+        "maps_link": "Tap for GPS navigation",
+        "week_button": "Week view with 7-day overview",
+        "month_button": "Month view with full calendar",
+        "qr_code": "QR code to share this page"
+      },
+      "faqs": [
+        {
+          "question": "How can I make an appointment?",
+          "answer": "Call us at +66 38 123 456 or message us on WhatsApp. Online booking is currently not available."
+        },
+        {
+          "question": "Are the opening hours always current?",
+          "answer": "Yes! The times are maintained daily by the lab team. Exceptions and holidays are displayed immediately."
+        },
+        {
+          "question": "Does the site work without internet?",
+          "answer": "Partially yes. Once loaded content remains available, but updates require internet connection."
+        }
+      ]
+    },
+    "admin_dashboard": {
+      "title": "Admin Dashboard - Help",
+      "description": "The Admin Dashboard is your control center for managing all portal content. All changes become immediately visible to the public.",
+      "sections": [
+        {
+          "title": "🚀 First Steps After Login",
+          "content": "1. **Check Status** - Is the current status correct?\n2. **Update Contact Details** - Phone, email, address\n3. **Set Opening Hours** - Weekly schedule and exceptions\n4. **Create First Announcement** - For important information"
+        },
+        {
+          "title": "⚡ Quick Status Changes",
+          "content": "**Emergency changes** can be made directly in the dashboard:\n• **Immediate Closure** - For technical problems\n• **Set to Vacation** - With return date\n• **Add Announcement** - For important information\n\n⚠️ **Warning:** Changes are immediately visible to all visitors!"
+        }
+      ],
+      "quick_actions": [
+        {
+          "title": "🔴 Emergency Closure",
+          "description": "Set status to 'Closed' immediately"
+        },
+        {
+          "title": "📝 Quick Announcement",
+          "description": "Add important information for visitors"
+        },
+        {
+          "title": "👀 View Portal",
+          "description": "Open public page in new tab"
+        }
+      ],
+      "tooltips": {
+        "status_card": "Current status - click to change",
+        "hours_card": "Manage opening hours",
+        "announcements_card": "Edit announcements",
+        "logout_button": "Logout securely",
+        "save_button": "Save and publish immediately"
+      }
+    }
+  },
+  "contextual": {
+    "first_login": {
+      "message": "🎉 Welcome to QR Info Portal Admin!",
+      "description": "Let's set up your practice. Follow this step-by-step guide:",
+      "steps": [
+        {
+          "title": "1. Basic Information",
+          "description": "Go to 'Settings' and enter:",
+          "items": ["Practice name", "Phone number", "Email address", "Complete address"]
+        },
+        {
+          "title": "2. Set Opening Hours",
+          "description": "Under 'Opening Hours' define:",
+          "items": ["Weekly standard times", "Lunch breaks", "Closed days", "Upcoming holidays"]
+        },
+        {
+          "title": "3. Set Current Status",
+          "description": "In 'Status' choose:",
+          "items": ["OPEN for normal operation", "Or appropriate other status", "Description in all languages"]
+        }
+      ],
+      "completed_message": "🎊 Perfect! Your portal is now ready to use. Test it by clicking 'Open Portal'."
+    }
+  },
+  "faqs": [
+    {
+      "category": "General",
+      "question": "How does the QR code system work?",
+      "answer": "Visitors scan the QR code at your door with their smartphone and get direct access to current information. No app installation required."
+    },
+    {
+      "category": "Admin",
+      "question": "Are changes immediately visible?",
+      "answer": "Yes, all changes in the admin area are immediately displayed on the public page. There is no delay."
+    }
+  ]
+}

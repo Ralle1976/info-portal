@@ -1,0 +1,704 @@
+{% extends "base_minimal.html" %}
+
+{% block extra_head %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<style>
+  /* Thai-First Typography */
+  .thai-primary {
+    font-family: 'Sarabun', 'Kanit', sans-serif;
+    font-weight: 700;
+    color: #1a202c;
+    line-height: 1.3;
+  }
+  
+  .en-subtitle {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: #718096;
+    font-weight: 400;
+    margin-top: 0.25rem;
+    font-size: 0.65em;
+  }
+  
+  body {
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    cursor: none;
+    font-family: 'Sarabun', sans-serif;
+  }
+  
+  .kiosk-enhanced {
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: linear-gradient(135deg, #F0FDF4 0%, #E0F2FE 50%, #FFF7ED 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 20s ease infinite;
+  }
+  
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  
+  .kiosk-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    height: 100vh;
+    gap: 2rem;
+    padding: 2rem;
+  }
+  
+  .kiosk-header {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 2rem 0;
+  }
+  
+  .kiosk-footer {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+  }
+  
+  .today-section,
+  .week-section,
+  .preview-section {
+    background: white;
+    border-radius: 2rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .today-section::before,
+  .week-section::before,
+  .preview-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, var(--color-primary-500) 0%, var(--color-secondary-500) 50%, var(--color-accent) 100%);
+  }
+  
+  .section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--color-gray-800);
+    margin-bottom: 2rem;
+    text-align: center;
+    display: flex;
+    items-center;
+    justify-content: center;
+    gap: 1rem;
+  }
+  
+  .section-icon {
+    width: 4rem;
+    height: 4rem;
+    background: var(--color-primary-500);
+    color: white;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+  }
+  
+  .mega-time {
+    font-size: 8rem;
+    font-weight: 700;
+    text-align: center;
+    color: var(--color-primary-500);
+    font-family: var(--font-mono);
+    letter-spacing: -0.05em;
+    line-height: 0.8;
+    margin: 2rem 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .mega-date {
+    font-size: 2rem;
+    text-align: center;
+    color: var(--color-gray-600);
+    margin-bottom: 3rem;
+    font-weight: 500;
+  }
+  
+  .status-mega {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    padding: 2rem 3rem;
+    border-radius: 2rem;
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin: 2rem 0;
+    box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+  }
+  
+  .status-mega.open {
+    background: linear-gradient(135deg, var(--color-status-open-bg), var(--color-status-success-bg));
+    color: var(--color-status-open);
+  }
+  
+  .status-mega.closed {
+    background: linear-gradient(135deg, var(--color-status-closed-bg), rgba(255, 68, 68, 0.1));
+    color: var(--color-status-closed);
+  }
+  
+  .status-mega-icon {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    background: currentColor;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  
+  .week-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  
+  .day-card {
+    background: var(--color-gray-50);
+    border-radius: 1rem;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+  }
+  
+  .day-card.today {
+    background: linear-gradient(135deg, var(--color-primary-500), var(--color-primary-600));
+    color: white;
+    border-color: var(--color-primary-400);
+    transform: scale(1.05);
+    box-shadow: 0 10px 25px -5px rgba(0, 206, 209, 0.4);
+  }
+  
+  .day-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+  
+  .day-hours {
+    font-size: 1rem;
+    opacity: 0.8;
+    line-height: 1.4;
+  }
+  
+  .preview-list {
+    flex: 1;
+    overflow-y: auto;
+  }
+  
+  .preview-item {
+    background: var(--color-gray-50);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    display: flex;
+    items-center;
+    gap: 1rem;
+    transition: all 0.3s ease;
+  }
+  
+  .preview-item:hover {
+    background: var(--color-gray-100);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.1);
+  }
+  
+  .preview-date {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--color-primary-500);
+    min-width: 5rem;
+  }
+  
+  .preview-content {
+    flex: 1;
+  }
+  
+  .preview-day {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--color-gray-800);
+    margin-bottom: 0.5rem;
+  }
+  
+  .preview-hours {
+    font-size: 1.2rem;
+    color: var(--color-gray-600);
+  }
+  
+  .qr-overlay {
+    position: fixed;
+    bottom: 3rem;
+    right: 3rem;
+    background: white;
+    padding: 2rem;
+    border-radius: 2rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    border: 3px solid var(--color-primary-500);
+    text-align: center;
+  }
+  
+  .qr-overlay img {
+    width: 150px;
+    height: 150px;
+    display: block;
+    margin-bottom: 1rem;
+  }
+  
+  .qr-label {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--color-primary-600);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  
+  .auto-refresh {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 2rem;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .refresh-timer {
+    font-family: var(--font-mono);
+    font-weight: 700;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="kiosk-enhanced" data-kiosk="true">
+  <!-- Auto Refresh Indicator -->
+  <div class="auto-refresh">
+    <i class="fas fa-sync-alt" id="refresh-icon"></i>
+    <span>Auto-refresh: <span class="refresh-timer" id="refresh-timer">2:00</span></span>
+  </div>
+  
+  <div class="kiosk-grid">
+    <!-- Header -->
+    <header class="kiosk-header">
+      <h1 style="font-size: 4rem; font-weight: 700; color: var(--color-gray-800); margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.1);">
+        <i class="fas fa-stethoscope" style="color: var(--color-primary-500); margin-right: 2rem;"></i>
+        Labor Pattaya QR-Portal
+      </h1>
+      <p style="font-size: 1.8rem; color: var(--color-gray-600); margin-top: 1rem;">
+        Medizinische Labordienstleistungen • ตรวจเลือด • Medical Laboratory Services
+      </p>
+    </header>
+    
+    <!-- Today Section -->
+    <section class="today-section" aria-label="Today's Information">
+      <div class="section-title">
+        <div class="section-icon">
+          <i class="fas fa-clock"></i>
+        </div>
+        <div class="thai-primary text-5xl">วันนี้</div>
+        <div class="en-subtitle text-2xl">Today</div>
+      </div>
+      
+      <div class="mega-time" id="mega-clock">--:--:--</div>
+      <div class="mega-date" id="mega-date">Laden...</div>
+      
+      {% if status %}
+      <div class="status-mega {% if status.type == 'ANWESEND' %}open{% else %}closed{% endif %}">
+        <div class="status-mega-icon">
+          <i class="fas {% if status.type == 'ANWESEND' %}fa-door-open{% else %}fa-door-closed{% endif %}"></i>
+        </div>
+        {% if status.type == 'ANWESEND' %}
+          <div class="thai-primary text-4xl">เปิดให้บริการ</div>
+          <div class="en-subtitle text-xl">Open</div>
+        {% else %}
+          <div class="thai-primary text-4xl">ปิดทำการ</div>
+          <div class="en-subtitle text-xl">Closed</div>
+        {% endif %}
+      </div>
+      {% endif %}
+      
+      {% if today_hours and not today_hours.closed %}
+      <div style="text-align: center; font-size: 2rem; color: var(--color-gray-700);">
+        <div class="thai-primary text-3xl">เวลาทำการ</div>
+        <div class="en-subtitle text-lg mb-2">Opening Hours</div>
+        {% for time_range in today_hours.time_ranges %}
+          <span style="color: var(--color-primary-600); font-weight: 700;">{{ time_range }}</span>
+          {% if not loop.last %}<br>{% endif %}
+        {% endfor %}
+      </div>
+      {% endif %}
+    </section>
+    
+    <!-- Week Section -->
+    <section class="week-section" aria-label="This Week's Schedule">
+      <div class="section-title">
+        <div class="section-icon">
+          <i class="fas fa-calendar-week"></i>
+        </div>
+        <div class="thai-primary text-5xl">สัปดาห์นี้</div>
+        <div class="en-subtitle text-2xl">This Week</div>
+      </div>
+      
+      <div class="week-grid">
+        {% set days = [
+          ('Mo', 'Montag', '08:30-12:00<br>13:00-16:00'),
+          ('Di', 'Dienstag', '08:30-12:00<br>13:00-16:00'),
+          ('Mi', 'Mittwoch', '08:30-12:00'),
+          ('Do', 'Donnerstag', '08:30-12:00<br>13:00-16:00'),
+          ('Fr', 'Freitag', '08:30-13:00'),
+          ('Sa', 'Samstag', 'Geschlossen'),
+          ('So', 'Sonntag', 'Geschlossen')
+        ] %}
+        
+        {% for day_short, day_full, hours in days %}
+          <div class="day-card {% if loop.index == today.weekday() + 1 %}today{% endif %}">
+            <div class="day-name">{{ day_short }}</div>
+            <div class="day-hours">{{ hours|safe }}</div>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+    
+    <!-- Preview Section -->
+    <section class="preview-section" aria-label="Upcoming Schedule">
+      <div class="section-title">
+        <div class="section-icon">
+          <i class="fas fa-calendar-alt"></i>
+        </div>
+        VORSCHAU / ตัวอย่าง / PREVIEW
+      </div>
+      
+      <div class="preview-list">
+        {% set future_days = [
+          (25, 'Montag', '08:30-16:00'),
+          (26, 'Dienstag', '08:30-16:00'),
+          (27, 'Mittwoch', '08:30-12:00'),
+          (28, 'Donnerstag', '08:30-16:00'),
+          (29, 'Freitag', '08:30-13:00'),
+          (30, 'Samstag', 'Geschlossen'),
+          (31, 'Sonntag', 'Geschlossen')
+        ] %}
+        
+        {% for day_num, day_name, hours in future_days %}
+          <div class="preview-item">
+            <div class="preview-date">{{ day_num }}</div>
+            <div class="preview-content">
+              <div class="preview-day">{{ day_name }}</div>
+              <div class="preview-hours">{{ hours }}</div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="kiosk-footer">
+      <div style="display: flex; align-items: center; gap: 2rem; font-size: 1.4rem; color: var(--color-gray-600);">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <i class="fas fa-phone" style="color: var(--color-primary-500);"></i>
+          <span>+66 123 456 789</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <i class="fas fa-envelope" style="color: var(--color-primary-500);"></i>
+          <span>info@laborpattaya.com</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <i class="fas fa-map-marker-alt" style="color: var(--color-primary-500);"></i>
+          <span>123 Healthcare Street, Pattaya</span>
+        </div>
+      </div>
+      
+      <div style="font-size: 1.2rem; color: var(--color-gray-500);">
+        <i class="fas fa-wifi" style="color: var(--color-status-open); margin-right: 1rem;"></i>
+        Portal Online • Bangkok Zeit
+      </div>
+    </footer>
+  </div>
+  
+  <!-- QR Code Overlay -->
+  <div class="qr-overlay">
+    <img src="{{ url_for('public.qr_code', size=150) }}" alt="QR Code für Portal-Zugang">
+    <div class="qr-label">Scan mich!</div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Prevent context menu and text selection
+  document.addEventListener('contextmenu', e => e.preventDefault());
+  document.addEventListener('selectstart', e => e.preventDefault());
+  document.addEventListener('dragstart', e => e.preventDefault());
+  
+  // Initialize kiosk features
+  initializeKioskClock();
+  initializeAutoRefresh();
+  initializeFullscreen();
+  initializeAnimations();
+  
+  console.log('🖥️ Kiosk mode initialized');
+});
+
+function initializeKioskClock() {
+  const clockElement = document.getElementById('mega-clock');
+  const dateElement = document.getElementById('mega-date');
+  
+  if (!clockElement || !dateElement) return;
+  
+  function updateKioskClock() {
+    const now = new Date();
+    const bangkokTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Bangkok"}));
+    
+    // Format time
+    const hours = String(bangkokTime.getHours()).padStart(2, '0');
+    const minutes = String(bangkokTime.getMinutes()).padStart(2, '0');
+    const seconds = String(bangkokTime.getSeconds()).padStart(2, '0');
+    
+    clockElement.innerHTML = `${hours}<span style="opacity: ${bangkokTime.getSeconds() % 2 ? '1' : '0.3'};">:</span>${minutes}<span style="opacity: ${bangkokTime.getSeconds() % 2 ? '1' : '0.3'};">:</span>${seconds}`;
+    
+    // Format date
+    const dateOptions = {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      timeZone: 'Asia/Bangkok'
+    };
+    
+    const germanDate = bangkokTime.toLocaleDateString('de-DE', dateOptions);
+    const thaiDate = bangkokTime.toLocaleDateString('th-TH', dateOptions);
+    const englishDate = bangkokTime.toLocaleDateString('en-US', dateOptions);
+    
+    dateElement.innerHTML = `${germanDate}<br><span style="font-size: 1.6rem; opacity: 0.7;">${thaiDate}</span><br><span style="font-size: 1.4rem; opacity: 0.6;">${englishDate}</span>`;
+  }
+  
+  updateKioskClock();
+  setInterval(updateKioskClock, 1000);
+}
+
+function initializeAutoRefresh() {
+  const refreshInterval = 120000; // 2 minutes
+  const timerElement = document.getElementById('refresh-timer');
+  const iconElement = document.getElementById('refresh-icon');
+  
+  let timeLeft = refreshInterval / 1000;
+  
+  function updateTimer() {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+    timerElement.textContent = `${minutes}:${String(seconds).padStart(2, '0')}`;
+    
+    if (timeLeft <= 0) {
+      iconElement.style.animation = 'spin 1s linear infinite';
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    } else {
+      timeLeft--;
+    }
+  }
+  
+  updateTimer();
+  setInterval(updateTimer, 1000);
+  
+  // Full refresh
+  setTimeout(() => {
+    window.location.reload();
+  }, refreshInterval);
+}
+
+function initializeFullscreen() {
+  // Auto-fullscreen on interaction
+  let hasInteracted = false;
+  
+  function tryFullscreen() {
+    if (!hasInteracted && !document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(err => {
+        console.log('Fullscreen nicht verfügbar:', err.message);
+      });
+      hasInteracted = true;
+    }
+  }
+  
+  // Try fullscreen on any user interaction
+  ['click', 'touchstart', 'keydown'].forEach(event => {
+    document.addEventListener(event, tryFullscreen, { once: true });
+  });
+  
+  // Exit fullscreen prevention
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'F11' || e.key === 'Escape') {
+      e.preventDefault();
+    }
+  });
+}
+
+function initializeAnimations() {
+  // Add entrance animations with stagger
+  const sections = document.querySelectorAll('.today-section, .week-section, .preview-section');
+  sections.forEach((section, index) => {
+    section.style.opacity = '0';
+    section.style.transform = 'translateY(30px)';
+    section.style.transition = 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
+    
+    setTimeout(() => {
+      section.style.opacity = '1';
+      section.style.transform = 'translateY(0)';
+    }, 300 + (index * 200));
+  });
+  
+  // QR code pulse animation
+  const qrOverlay = document.querySelector('.qr-overlay');
+  if (qrOverlay) {
+    setInterval(() => {
+      qrOverlay.style.transform = 'scale(1.05)';
+      setTimeout(() => {
+        qrOverlay.style.transform = 'scale(1)';
+      }, 300);
+    }, 5000);
+  }
+  
+  // Status icon animation
+  const statusIcon = document.querySelector('.status-mega-icon');
+  if (statusIcon) {
+    statusIcon.style.animation = 'pulse 2s ease-in-out infinite';
+  }
+}
+
+// Keyboard shortcuts for kiosk management
+document.addEventListener('keydown', (e) => {
+  // Ctrl+Alt+R: Force refresh
+  if (e.ctrlKey && e.altKey && e.key === 'r') {
+    window.location.reload();
+  }
+  
+  // Ctrl+Alt+F: Toggle fullscreen
+  if (e.ctrlKey && e.altKey && e.key === 'f') {
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    } else {
+      document.documentElement.requestFullscreen();
+    }
+  }
+});
+
+// Error handling
+window.addEventListener('error', (e) => {
+  console.error('Kiosk error:', e.error);
+  // Show error indicator
+  const errorIndicator = document.createElement('div');
+  errorIndicator.style.cssText = `
+    position: fixed;
+    top: 2rem;
+    left: 2rem;
+    background: var(--color-status-closed);
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 1rem;
+    font-size: 1.2rem;
+    z-index: 9999;
+  `;
+  errorIndicator.innerHTML = '<i class="fas fa-exclamation-triangle"></i> System Error';
+  document.body.appendChild(errorIndicator);
+  
+  setTimeout(() => {
+    errorIndicator.remove();
+  }, 5000);
+});
+
+// Performance monitoring
+let performanceIssues = 0;
+setInterval(() => {
+  const fps = Math.round(1000 / (performance.now() - (window.lastFrameTime || performance.now())));
+  window.lastFrameTime = performance.now();
+  
+  if (fps < 30) {
+    performanceIssues++;
+    if (performanceIssues > 10) {
+      console.warn('Performance issues detected, reloading...');
+      window.location.reload();
+    }
+  } else {
+    performanceIssues = Math.max(0, performanceIssues - 1);
+  }
+}, 1000);
+</script>
+
+<style>
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { 
+    transform: scale(1);
+    opacity: 1; 
+  }
+  50% { 
+    transform: scale(1.05);
+    opacity: 0.8; 
+  }
+}
+
+/* High DPI optimization */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .mega-time {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* 4K display optimization */
+@media (min-width: 2560px) {
+  .mega-time {
+    font-size: 12rem;
+  }
+  
+  .section-title {
+    font-size: 3.5rem;
+  }
+  
+  .status-mega {
+    font-size: 3.5rem;
+  }
+}
+</style>
+{% endblock %}

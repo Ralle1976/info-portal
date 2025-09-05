@@ -1,0 +1,602 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Social Media Management{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto py-6">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">Social Media Management</h1>
+            <p class="text-gray-600">Verwalten Sie Ihre Social Media Präsenz für das Labor</p>
+        </div>
+        <div class="flex space-x-3">
+            <button onclick="generateAllQRs()" 
+                    class="bg-thai-turquoise text-white px-4 py-2 rounded hover:bg-cyan-600 transition">
+                <i class="fas fa-qrcode mr-2"></i>
+                Alle QR-Codes
+            </button>
+            <button onclick="openPostModal()" 
+                    class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition">
+                <i class="fas fa-plus mr-2"></i>
+                Neuer Post
+            </button>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-share-alt text-2xl text-thai-turquoise"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-500">Aktive Plattformen</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ stats.enabled_platforms }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-edit text-2xl text-green-500"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-500">Gesamt Posts</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ stats.total_posts if stats.total_posts else 0 }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-qrcode text-2xl text-purple-500"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-500">QR-fähige Plattformen</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ stats.qr_enabled_platforms }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-chart-line text-2xl text-blue-500"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-500">Geteilte Inhalte</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ stats.shareable_content }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Platform Configuration -->
+    <div class="bg-white rounded-lg shadow mb-8">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-900">
+                <i class="fas fa-cog mr-2"></i>
+                Platform-Konfiguration
+            </h2>
+        </div>
+        
+        <form method="POST" class="p-6">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            
+            <!-- Global Settings -->
+            <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+                <h3 class="font-semibold mb-3">Globale Einstellungen</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <label class="flex items-center">
+                        <input type="checkbox" name="social_enabled" value="true" 
+                               {% if config.enabled %}checked{% endif %}
+                               class="h-4 w-4 text-thai-turquoise focus:ring-thai-turquoise border-gray-300 rounded">
+                        <span class="ml-2 text-sm text-gray-700">Social Media aktiviert</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" name="show_follow_section" value="true"
+                               {% if config.settings.show_follow_section %}checked{% endif %}
+                               class="h-4 w-4 text-thai-turquoise focus:ring-thai-turquoise border-gray-300 rounded">
+                        <span class="ml-2 text-sm text-gray-700">"Folgen Sie uns" Sektion</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" name="show_share_buttons" value="true"
+                               {% if config.settings.show_share_buttons %}checked{% endif %}
+                               class="h-4 w-4 text-thai-turquoise focus:ring-thai-turquoise border-gray-300 rounded">
+                        <span class="ml-2 text-sm text-gray-700">Share-Buttons anzeigen</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Platform Settings -->
+            <div class="space-y-6">
+                {% for platform in platforms %}
+                <div class="border border-gray-200 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <i class="{{ platform.icon }} text-2xl mr-3" style="color: {{ platform.color }};"></i>
+                            <div>
+                                <h4 class="font-semibold text-lg">{{ platform.display_name }}</h4>
+                                <p class="text-sm text-gray-500">
+                                    {% if platform.name == 'line' %}Thailand's #1 Messaging App
+                                    {% elif platform.name == 'facebook' %}Business Page & Reviews
+                                    {% elif platform.name == 'instagram' %}Visual Content & Stories
+                                    {% elif platform.name == 'whatsapp' %}Direct Customer Contact
+                                    {% elif platform.name == 'tiktok' %}Short Form Video Content
+                                    {% elif platform.name == 'youtube' %}Educational Videos
+                                    {% elif platform.name == 'google_business' %}Maps & Local Search
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <label class="flex items-center">
+                                <input type="checkbox" name="{{ platform.name }}_enabled" value="true"
+                                       {% if platform.name in config.platforms and config.platforms[platform.name].enabled %}checked{% endif %}
+                                       class="h-4 w-4 text-thai-turquoise focus:ring-thai-turquoise border-gray-300 rounded">
+                                <span class="ml-2 text-sm">Aktiviert</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="{{ platform.name }}_qr_enabled" value="true"
+                                       {% if platform.qr_enabled %}checked{% endif %}
+                                       class="h-4 w-4 text-thai-turquoise focus:ring-thai-turquoise border-gray-300 rounded">
+                                <span class="ml-2 text-sm">QR-Code</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">URL/Link</label>
+                            <input type="url" name="{{ platform.name }}_url" 
+                                   value="{{ platform.url }}"
+                                   placeholder="https://{{ platform.name }}.com/..."
+                                   class="w-full border-gray-300 rounded-md shadow-sm focus:ring-thai-turquoise focus:border-thai-turquoise">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                {% if platform.name == 'line' %}Official Account ID
+                                {% else %}Benutzername
+                                {% endif %}
+                            </label>
+                            <input type="text" name="{{ platform.name }}_username" 
+                                   value="{{ platform.username }}"
+                                   placeholder="{% if platform.name == 'line' %}@laborpattaya{% else %}laborpattaya{% endif %}"
+                                   class="w-full border-gray-300 rounded-md shadow-sm focus:ring-thai-turquoise focus:border-thai-turquoise">
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Save Button -->
+            <div class="mt-8 flex justify-end">
+                <button type="submit" 
+                        class="bg-thai-turquoise text-white px-6 py-2 rounded-md hover:bg-cyan-600 focus:outline-none focus:ring-2 focus:ring-thai-turquoise transition">
+                    <i class="fas fa-save mr-2"></i>
+                    Einstellungen speichern
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- QR Code Management -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <!-- QR Generation -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h2 class="text-lg font-semibold text-gray-900">
+                    <i class="fas fa-qrcode mr-2"></i>
+                    QR-Code Management
+                </h2>
+            </div>
+            <div class="p-6">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Größe</label>
+                        <select id="qr-size" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-thai-turquoise focus:border-thai-turquoise">
+                            <option value="small">Klein (200px)</option>
+                            <option value="medium" selected>Mittel (400px)</option>
+                            <option value="large">Groß (600px)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="generateSelectedQRs()" 
+                                class="bg-thai-turquoise text-white px-4 py-2 rounded text-sm hover:bg-cyan-600 transition">
+                            <i class="fas fa-qrcode mr-2"></i>
+                            Ausgewählte generieren
+                        </button>
+                        <button onclick="downloadQRBatch()" 
+                                class="bg-green-500 text-white px-4 py-2 rounded text-sm hover:bg-green-600 transition">
+                            <i class="fas fa-download mr-2"></i>
+                            Alle herunterladen
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- QR Display -->
+                <div id="qr-display" class="mt-6 grid grid-cols-2 gap-4 hidden">
+                    <!-- Generated QR codes will appear here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h2 class="text-lg font-semibold text-gray-900">
+                    <i class="fas fa-chart-bar mr-2"></i>
+                    Analytics
+                </h2>
+            </div>
+            <div class="p-6">
+                <div id="analytics-content">
+                    <div class="text-center py-8">
+                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-thai-turquoise mx-auto"></div>
+                        <p class="mt-2 text-gray-500">Lade Analytics...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Posts -->
+    <div class="bg-white rounded-lg shadow">
+        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+            <h2 class="text-lg font-semibold text-gray-900">
+                <i class="fas fa-edit mr-2"></i>
+                Letzte Posts
+            </h2>
+            <button onclick="refreshPosts()" 
+                    class="text-gray-500 hover:text-gray-700 transition">
+                <i class="fas fa-sync-alt"></i>
+            </button>
+        </div>
+        <div class="overflow-hidden">
+            <div id="posts-table" class="min-w-full">
+                <!-- Posts table will be loaded here -->
+                <div class="text-center py-8">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-thai-turquoise mx-auto"></div>
+                    <p class="mt-2 text-gray-500">Lade Posts...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Post Modal -->
+<div id="post-modal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-1/2 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-medium text-gray-900">Neuer Social Media Post</h3>
+                <button onclick="closePostModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="post-form" class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Platform</label>
+                        <select name="platform" required class="w-full border-gray-300 rounded-md shadow-sm focus:ring-thai-turquoise focus:border-thai-turquoise">
+                            {% for platform in platforms %}
+                            <option value="{{ platform.name }}">{{ platform.display_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Sprache</label>
+                        <select name="lang" required class="w-full border-gray-300 rounded-md shadow-sm focus:ring-thai-turquoise focus:border-thai-turquoise">
+                            <option value="th">{{ t('language_thai') }}</option>
+                            <option value="de">{{ t('language_german') }}</option>
+                            <option value="en">{{ t('language_english') }}</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Titel (optional)</label>
+                    <input type="text" name="title" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-thai-turquoise focus:border-thai-turquoise">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Inhalt</label>
+                    <textarea name="content" rows="4" required 
+                              placeholder="Z.B. Neue Öffnungszeiten ab nächster Woche..."
+                              class="w-full border-gray-300 rounded-md shadow-sm focus:ring-thai-turquoise focus:border-thai-turquoise"></textarea>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Post-Typ</label>
+                    <select name="post_type" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-thai-turquoise focus:border-thai-turquoise">
+                        <option value="announcement">Ankündigung</option>
+                        <option value="hours">Öffnungszeiten</option>
+                        <option value="status">Status-Update</option>
+                        <option value="general">Allgemein</option>
+                    </select>
+                </div>
+                
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" onclick="closePostModal()" 
+                            class="px-4 py-2 text-gray-500 border border-gray-300 rounded-md hover:bg-gray-50 transition">
+                        Abbrechen
+                    </button>
+                    <button type="submit" 
+                            class="px-4 py-2 bg-thai-turquoise text-white rounded-md hover:bg-cyan-600 transition">
+                        <i class="fas fa-paper-plane mr-2"></i>
+                        Post erstellen
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// QR Code Management
+function generateAllQRs() {
+    generateQRsForPlatforms(['all']);
+}
+
+function generateSelectedQRs() {
+    const selectedPlatforms = [];
+    document.querySelectorAll('input[name$="_enabled"]:checked').forEach(checkbox => {
+        const platform = checkbox.name.replace('_enabled', '');
+        selectedPlatforms.push(platform);
+    });
+    
+    if (selectedPlatforms.length === 0) {
+        alert('Bitte wählen Sie mindestens eine Platform aus.');
+        return;
+    }
+    
+    generateQRsForPlatforms(selectedPlatforms);
+}
+
+function generateQRsForPlatforms(platforms) {
+    const size = document.getElementById('qr-size').value;
+    const displayArea = document.getElementById('qr-display');
+    
+    displayArea.innerHTML = '<div class="col-span-2 text-center py-4"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-thai-turquoise mx-auto"></div><p class="mt-2 text-gray-500">Generiere QR-Codes...</p></div>';
+    displayArea.classList.remove('hidden');
+    
+    fetch('/admin/api/social-media/qr-generate', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({
+            platforms: platforms,
+            size: size
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            let html = '';
+            for (const [platform, info] of Object.entries(data.generated)) {
+                html += `
+                    <div class="text-center bg-gray-50 rounded p-3">
+                        <h4 class="font-semibold mb-2 text-sm">${platform.charAt(0).toUpperCase() + platform.slice(1)}</h4>
+                        <img src="${info.url}" alt="${platform} QR" class="mx-auto mb-2 max-w-20">
+                        <a href="${info.download_url}" download class="text-xs text-thai-turquoise hover:underline">Download</a>
+                    </div>
+                `;
+            }
+            displayArea.innerHTML = html;
+        } else {
+            displayArea.innerHTML = '<div class="col-span-2 text-center py-4 text-red-600">Fehler beim Generieren der QR-Codes</div>';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        displayArea.innerHTML = '<div class="col-span-2 text-center py-4 text-red-600">Fehler beim Generieren der QR-Codes</div>';
+    });
+}
+
+function downloadQRBatch() {
+    window.open('/social/qr-batch?size=' + document.getElementById('qr-size').value, '_blank');
+}
+
+// Post Management
+function openPostModal() {
+    document.getElementById('post-modal').classList.remove('hidden');
+}
+
+function closePostModal() {
+    document.getElementById('post-modal').classList.add('hidden');
+    document.getElementById('post-form').reset();
+}
+
+document.getElementById('post-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData);
+    
+    fetch('/admin/api/social-media/posts', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': '{{ csrf_token }}'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            closePostModal();
+            refreshPosts();
+            // Show success message
+            showNotification('Post erfolgreich erstellt!', 'success');
+        } else {
+            showNotification('Fehler: ' + data.error, 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Fehler beim Erstellen des Posts', 'error');
+    });
+});
+
+// Load Posts
+function refreshPosts() {
+    const tableContainer = document.getElementById('posts-table');
+    
+    fetch('/admin/api/social-media/posts')
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.posts.length > 0) {
+            let html = `
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Platform</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Inhalt</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sprache</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Erstellt</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aktionen</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+            `;
+            
+            data.posts.slice(0, 10).forEach(post => {
+                html += `
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100">
+                                ${post.platform}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-900">
+                            ${post.title ? '<strong>' + post.title + '</strong><br>' : ''}
+                            ${post.content}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${post.lang.toUpperCase()}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${new Date(post.created_at).toLocaleDateString('de-DE')}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <button onclick="deletePost(${post.id})" class="text-red-600 hover:text-red-900">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += '</tbody></table>';
+            tableContainer.innerHTML = html;
+        } else {
+            tableContainer.innerHTML = '<div class="text-center py-8 text-gray-500">Noch keine Posts vorhanden</div>';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        tableContainer.innerHTML = '<div class="text-center py-8 text-red-500">Fehler beim Laden der Posts</div>';
+    });
+}
+
+function deletePost(postId) {
+    if (confirm('Post wirklich löschen?')) {
+        fetch(`/admin/api/social-media/posts/${postId}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-Token': '{{ csrf_token }}'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                refreshPosts();
+                showNotification('Post gelöscht', 'success');
+            } else {
+                showNotification('Fehler beim Löschen', 'error');
+            }
+        });
+    }
+}
+
+// Load Analytics
+function loadAnalytics() {
+    fetch('/admin/api/social-media/analytics')
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const analytics = data.analytics;
+            const container = document.getElementById('analytics-content');
+            
+            let html = `
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-600">Posts pro Platform:</span>
+                        <span class="font-semibold">${analytics.total_posts}</span>
+                    </div>
+            `;
+            
+            for (const [platform, count] of Object.entries(analytics.posts_by_platform)) {
+                html += `
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-600">${platform.charAt(0).toUpperCase() + platform.slice(1)}:</span>
+                        <span class="font-semibold">${count}</span>
+                    </div>
+                `;
+            }
+            
+            if (analytics.top_platform) {
+                html += `
+                    <div class="mt-4 p-3 bg-green-50 rounded">
+                        <p class="text-sm text-green-800">
+                            <i class="fas fa-trophy mr-1"></i>
+                            Top Platform: <strong>${analytics.top_platform}</strong>
+                        </p>
+                    </div>
+                `;
+            }
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+    })
+    .catch(error => {
+        console.error('Error loading analytics:', error);
+        document.getElementById('analytics-content').innerHTML = '<div class="text-center py-4 text-red-500">Fehler beim Laden der Analytics</div>';
+    });
+}
+
+// Notification system
+function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.className = `fixed top-4 right-4 p-4 rounded-md shadow-lg z-50 ${type === 'success' ? 'bg-green-500' : 'bg-red-500'} text-white`;
+    notification.innerHTML = `
+        <div class="flex items-center">
+            <i class="fas fa-${type === 'success' ? 'check' : 'exclamation-triangle'} mr-2"></i>
+            ${message}
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+
+// Initialize page
+document.addEventListener('DOMContentLoaded', function() {
+    refreshPosts();
+    loadAnalytics();
+});
+</script>
+
+<!-- FontAwesome for Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}

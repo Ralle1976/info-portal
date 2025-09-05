@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="{{ i18n.get_current_language() }}" data-theme="medical">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="robots" content="noindex, nofollow">
+    <title>{{ config.site.name }} - Ultimate Kiosk</title>
+    
+    <!-- Preload critical resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    
+    <!-- Font Loading with Thai Support -->
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for Medical Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <!-- Enhanced Kiosk Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/design-system.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/kiosk-enhanced.css') }}">
+    
+    <!-- Prevent caching for dynamic content -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+</head>
+
+<body class="kiosk-mode" data-kiosk="ultimate">
+    <!-- Skip link for accessibility -->
+    <a href="#main-content" class="sr-only sr-only-focusable">{{ t('kiosk.enhanced.skip_to_content', 'Zum Hauptinhalt springen') }}</a>
+    
+    <!-- Auto-refresh indicator -->
+    <div class="kiosk-refresh-indicator" role="status" aria-live="polite">
+        <i class="fas fa-sync-alt kiosk-refresh-icon" id="refresh-icon"></i>
+        <span>{{ t('kiosk.enhanced.auto_refresh') }}: <span class="kiosk-refresh-timer" id="refresh-timer">2:00</span></span>
+    </div>
+    
+    <!-- Main kiosk container -->
+    <main id="main-content" class="kiosk-container">
+        
+        <!-- Enhanced Header -->
+        <header class="kiosk-header" role="banner">
+            <div class="kiosk-logo-section">
+                <div class="kiosk-logo-icon" aria-hidden="true">
+                    <i class="fas fa-stethoscope"></i>
+                </div>
+                <div class="kiosk-title-group">
+                    <h1>{{ config.site.name or t('kiosk.enhanced.medical_laboratory') }}</h1>
+                    <p class="kiosk-subtitle">{{ t('kiosk.enhanced.professional_service') }} • ตรวจเลือดและห้องปฏิบัติการทางการแพทย์ • Medical Laboratory Services</p>
+                </div>
+            </div>
+            
+            <div class="kiosk-live-info" role="complementary">
+                <time class="kiosk-clock" id="kiosk-clock" datetime="{{ now.isoformat() }}">--:--:--</time>
+                <div class="kiosk-date" id="kiosk-date" aria-live="polite">{{ now.strftime('%A, %d. %B %Y') }}</div>
+                <div class="kiosk-timezone">{{ t('kiosk.enhanced.bangkok_timezone') }}</div>
+            </div>
+        </header>
+        
+        <!-- Status Banner with Smart Icons -->
+        <section class="kiosk-status-banner 
+            {% if status.status_type == 'ANWESEND' %}kiosk-status-open
+            {% elif status.status_type in ['URLAUB', 'BILDUNGSURLAUB'] %}kiosk-status-warning
+            {% elif status.status_type == 'KONGRESS' %}kiosk-status-info
+            {% else %}kiosk-status-closed{% endif %}" 
+            role="alert" aria-live="assertive">
+            
+            <div class="kiosk-status-icon" aria-hidden="true">
+                {% if status.status_type == 'ANWESEND' %}
+                    <i class="fas fa-door-open"></i>
+                {% elif status.status_type == 'URLAUB' %}
+                    <i class="fas fa-umbrella-beach"></i>
+                {% elif status.status_type == 'BILDUNGSURLAUB' %}
+                    <i class="fas fa-graduation-cap"></i>
+                {% elif status.status_type == 'KONGRESS' %}
+                    <i class="fas fa-users"></i>
+                {% else %}
+                    <i class="fas fa-door-closed"></i>
+                {% endif %}
+            </div>
+            
+            <div class="kiosk-status-content">
+                <div class="kiosk-status-title">
+                    {% if status.status_type == 'ANWESEND' %}
+                        {{ t('kiosk.enhanced.status_messages.currently_open') }}
+                    {% elif status.status_type == 'URLAUB' %}
+                        {{ t('kiosk.enhanced.status_messages.on_vacation') }}
+                    {% elif status.status_type == 'BILDUNGSURLAUB' %}
+                        {{ t('kiosk.enhanced.status_messages.in_training') }}
+                    {% elif status.status_type == 'KONGRESS' %}
+                        {{ t('kiosk.enhanced.status_messages.at_conference') }}
+                    {% else %}
+                        {{ t('kiosk.enhanced.status_messages.currently_closed') }}
+                    {% endif %}
+                </div>
+                <div class="kiosk-status-description">
+                    {% if status.status_type == 'ANWESEND' %}
+                        {{ t('kiosk.enhanced.blood_tests_available') }}
+                    {% elif status.to_date %}
+                        {{ t('back_on') }} {{ status.to_date.strftime('%d.%m.%Y') }}
+                    {% elif status.note %}
+                        {{ status.note }}
+                    {% else %}
+                        {{ t('kiosk.enhanced.see_notice', 'Bitte beachten Sie unsere Hinweise') }}
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+        
+        <!-- Enhanced Opening Hours Section -->
+        <section class="kiosk-hours-section" aria-labelledby="hours-heading">
+            <div class="kiosk-section-header">
+                <div class="kiosk-section-icon" aria-hidden="true">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h2 id="hours-heading" class="kiosk-section-title">{{ t('kiosk.enhanced.opening_times') }}</h2>
+            </div>
+            
+            <div class="kiosk-hours-grid" role="group" aria-labelledby="hours-heading">
+                {% if today_hours and not today_hours.closed %}
+                    {% for time_range in today_hours.time_ranges %}
+                        {% set hour_parts = time_range.split('-') %}
+                        {% set start_hour = hour_parts[0].split(':')[0]|int if hour_parts|length > 1 else 12 %}
+                        
+                        <div class="kiosk-time-card" role="article">
+                            <div class="kiosk-time-icon 
+                                {% if start_hour < 10 %}kiosk-time-morning
+                                {% elif start_hour < 14 %}kiosk-time-afternoon  
+                                {% elif start_hour < 18 %}kiosk-time-evening
+                                {% else %}kiosk-time-closed{% endif %}" aria-hidden="true">
+                                {% if start_hour < 10 %}
+                                    <i class="fas fa-sun"></i>
+                                {% elif start_hour < 14 %}
+                                    <i class="fas fa-clock"></i>
+                                {% elif start_hour < 18 %}
+                                    <i class="fas fa-moon"></i>
+                                {% else %}
+                                    <i class="fas fa-bed"></i>
+                                {% endif %}
+                            </div>
+                            <div class="kiosk-time-text">{{ time_range }}</div>
+                            <div class="kiosk-time-label">
+                                {% if start_hour < 10 %}{{ t('kiosk.enhanced.time_periods.morning') }}
+                                {% elif start_hour < 14 %}{{ t('kiosk.enhanced.time_periods.afternoon') }}
+                                {% elif start_hour < 18 %}{{ t('kiosk.enhanced.time_periods.evening') }}
+                                {% else %}{{ t('kiosk.enhanced.time_periods.night') }}{% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="kiosk-time-card closed" role="article">
+                        <div class="kiosk-time-icon kiosk-time-closed" aria-hidden="true">
+                            <i class="fas fa-door-closed"></i>
+                        </div>
+                        <div class="kiosk-time-text">{{ t('closed') }}</div>
+                        <div class="kiosk-time-label">{{ t('kiosk.enhanced.day_status.today') }}</div>
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+        
+        <!-- Contact & Services Info -->
+        <section class="kiosk-services-section" aria-labelledby="services-heading">
+            <div class="kiosk-section-header">
+                <div class="kiosk-section-icon" aria-hidden="true">
+                    <i class="fas fa-user-md"></i>
+                </div>
+                <h2 id="services-heading" class="kiosk-section-title">{{ t('services') }}</h2>
+            </div>
+            
+            <div class="kiosk-services-grid">
+                <div class="kiosk-service-card">
+                    <div class="kiosk-service-icon" aria-hidden="true">
+                        <i class="fas fa-vial"></i>
+                    </div>
+                    <div class="kiosk-service-name">{{ t('kiosk.enhanced.services.blood_collection') }}</div>
+                </div>
+                
+                <div class="kiosk-service-card">
+                    <div class="kiosk-service-icon" aria-hidden="true">
+                        <i class="fas fa-microscope"></i>
+                    </div>
+                    <div class="kiosk-service-name">{{ t('kiosk.enhanced.services.laboratory_analysis') }}</div>
+                </div>
+                
+                <div class="kiosk-service-card">
+                    <div class="kiosk-service-icon" aria-hidden="true">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <div class="kiosk-service-name">{{ t('kiosk.enhanced.services.health_checkup') }}</div>
+                </div>
+                
+                <div class="kiosk-service-card">
+                    <div class="kiosk-service-icon" aria-hidden="true">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <div class="kiosk-service-name">{{ t('kiosk.enhanced.services.results_collection') }}</div>
+                </div>
+            </div>
+        </section>
+        
+    </main>
+    
+    <!-- Enhanced Footer -->
+    <footer class="kiosk-footer" role="contentinfo">
+        <div class="kiosk-contact-info">
+            <div class="kiosk-contact-item">
+                <div class="kiosk-contact-icon" aria-hidden="true">
+                    <i class="fas fa-phone"></i>
+                </div>
+                <span class="kiosk-contact-text">{{ config.contact.phone }}</span>
+            </div>
+            
+            <div class="kiosk-contact-item">
+                <div class="kiosk-contact-icon" aria-hidden="true">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <span class="kiosk-contact-text">{{ config.contact.email }}</span>
+            </div>
+            
+            <div class="kiosk-contact-item">
+                <div class="kiosk-contact-icon" aria-hidden="true">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <span class="kiosk-contact-text">{{ config.location.address or 'Pattaya, Thailand' }}</span>
+            </div>
+        </div>
+        
+        <div class="kiosk-system-status" aria-live="polite">
+            <div class="kiosk-status-dot" aria-hidden="true"></div>
+            <span>{{ t('kiosk.enhanced.system_online') }}</span>
+        </div>
+    </footer>
+    
+    <!-- Enhanced QR Code Overlay -->
+    <aside class="kiosk-qr-overlay" role="complementary" aria-labelledby="qr-heading">
+        <img src="{{ url_for('public.qr_code', size=150) }}" 
+             alt="{{ t('kiosk.enhanced.scan_qr_portal') }}" 
+             class="kiosk-qr-image"
+             loading="lazy">
+        <h3 id="qr-heading" class="kiosk-qr-label">{{ t('scan_qr') }}</h3>
+        <p class="kiosk-qr-instruction">{{ t('kiosk.enhanced.scan_qr_portal') }}</p>
+    </aside>
+    
+    <!-- Enhanced JavaScript -->
+    <script src="{{ url_for('static', filename='js/kiosk-enhanced.js') }}" defer></script>
+    
+    <!-- Inline critical JavaScript for immediate functionality -->
+    <script>
+        // Immediate kiosk setup
+        document.documentElement.style.setProperty('--kiosk-start-time', Date.now());
+        document.body.classList.add('kiosk-mode');
+        
+        // Prevent standard browser shortcuts immediately
+        document.addEventListener('keydown', function(e) {
+            // Prevent F5, Ctrl+R (unless with Alt for admin)
+            if (e.key === 'F5' || (e.ctrlKey && e.key === 'r' && !e.altKey)) {
+                e.preventDefault();
+            }
+            // Prevent F11
+            if (e.key === 'F11') {
+                e.preventDefault();
+            }
+        }, true);
+        
+        // Log kiosk initialization
+        console.log('🖥️ Ultimate Kiosk Mode Loading...');
+        console.log('📺 Screen:', window.innerWidth + 'x' + window.innerHeight);
+        console.log('🌍 Language:', document.documentElement.lang);
+        console.log('⏰ Timezone:', Intl.DateTimeFormat().resolvedOptions().timeZone);
+    </script>
+    
+    <!-- Additional CSS for service cards -->
+    <style>
+        .kiosk-services-section {
+            margin: var(--kiosk-space-8) 0;
+        }
+        
+        .kiosk-services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--kiosk-space-6);
+            margin-top: var(--kiosk-space-6);
+        }
+        
+        .kiosk-service-card {
+            background: var(--kiosk-white);
+            border-radius: var(--kiosk-radius-xl);
+            padding: var(--kiosk-space-6);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--kiosk-space-4);
+            box-shadow: var(--kiosk-shadow-lg);
+            border: 2px solid transparent;
+            transition: var(--kiosk-transition-base);
+        }
+        
+        .kiosk-service-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--kiosk-shadow-xl);
+            border-color: var(--kiosk-primary);
+        }
+        
+        .kiosk-service-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--kiosk-primary), var(--kiosk-primary-light));
+            border-radius: var(--kiosk-radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--kiosk-shadow-base);
+        }
+        
+        .kiosk-service-icon i {
+            font-size: 2rem;
+            color: var(--kiosk-white);
+        }
+        
+        .kiosk-service-name {
+            font-size: var(--kiosk-text-xl);
+            font-weight: 600;
+            color: var(--kiosk-gray-800);
+            text-align: center;
+            line-height: 1.4;
+        }
+        
+        /* Responsive adjustments for services */
+        @media (min-width: 1920px) {
+            .kiosk-services-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .kiosk-service-icon {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .kiosk-service-icon i {
+                font-size: 2.5rem;
+            }
+        }
+        
+        /* Ultra-wide display optimization */
+        @media (min-width: 2560px) {
+            .kiosk-service-card {
+                padding: var(--kiosk-space-10);
+            }
+            
+            .kiosk-service-icon {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .kiosk-service-icon i {
+                font-size: 3rem;
+            }
+            
+            .kiosk-service-name {
+                font-size: var(--kiosk-text-2xl);
+            }
+        }
+        
+        /* High contrast mode adjustments */
+        @media (prefers-contrast: high) {
+            .kiosk-service-card {
+                border: 3px solid var(--kiosk-gray-900);
+            }
+            
+            .kiosk-service-icon {
+                border: 2px solid var(--kiosk-white);
+            }
+        }
+    </style>
+    
+</body>
+</html>

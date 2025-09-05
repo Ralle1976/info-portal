@@ -1,0 +1,296 @@
+<!-- QR Info Portal - Help System Component -->
+<!-- Include this in any template that needs contextual help -->
+
+<!-- Help System CSS -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/help-system.css') }}">
+
+<!-- Help System JavaScript -->
+<script src="{{ url_for('static', filename='js/help-system.js') }}"></script>
+
+<!-- Add data attributes to elements that need tooltips -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-add help tooltips to common elements
+    const helpMappings = {
+        // Common form elements
+        'button[type="submit"]': '"Changes will be saved immediately"',
+        'button[type="reset"]': '"Discard all changes"',
+        '.btn-danger': '"This action cannot be undone"',
+        
+        // Navigation elements
+        '.lang-switcher a': '"Switch interface language"',
+        'a[href*="tel:"]': '"Tap to call"',
+        'a[href*="mailto:"]': '"Tap to send email"',
+        'a[href*="maps.google"]': '"Open GPS navigation"',
+        
+        // Status and info elements
+        '.status-banner': '"Current practice status - click for details"',
+        '.qr-code': '"Scan with smartphone camera"',
+        
+        // Admin specific elements
+        {% if request.endpoint and 'admin' in request.endpoint %}
+        '#status_select': '"Change current practice status"',
+        '#hours_form input': '"Format: 08:30-12:00, 13:00-16:00"',
+        '.preview-btn': '"See how this looks to visitors"',
+        '.portal-link': '"Open public website in new tab"',
+        {% endif %}
+    };
+    
+    // Apply tooltips
+    Object.entries(helpMappings).forEach(([selector, tooltip]) => {
+        document.querySelectorAll(selector).forEach(element => {
+            if (!element.hasAttribute('data-help-tooltip')) {
+                element.setAttribute('data-help-tooltip', tooltip);
+            }
+        });
+    });
+});
+</script>
+
+<!-- Help-specific data attributes for current page -->
+<script>
+// Set current page context for help system
+document.documentElement.setAttribute('data-help-page', '{{ 
+    "admin_dashboard" if request.endpoint == "admin.dashboard" else
+    "admin_status" if request.endpoint == "admin.manage_status" else
+    "admin_hours" if request.endpoint == "admin.manage_hours" else
+    "admin_announcements" if request.endpoint == "admin.manage_announcements" else
+    "admin_settings" if request.endpoint == "admin.manage_settings" else
+    "kiosk" if "kiosk" in request.endpoint else
+    "week" if request.endpoint == "public.week" else
+    "month" if request.endpoint == "public.month" else
+    "home"
+}}');
+
+// Add contextual help triggers
+{% if request.args.get('first_time') %}
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+        if (window.helpSystem) {
+            helpSystem.showContextualHelp('first_login');
+        }
+    }, 2000);
+});
+{% endif %}
+
+{% if request.args.get('status_changed') %}
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+        if (window.helpSystem) {
+            helpSystem.showContextualHelp('status_change');
+        }
+    }, 1000);
+});
+{% endif %}
+</script>
+
+<!-- Contextual help for specific pages -->
+{% if request.endpoint == 'admin.dashboard' %}
+<script>
+// Dashboard-specific help initialization
+document.addEventListener('DOMContentLoaded', function() {
+    // Add specific tooltips for dashboard cards
+    const dashboardMappings = {
+        '.status-card': '"Current practice status - click to change quickly"',
+        '.hours-card': '"Manage opening hours and exceptions"',
+        '.announcements-card': '"Create and manage visitor announcements"',
+        '.qr-card': '"Generate QR codes for printing and digital use"',
+        '.social-card': '"Manage social media integration"',
+    };
+    
+    Object.entries(dashboardMappings).forEach(([selector, tooltip]) => {
+        document.querySelectorAll(selector).forEach(element => {
+            element.setAttribute('data-help-tooltip', tooltip);
+        });
+    });
+});
+</script>
+{% endif %}
+
+{% if request.endpoint == 'admin.manage_status' %}
+<script>
+// Status management specific help
+document.addEventListener('DOMContentLoaded', function() {
+    const statusMappings = {
+        '#status_type': '"Select current operational status"',
+        '#date_from': '"Start date of absence or special status"',
+        '#date_to': '"End date - return date will be calculated"',
+        '#note_de': '"Description in German for admin and German visitors"',
+        '#note_th': '"Description in Thai for local patients"',
+        '#note_en': '"Description in English for international visitors"',
+        '.status-preview': '"Preview how this will look to visitors"',
+    };
+    
+    Object.entries(statusMappings).forEach(([selector, tooltip]) => {
+        const element = document.querySelector(selector);
+        if (element) {
+            element.setAttribute('data-help-tooltip', tooltip);
+        }
+    });
+    
+    // Show contextual help when changing to vacation/leave status
+    const statusSelect = document.querySelector('#status_type');
+    if (statusSelect) {
+        statusSelect.addEventListener('change', function() {
+            if (['URLAUB', 'BILDUNGSURLAUB', 'KONGRESS'].includes(this.value)) {
+                setTimeout(() => {
+                    if (window.helpSystem) {
+                        helpSystem.showContextualHelp('status_change');
+                    }
+                }, 500);
+            }
+        });
+    }
+});
+</script>
+{% endif %}
+
+{% if request.endpoint == 'admin.manage_hours' %}
+<script>
+// Hours management specific help
+document.addEventListener('DOMContentLoaded', function() {
+    const hoursMappings = {
+        '.hours-input': '"Format: 08:30-12:00, 13:00-16:00 for multiple sessions"',
+        '.exception-date': '"Date for special opening hours or closure"',
+        '.exception-hours': '"Special hours for this date, leave empty if closed"',
+        '.thai-holidays-btn': '"Automatically add common Thai public holidays"',
+    };
+    
+    Object.entries(hoursMappings).forEach(([selector, tooltip]) => {
+        document.querySelectorAll(selector).forEach(element => {
+            element.setAttribute('data-help-tooltip', tooltip);
+        });
+    });
+});
+</script>
+{% endif %}
+
+<!-- Mobile-responsive help system adjustments -->
+<style>
+@media (max-width: 768px) {
+    .help-panel {
+        width: 100vw;
+        right: -100vw;
+    }
+    
+    .help-button {
+        bottom: 80px; /* Above mobile navigation if present */
+        right: 16px;
+        width: 50px;
+        height: 50px;
+    }
+    
+    .help-tooltip {
+        max-width: 250px;
+        font-size: 0.8rem;
+    }
+}
+
+/* Custom help styles for this application */
+.help-button {
+    background: linear-gradient(135deg, #40E0D0, #20B2AA);
+    box-shadow: 0 4px 20px rgba(64, 224, 208, 0.4);
+}
+
+.help-button:hover {
+    background: linear-gradient(135deg, #20B2AA, #008B8B);
+    box-shadow: 0 6px 25px rgba(64, 224, 208, 0.6);
+}
+
+/* Integration with existing theme */
+.help-panel-header {
+    background: var(--header-gradient, linear-gradient(135deg, #40E0D0, #20B2AA));
+}
+
+.help-quick-action:hover {
+    background-color: rgba(64, 224, 208, 0.1);
+    border-color: #40E0D0;
+}
+
+.help-search-input:focus {
+    border-color: #40E0D0;
+    box-shadow: 0 0 0 3px rgba(64, 224, 208, 0.1);
+}
+
+/* Thai language support */
+html[lang="th"] .help-panel-content {
+    font-family: 'Sarabun', sans-serif;
+    line-height: 1.6;
+}
+
+html[lang="th"] .help-tooltip {
+    font-family: 'Sarabun', sans-serif;
+}
+</style>
+
+<!-- Enhanced accessibility -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add ARIA labels for screen readers
+    const helpButton = document.querySelector('.help-button');
+    if (helpButton) {
+        helpButton.setAttribute('aria-label', '"Open help panel"');
+        helpButton.setAttribute('role', 'button');
+    }
+    
+    // Keyboard navigation for help panel
+    document.addEventListener('keydown', function(e) {
+        // Alt+H to toggle help
+        if (e.altKey && e.key === 'h') {
+            e.preventDefault();
+            if (window.helpSystem) {
+                helpSystem.toggleHelpPanel();
+            }
+        }
+        
+        // F1 to show getting started wizard
+        if (e.key === 'F1') {
+            e.preventDefault();
+            if (window.helpSystem) {
+                helpSystem.showGettingStartedWizard();
+            }
+        }
+    });
+    
+    // Focus management for help panel
+    const helpPanel = document.querySelector('.help-panel');
+    if (helpPanel) {
+        helpPanel.setAttribute('role', 'dialog');
+        helpPanel.setAttribute('aria-modal', 'true');
+        helpPanel.setAttribute('aria-labelledby', 'help-panel-title');
+    }
+});
+</script>
+
+<!-- Debug information for development -->
+{% if config.get('FLASK_ENV') == 'development' %}
+<script>
+// Development helpers
+window.helpDebug = {
+    currentPage: '{{ 
+        "admin_dashboard" if request.endpoint == "admin.dashboard" else
+        "admin_status" if request.endpoint == "admin.manage_status" else
+        "admin_hours" if request.endpoint == "admin.manage_hours" else
+        "home"
+    }}',
+    language: '{{ i18n.get_current_language() }}',
+    endpoint: '{{ request.endpoint }}',
+    
+    showAllTooltips: function() {
+        document.querySelectorAll('[data-help-tooltip]').forEach(el => {
+            el.style.outline = '2px solid #40E0D0';
+            console.log('Tooltip element:', el, 'Text:', el.getAttribute('data-help-tooltip'));
+        });
+    },
+    
+    hideAllTooltips: function() {
+        document.querySelectorAll('[data-help-tooltip]').forEach(el => {
+            el.style.outline = '';
+        });
+    }
+};
+
+console.log('Help System Debug Info:', window.helpDebug);
+console.log('Use helpDebug.showAllTooltips() to highlight all tooltip elements');
+</script>
+{% endif %}

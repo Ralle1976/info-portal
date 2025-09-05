@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="{{ i18n.get_current_language() }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ get_translation('site_title') }}{% endblock %}</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts - Sarabun (Thai-friendly) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/design-system.css') }}">
+    
+    <!-- Theme System CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme-system.css') }}">
+    
+    <!-- UI Components CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/ui-components.css') }}">
+    
+    <!-- Custom CSS with Theme Support -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/themes.css') }}">
+    
+    <!-- Enhanced Status Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/status-enhancements.css') }}">
+    
+    <!-- Legal Compliance CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/legal-compliance.css') }}">
+    
+    <!-- Enhanced UI/UX CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/enhanced-ui.css') }}">
+    
+    <!-- UI/UX Fixes CSS (Critical - Load Last) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/ui-ux-fixes.css') }}">
+    
+    <!-- Help System CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/help-system.css') }}">
+    
+    <!-- Custom Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sarabun': ['Sarabun', 'sans-serif'],
+                    },
+                    colors: {
+                        'thai-turquoise': '#40E0D0',
+                        'thai-coral': '#FF7F50',
+                        'thai-gold': '#FFD700',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+        }
+    </style>
+    
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <!-- Header -->
+    <header class="header-gradient shadow-xl" role="banner">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex justify-between items-center">
+                <!-- Logo with Medical Icon -->
+                <div class="flex items-center gap-4">
+                    <div class="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
+                        <i class="fas fa-stethoscope text-white text-2xl" aria-hidden="true"></i>
+                    </div>
+                    <div>
+                        <h1 class="heading-2 text-white mb-0">
+                            <a href="{{ url_for('public.home') }}" 
+                               class="hover:text-white/90 transition-colors duration-300 no-underline">
+                                {{ get_translation('site_title') }}
+                            </a>
+                        </h1>
+                        <p class="text-white/80 text-sm font-medium">QR-Info Portal Pattaya</p>
+                    </div>
+                </div>
+                
+                <!-- Language Switcher Enhanced -->
+                <div class="lang-switcher" role="navigation" aria-label="Language selection">
+                    {% for lang in SUPPORTED_LANGUAGES %}
+                        <a href="{{ url_for('public.set_language', language=lang) }}" 
+                           class="lang-option {% if lang == i18n.get_current_language() %}active{% endif %}"
+                           aria-label="Switch to {{ lang.upper() }} language"
+                           title="Switch to {{ lang.upper() }}">
+                            <span aria-hidden="true">
+                                {% if lang == 'th' %}🇹🇭{% elif lang == 'de' %}🇩🇪{% elif lang == 'en' %}🇺🇸{% endif %}
+                            </span>
+                            {{ lang.upper() }}
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Navigation -->
+    <nav class="nav-medical" role="navigation" aria-label="Main navigation" id="navigation">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-3">
+                <!-- Navigation Links -->
+                <div class="nav flex gap-2">
+                    <a href="{{ url_for('public.home') }}" 
+                       class="nav-item-medical {% if request.endpoint == 'public.home' %}active{% endif %}"
+                       aria-current="{% if request.endpoint == 'public.home' %}page{% endif %}">
+                        <i class="fas fa-home" aria-hidden="true"></i>
+                        <span>{{ get_translation('today') }}</span>
+                    </a>
+                    <a href="{{ url_for('public.week_view') }}" 
+                       class="nav-item-medical {% if request.endpoint == 'public.week_view' %}active{% endif %}"
+                       aria-current="{% if request.endpoint == 'public.week_view' %}page{% endif %}">
+                        <i class="fas fa-calendar-week" aria-hidden="true"></i>
+                        <span>{{ get_translation('week') }}</span>
+                    </a>
+                    <a href="{{ url_for('public.month_view') }}" 
+                       class="nav-item-medical {% if request.endpoint == 'public.month_view' %}active{% endif %}"
+                       aria-current="{% if request.endpoint == 'public.month_view' %}page{% endif %}">
+                        <i class="fas fa-calendar" aria-hidden="true"></i>
+                        <span>{{ get_translation('month') }}</span>
+                    </a>
+                </div>
+                
+                <!-- Status Badge -->
+                <div class="flex items-center gap-4">
+                    <div class="status-indicator status-open">
+                        <span class="status-indicator-dot"></span>
+                        <i class="fas fa-wifi" aria-hidden="true"></i>
+                        <span>{{ get_translation('ui_common.portal_online') }}</span>
+                    </div>
+                    <div class="text-gray-600 text-sm font-mono">
+                        <i class="fas fa-clock" aria-hidden="true"></i>
+                        <span id="current-time" aria-label="Current time">--:--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8 animate-fade-in" id="main-content" role="main">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer with Legal Links -->
+    <footer class="bg-gray-100 mt-12">
+        <div class="container mx-auto px-4 py-6">
+            <!-- Legal Footer Links (temporarily disabled) -->
+            <div class="border-b border-gray-200 pb-4 mb-4">
+                <div class="flex flex-wrap justify-center space-x-6 text-sm">
+                    <span class="text-gray-600">{{ get_translation('ui_common.legal_links_later') }}</span>
+                </div>
+                
+                <!-- Compliance Badges -->
+                <div class="flex justify-center items-center mt-4 space-x-4">
+                    <div class="flex items-center space-x-2 bg-blue-50 px-3 py-1 rounded-full">
+                        <span class="text-sm">🇹🇭</span>
+                        <span class="text-xs text-blue-700 font-medium">{{ get_translation('legal.compliance.pdpa_thailand') }}</span>
+                    </div>
+                    <div class="flex items-center space-x-2 bg-blue-50 px-3 py-1 rounded-full">
+                        <span class="text-sm">🇪🇺</span>
+                        <span class="text-xs text-blue-700 font-medium">{{ get_translation('legal.compliance.eu_gdpr') }}</span>
+                    </div>
+                    <div class="flex items-center space-x-2 bg-green-50 px-3 py-1 rounded-full">
+                        <span class="text-sm">⚕️</span>
+                        <span class="text-xs text-green-700 font-medium">{{ get_translation('legal.compliance.medical_standards') }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center text-gray-600">
+                <p>&copy; 2025 Labor Pattaya QR Portal</p>
+                <p class="mt-2 text-sm">
+                    {{ get_translation('contact') }}: 
+                    <a href="mailto:info@laborpattaya.com" class="text-thai-turquoise hover:underline">
+                        info@laborpattaya.com
+                    </a>
+                </p>
+                <p class="mt-1 text-xs text-gray-500">
+                    {{ get_translation('ui_common.developed_by') }}
+                </p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Cookie Consent Banner JavaScript -->
+    <!-- Cookie consent disabled for performance -->
+    <!-- <script src="{{ url_for('static', filename='js/cookie-consent.js') }}"></script> -->
+    
+    <!-- Design System JavaScript -->
+    <script src="{{ url_for('static', filename='js/design-system.js') }}"></script>
+    
+    <!-- Enhanced UI JavaScript -->
+    <script src="{{ url_for('static', filename='js/enhanced-ui.js') }}"></script>
+    
+    <!-- Base Template JavaScript -->
+    <script>
+        // Real-time clock update for Bangkok timezone
+        function updateTime() {
+            const now = new Date();
+            const bangkokTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Bangkok"}));
+            const timeString = bangkokTime.toLocaleTimeString('th-TH', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            });
+            
+            const timeElement = document.getElementById('current-time');
+            if (timeElement) {
+                timeElement.textContent = timeString;
+            }
+        }
+        
+        // Update time every second
+        setInterval(updateTime, 1000);
+        updateTime(); // Initial call
+        
+        // Notification system
+        window.showNotification = function(message, type = 'info', duration = 5000) {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <div class="notification-icon">
+                        <i class="fas ${type === 'success' ? 'fa-check' : type === 'error' ? 'fa-times' : type === 'warning' ? 'fa-exclamation' : 'fa-info'}"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="font-medium">${message}</p>
+                    </div>
+                    <button onclick="this.closest('.notification').remove()" class="text-gray-400 hover:text-gray-600 ml-2">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Show notification
+            setTimeout(() => notification.classList.add('show'), 100);
+            
+            // Auto-remove notification
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 300);
+            }, duration);
+        };
+        
+        // Loading overlay system
+        window.showLoading = function(message = 'Loading...') {
+            const overlay = document.createElement('div');
+            overlay.className = 'loading-overlay';
+            overlay.id = 'global-loading';
+            overlay.innerHTML = `
+                <div class="loading-content">
+                    <div class="loading-spinner"></div>
+                    <p class="font-medium">${message}</p>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+        };
+        
+        window.hideLoading = function() {
+            const overlay = document.getElementById('global-loading');
+            if (overlay) {
+                overlay.remove();
+            }
+        };
+        
+        // Smooth page transitions
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add fade-in animation to main content
+            const main = document.querySelector('main');
+            if (main) {
+                main.classList.add('animate-fade-in');
+            }
+            
+            // Add slide-up animation to cards
+            const cards = document.querySelectorAll('.card-enhanced');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('animate-slide-up');
+                }, index * 100);
+            });
+        });
+        
+        // Enhanced form validation
+        function validateForm(form) {
+            const inputs = form.querySelectorAll('.form-control[required]');
+            let isValid = true;
+            
+            inputs.forEach(input => {
+                if (!input.value.trim()) {
+                    input.classList.add('border-red-500');
+                    isValid = false;
+                } else {
+                    input.classList.remove('border-red-500');
+                }
+            });
+            
+            return isValid;
+        }
+        
+        // Global error handler
+        window.addEventListener('error', function(e) {
+            console.error('Global error:', e.error);
+            showNotification('{{ get_translation('ui_common.global_error') }}', 'error');
+        });
+    </script>
+    
+    <!-- Help System JavaScript disabled for performance -->
+    <!-- <script src="{{ url_for('static', filename='js/help-system.js') }}"></script> -->
+    
+    {% block extra_scripts %}{% endblock %}
+    
+    <!-- Help System temporarily disabled for performance -->
+    <!-- {% include 'components/help_system.html' %} -->
+</body>
+</html>

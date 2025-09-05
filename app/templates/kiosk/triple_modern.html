@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="{{ i18n.get_current_language() }}" data-theme="medical">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>{{ config.site.name }} - Modern Triple Kiosk</title>
+    
+    <!-- Preload critical resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    
+    <!-- Enhanced Font Loading -->
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for Enhanced Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <!-- TailwindCSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Modern Medical Design System -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/modern-medical-design.css') }}">
+    
+    <!-- Tailwind Config for Medical Theme -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'medical-primary': '#0284C7',
+                        'medical-secondary': '#059669',
+                        'thai-turquoise': '#06B6D4',
+                        'thai-coral': '#F97316',
+                        'service-blood': '#DC2626',
+                        'service-consultation': '#2563EB',
+                        'service-vaccination': '#059669',
+                        'service-followup': '#7C3AED',
+                        'service-results': '#EA580C'
+                    },
+                    fontFamily: {
+                        'thai': ['Sarabun', 'Noto Sans Thai', 'sans-serif'],
+                        'mono': ['SF Mono', 'Monaco', 'Cascadia Code', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* LÖSUNG FÜR DAS BANNER-PROBLEM: Flexbox-basiertes Layout ohne Fixed Positioning */
+        body {
+            background: linear-gradient(135deg, 
+                #F0FDF4 0%,     /* Light green */ 
+                #E0F2FE 25%,    /* Light blue */
+                #FFF7ED 50%,    /* Light orange */
+                #F3F4F6 75%,    /* Light gray */
+                #F9FAFB 100%    /* White */
+            );
+            background-size: 400% 400%;
+            animation: kiosk-gradient-shift 20s ease infinite;
+            font-family: 'Sarabun', 'Noto Sans Thai', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            height: 100vh;
+            overflow: hidden; /* Verhindert Scrollen im Kiosk-Modus */
+            display: flex;
+            flex-direction: column;
+        }
+        
+        @keyframes kiosk-gradient-shift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        /* Thai-First Typography */
+        .thai-primary {
+            font-family: 'Sarabun', 'Noto Sans Thai', sans-serif;
+            font-weight: 700;
+            color: #1a202c;
+            line-height: 1.3;
+        }
+        
+        .en-subtitle {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: #718096;
+            font-weight: 400;
+            margin-top: 0.25rem;
+        }
+        
+        /* Moderne Uhr mit besserem Design */
+        .kiosk-clock-modern {
+            font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Roboto Mono', monospace;
+            font-size: 3.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, var(--medical-primary), var(--thai-turquoise));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 4px 8px rgba(6, 182, 212, 0.3);
+            animation: clock-pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes clock-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        
+        /* Kein Fixed Banner mehr - Flexbox Layout */
+        .kiosk-layout {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .kiosk-header-modern {
+            flex-shrink: 0;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 2px solid rgba(6, 182, 212, 0.2);
+        }
+        
+        .kiosk-content-area {
+            flex: 1;
+            padding: 1rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
+            overflow: hidden;
+        }
+        
+        .kiosk-footer-modern {
+            flex-shrink: 0;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-top: 2px solid rgba(6, 182, 212, 0.2);
+        }
+        
+        /* Transparente QR-Code Positionierung */
+        .qr-overlay-modern {
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            padding: 0.75rem;
+            border: 2px solid var(--thai-turquoise);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Enhanced Card Design */
+        .kiosk-card-modern {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 1.5rem;
+            border: 1px solid rgba(6, 182, 212, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+            animation: kiosk-fade-in 1s ease-out;
+        }
+        
+        @keyframes kiosk-fade-in {
+            from { opacity: 0; transform: translateY(20px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        
+        /* Status Indicators */
+        .status-modern-open { 
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+        }
+        .status-modern-closed { 
+            background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);
+        }
+        .status-modern-warning { 
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4);
+        }
+        
+        /* Responsive Design für verschiedene Bildschirmgrößen */
+        @media (min-width: 1920px) {
+            .kiosk-clock-modern { font-size: 4.5rem; }
+        }
+        
+        @media (min-width: 2560px) {
+            .kiosk-clock-modern { font-size: 6rem; }
+        }
+        
+        @media (max-width: 1440px) {
+            .kiosk-content-area {
+                gap: 0.75rem;
+                padding: 0.75rem;
+            }
+            .kiosk-card-modern {
+                padding: 1rem;
+            }
+        }
+        
+        /* Status Icons Animation */
+        .status-icon-animate {
+            animation: status-pulse-modern 2s ease-in-out infinite;
+        }
+        
+        @keyframes status-pulse-modern {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.95; }
+        }
+        
+        /* Auto-refresh Indicator */
+        .refresh-indicator {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            z-index: 1000;
+            font-family: 'SF Mono', monospace;
+            font-size: 0.875rem;
+        }
+        
+        /* Language Switcher */
+        .lang-switcher-kiosk {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body class="kiosk-layout">
+    
+    <!-- Language Switcher - Fixed aber nicht störend -->
+    <div class="lang-switcher-kiosk">
+        {% include 'components/language_switcher.html' %}
+    </div>
+    
+    <!-- Auto-refresh indicator - Transparenter und kleiner -->
+    <div class="refresh-indicator">
+        <i class="fas fa-sync-alt text-thai-turquoise" id="refresh-icon"></i>
+        <span>Auto: <span id="refresh-timer" class="text-yellow-400 font-bold">2:00</span></span>
+    </div>
+    
+    <!-- Header - Kompakter und nicht fixed -->
+    <header class="kiosk-header-modern">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="service-icon service-icon-consultation" style="width: 4rem; height: 4rem;">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M15.5 2C17.4 2 19 3.6 19 5.5C19 7.4 17.4 9 15.5 9C13.6 9 12 7.4 12 5.5C12 3.6 13.6 2 15.5 2Z"/>
+                        <circle cx="19" cy="16" r="2"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-800">{{ config.site.name }}</h1>
+                    <p class="text-lg text-gray-600">{{ t('kiosk.enhanced.professional_service') or 'Medizinisches Labor' }} • ตรวจเลือด</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <div id="clock" class="kiosk-clock-modern">--:--:--</div>
+                <div class="text-sm text-gray-600 font-medium mt-1">{{ now.strftime('%A, %d. %B %Y') }}</div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Content Area - Flexbox Layout ohne Überlappung -->
+    <div class="kiosk-content-area">
+        
+        <!-- Column 1: TODAY -->
+        <div class="kiosk-card-modern">
+            <div class="flex items-center gap-3 mb-6 pb-3 border-b-2 border-medical-secondary border-opacity-30">
+                <div class="service-icon service-icon-consultation">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                        <path d="M6 7a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800">
+                    <div class="thai-primary text-3xl">วันนี้</div>
+                    <div class="en-subtitle text-lg">Today</div>
+                </h2>
+            </div>
+            
+            <!-- Status -->
+            <div class="mb-6">
+                {% if status.status_type == 'ANWESEND' %}
+                    <div class="status-modern-open rounded-xl p-4 text-center text-white">
+                        <div class="service-icon service-icon-consultation mx-auto mb-3 status-icon-animate" style="background: rgba(255,255,255,0.2);">
+                            <i class="fas fa-door-open text-white"></i>
+                        </div>
+                        <div class="text-xl font-bold mb-1">{{ t('open') }}</div>
+                        <div class="text-sm opacity-90">{{ t('kiosk.we_are_here') }}</div>
+                    </div>
+                {% elif status.status_type == 'URLAUB' %}
+                    <div class="status-modern-warning rounded-xl p-4 text-center text-white">
+                        <div class="service-icon service-icon-followup mx-auto mb-3 status-icon-animate" style="background: rgba(255,255,255,0.2);">
+                            <i class="fas fa-umbrella-beach text-white"></i>
+                        </div>
+                        <div class="text-xl font-bold mb-1">{{ t('on_vacation') }}</div>
+                        <div class="text-sm opacity-90">
+                            {% if status.to_date %}
+                                Zurück: {{ status.to_date.strftime('%d.%m.%Y') }}
+                            {% endif %}
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="status-modern-closed rounded-xl p-4 text-center text-white">
+                        <div class="service-icon service-icon-results mx-auto mb-3 status-icon-animate" style="background: rgba(255,255,255,0.2);">
+                            <i class="fas fa-door-closed text-white"></i>
+                        </div>
+                        <div class="text-xl font-bold mb-1">{{ t('closed') }}</div>
+                        <div class="text-sm opacity-90">{{ status.note or 'Heute geschlossen' }}</div>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Today's Hours -->
+            <div class="flex-1">
+                <h3 class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                    <i class="fas fa-clock text-thai-turquoise mr-2"></i>
+                    {{ t('opening_hours') }}
+                </h3>
+                
+                <div class="space-y-2">
+                    {% if today_hours and not today_hours.closed %}
+                        {% for time_range in today_hours.time_ranges %}
+                            <div class="bg-gradient-to-r from-medical-secondary to-emerald-400 rounded-lg p-3 text-white">
+                                <div class="flex items-center gap-3">
+                                    <div class="service-icon service-icon-consultation" style="background: rgba(255,255,255,0.2); width: 2rem; height: 2rem;">
+                                        <i class="fas fa-clock text-white text-sm"></i>
+                                    </div>
+                                    <div class="text-lg font-bold font-mono">{{ time_range }}</div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="bg-red-500 rounded-lg p-4 text-center text-white">
+                            <i class="fas fa-door-closed text-2xl mb-2"></i>
+                            <div class="font-bold">{{ t('closed') }}</div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Column 2: THIS WEEK -->
+        <div class="kiosk-card-modern">
+            <div class="flex items-center gap-3 mb-6 pb-3 border-b-2 border-medical-primary border-opacity-30">
+                <div class="service-icon service-icon-vaccination">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1z"/>
+                        <path d="M6 7h12v2H6V7zm0 4h8v2H6v-2z"/>
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800">
+                    <div class="thai-primary text-3xl">สัปดาห์นี้</div>
+                    <div class="en-subtitle text-lg">This Week</div>
+                </h2>
+            </div>
+            
+            <div class="space-y-2 flex-1 overflow-y-auto">
+                {% set weekday_names = [
+                    ('monday', 'จันทร์'),
+                    ('tuesday', 'อังคาร'),
+                    ('wednesday', 'พุธ'),
+                    ('thursday', 'พฤหัสบดี'),
+                    ('friday', 'ศุกร์'),
+                    ('saturday', 'เสาร์'),
+                    ('sunday', 'อาทิตย์')
+                ] %}
+                
+                {% for day_schedule in week_schedule %}
+                    {% set day_index = loop.index0 %}
+                    {% set day_key, thai_day = weekday_names[day_index] %}
+                    {% set is_today = loop.index == now.isoweekday() %}
+                    {% set is_open = not day_schedule.closed %}
+                    {% set hours = day_schedule.time_ranges|join(', ') if day_schedule.time_ranges else 'Geschlossen' %}
+                    {% set icon = 'fas fa-briefcase' if is_open else 'fas fa-door-closed' %}
+                    
+                    <div class="
+                        {% if is_today %}
+                            bg-gradient-to-r from-medical-secondary to-emerald-400 text-white transform scale-105 shadow-lg
+                        {% elif is_open %}
+                            bg-gradient-to-r from-blue-50 to-cyan-50 hover:from-blue-100 hover:to-cyan-100
+                        {% else %}
+                            bg-gradient-to-r from-red-50 to-red-100
+                        {% endif %}
+                        rounded-lg p-3 transition-all duration-300
+                    ">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="service-icon
+                                    {% if is_today %}service-icon-consultation
+                                    {% elif is_open %}service-icon-vaccination
+                                    {% else %}service-icon-results{% endif %}"
+                                    style="width: 2.5rem; height: 2.5rem;">
+                                    <i class="{{ icon }} text-white"></i>
+                                </div>
+                                <div>
+                                    <div class="font-bold 
+                                        {% if is_today %}text-white
+                                        {% elif is_open %}text-gray-800
+                                        {% else %}text-red-700{% endif %}">
+                                        {{ t(day_key) }}
+                                    </div>
+                                    <div class="text-sm opacity-80 
+                                        {% if is_today %}text-white
+                                        {% elif is_open %}text-gray-600
+                                        {% else %}text-red-600{% endif %}">
+                                        {{ thai_day }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="font-mono font-semibold 
+                                    {% if is_today %}text-white
+                                    {% elif is_open %}text-gray-800
+                                    {% else %}text-red-700{% endif %}">
+                                    {{ hours }}
+                                </div>
+                                {% if is_today %}
+                                    <div class="text-xs text-white opacity-90 uppercase tracking-wider">
+                                        {{ t('today') }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- Column 3: NEXT WEEK PREVIEW -->
+        <div class="kiosk-card-modern">
+            <div class="flex items-center gap-3 mb-6 pb-3 border-b-2 border-thai-coral border-opacity-30">
+                <div class="service-icon service-icon-results">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800">
+                    <div class="thai-primary text-3xl">สัปดาห์หน้า</div>
+                    <div class="en-subtitle text-lg">Next Week</div>
+                </h2>
+            </div>
+            
+            <div class="space-y-2 flex-1">
+                {% set short_weekday_names = [
+                    ('Mo', 'จันทร์'),
+                    ('Di', 'อังคาร'),
+                    ('Mi', 'พุธ'),
+                    ('Do', 'พฤหัสบดี'),
+                    ('Fr', 'ศุกร์'),
+                    ('Sa', 'เสาร์'),
+                    ('So', 'อาทิตย์')
+                ] %}
+                
+                {% if preview_weeks and preview_weeks[0] %}
+                {% for day_data in preview_weeks[0].schedule %}
+                    {% set day_index = loop.index0 %}
+                    {% set day_short, thai_short = short_weekday_names[day_index] %}
+                    {% set is_open = not day_data.closed %}
+                    {% set hours = day_data.time_ranges|join(', ') if day_data.time_ranges else 'Geschlossen' %}
+                    {% set symbol = '●' if is_open else '×' %}
+                    {% set status = 'full' if is_open else 'closed' %}
+                    <div class="bg-gray-50 rounded-lg p-3 flex items-center justify-between hover:bg-gray-100 transition-colors">
+                        <div class="flex items-center gap-3">
+                            <div class="service-icon
+                                {% if status == 'full' %}service-icon-vaccination
+                                {% elif status == 'half' %}service-icon-consultation
+                                {% else %}service-icon-results{% endif %}"
+                                style="width: 2rem; height: 2rem;">
+                                <span class="text-white font-bold text-sm">{{ day_short }}</span>
+                            </div>
+                            <div class="text-sm text-gray-600">{{ thai_short }}</div>
+                        </div>
+                        
+                        <div class="text-right">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="
+                                    {% if status == 'full' %}text-medical-secondary
+                                    {% elif status == 'half' %}text-medical-primary
+                                    {% else %}text-red-500{% endif %}
+                                    text-xl font-bold">{{ symbol }}</span>
+                            </div>
+                            <div class="text-xs font-mono
+                                {% if status == 'closed' %}text-red-600
+                                {% else %}text-gray-800{% endif %}">
+                                {{ hours }}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                {% endif %}
+                
+                <!-- Legend -->
+                <div class="mt-4 pt-4 border-t border-gray-200">
+                    <div class="space-y-2 text-sm">
+                        <div class="flex items-center gap-2">
+                            <span class="text-medical-secondary text-lg font-bold">●</span>
+                            <span class="text-gray-700">{{ t('kiosk.full_day_open') or 'Ganztägig geöffnet' }}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-medical-primary text-lg font-bold">○</span>
+                            <span class="text-gray-700">{{ t('kiosk.half_day_open') or 'Halbtags geöffnet' }}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-red-500 text-lg font-bold">×</span>
+                            <span class="text-gray-700">{{ t('closed') }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+    <!-- Footer - Nicht mehr fixed, dadurch keine Überlappung -->
+    <footer class="kiosk-footer-modern">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center gap-6">
+                {% if config.contact.phone %}
+                <div class="flex items-center gap-2">
+                    <div class="service-icon service-icon-consultation" style="width: 2rem; height: 2rem;">
+                        <i class="fas fa-phone text-white"></i>
+                    </div>
+                    <span class="font-semibold text-gray-800">{{ config.contact.phone }}</span>
+                </div>
+                {% endif %}
+                
+                {% if config.contact.email %}
+                <div class="flex items-center gap-2">
+                    <div class="service-icon service-icon-results" style="width: 2rem; height: 2rem;">
+                        <i class="fas fa-envelope text-white"></i>
+                    </div>
+                    <span class="font-semibold text-gray-800 text-sm">{{ config.contact.email }}</span>
+                </div>
+                {% endif %}
+                
+                {% if config.location.address %}
+                <div class="flex items-center gap-2">
+                    <div class="service-icon service-icon-vaccination" style="width: 2rem; height: 2rem;">
+                        <i class="fas fa-map-marker-alt text-white"></i>
+                    </div>
+                    <span class="font-semibold text-gray-800 text-sm">{{ config.location.address }}</span>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2 text-medical-secondary">
+                    <div class="w-2 h-2 bg-medical-secondary rounded-full animate-pulse"></div>
+                    <span class="font-medium text-gray-700 text-sm">{{ t('kiosk.enhanced.system_online') or 'System Online' }}</span>
+                </div>
+                
+                <div class="text-center">
+                    <div class="text-xs text-gray-600 mb-1">{{ t('kiosk.scan_for_info') or 'QR scannen für Info' }}</div>
+                    <img src="/qr?size=100" alt="QR Code" class="w-12 h-12 bg-white rounded-lg border border-thai-turquoise">
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Medical Icons JavaScript -->
+    <script src="{{ url_for('static', filename='js/medical-icons.js') }}" defer></script>
+    
+    <script>
+        // Moderne Uhr mit verbesserter Animation
+        function updateModernClock() {
+            const now = new Date();
+            const bangkokTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Bangkok"}));
+            
+            const hours = String(bangkokTime.getHours()).padStart(2, '0');
+            const minutes = String(bangkokTime.getMinutes()).padStart(2, '0');
+            const seconds = String(bangkokTime.getSeconds()).padStart(2, '0');
+            
+            // Sanftes Blinken der Doppelpunkte
+            const colonOpacity = bangkokTime.getSeconds() % 2 ? '1' : '0.4';
+            const clockElement = document.getElementById('clock');
+            
+            if (clockElement) {
+                clockElement.innerHTML = `${hours}<span style="opacity: ${colonOpacity}; transition: opacity 0.5s ease;">:</span>${minutes}<span style="opacity: ${colonOpacity}; transition: opacity 0.5s ease;">:</span>${seconds}`;
+            }
+        }
+        
+        // Verbesserter Auto-refresh Timer
+        let refreshTimeLeft = 120;
+        
+        function updateRefreshTimer() {
+            const minutes = Math.floor(refreshTimeLeft / 60);
+            const seconds = refreshTimeLeft % 60;
+            const timerElement = document.getElementById('refresh-timer');
+            const iconElement = document.getElementById('refresh-icon');
+            
+            if (timerElement) {
+                timerElement.textContent = `${minutes}:${String(seconds).padStart(2, '0')}`;
+                
+                if (refreshTimeLeft <= 10) {
+                    timerElement.classList.add('text-red-400');
+                    if (iconElement) {
+                        iconElement.classList.add('animate-spin');
+                    }
+                }
+                
+                if (refreshTimeLeft <= 0) {
+                    // Sanftes Neuladen mit Fade-Effekt
+                    document.body.style.transition = 'opacity 1s ease-out';
+                    document.body.style.opacity = '0.8';
+                    
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                    return;
+                }
+                
+                refreshTimeLeft--;
+            }
+        }
+        
+        // Initialisierung des modernen Kiosk-Systems
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🖥️ Modern Triple Kiosk Loading...');
+            console.log('📊 Display:', window.innerWidth + 'x' + window.innerHeight);
+            console.log('🌏 Language:', document.documentElement.lang);
+            
+            // Uhr starten
+            updateModernClock();
+            setInterval(updateModernClock, 1000);
+            
+            // Refresh Timer starten
+            updateRefreshTimer();
+            setInterval(updateRefreshTimer, 1000);
+            
+            // Einganganimationen für Cards
+            const cards = document.querySelectorAll('.kiosk-card-modern');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px) scale(0.98)';
+                card.style.transition = 'all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0) scale(1)';
+                }, 200 + (index * 150));
+            });
+            
+            // Keyboard Shortcuts für Admin
+            document.addEventListener('keydown', function(e) {
+                // F5 oder Ctrl+R verhindern (außer Admin-Modus)
+                if (e.key === 'F5' || (e.ctrlKey && e.key === 'r' && !e.altKey)) {
+                    e.preventDefault();
+                }
+                
+                // Admin-Shortcuts (Ctrl+Alt+...)
+                if (e.ctrlKey && e.altKey) {
+                    if (e.key === 'r') {
+                        window.location.reload();
+                    } else if (e.key === 'f') {
+                        if (document.fullscreenElement) {
+                            document.exitFullscreen();
+                        } else {
+                            document.documentElement.requestFullscreen();
+                        }
+                    } else if (e.key === 'i') {
+                        console.log(`
+🖥️ MODERN TRIPLE KIOSK - SYSTEM INFO:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📺 Display: ${window.innerWidth}x${window.innerHeight} (${window.devicePixelRatio}x DPR)
+🌐 Network: ${navigator.onLine ? 'Online' : 'Offline'}
+🎯 Fullscreen: ${document.fullscreenElement ? 'Active' : 'Inactive'}
+⏰ Refresh in: ${Math.floor(refreshTimeLeft / 60)}:${String(refreshTimeLeft % 60).padStart(2, '0')}
+💾 Memory: ${navigator.deviceMemory || 'Unknown'}GB
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                        `);
+                    }
+                }
+            });
+            
+            // Auto-Fullscreen beim ersten Klick
+            let hasInteracted = false;
+            function tryFullscreen() {
+                if (!hasInteracted && !document.fullscreenElement) {
+                    document.documentElement.requestFullscreen()
+                        .then(() => {
+                            console.log('📺 Auto-fullscreen activated');
+                            hasInteracted = true;
+                        })
+                        .catch(err => {
+                            console.log('📺 Fullscreen not available:', err.message);
+                            hasInteracted = true;
+                        });
+                }
+            }
+            
+            ['click', 'touchstart', 'keydown'].forEach(event => {
+                document.addEventListener(event, tryFullscreen, { once: true });
+            });
+            
+            // Kontext-Menü und Text-Selektion verhindern
+            document.addEventListener('contextmenu', e => e.preventDefault());
+            document.addEventListener('selectstart', e => e.preventDefault());
+            document.addEventListener('dragstart', e => e.preventDefault());
+            
+            // Netzwerk-Status Überwachung
+            window.addEventListener('offline', () => {
+                console.log('🌐 Network connection lost');
+                const indicator = document.createElement('div');
+                indicator.innerHTML = '⚠️ OFFLINE';
+                indicator.style.cssText = `
+                    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                    background: rgba(239, 68, 68, 0.95); color: white; padding: 2rem 3rem;
+                    border-radius: 2rem; font-size: 2rem; font-weight: bold; z-index: 10000;
+                    backdrop-filter: blur(10px); box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+                `;
+                document.body.appendChild(indicator);
+                setTimeout(() => indicator.remove(), 5000);
+            });
+            
+            window.addEventListener('online', () => {
+                console.log('🌐 Network connection restored');
+            });
+            
+            console.log('✅ Modern Triple Kiosk initialized successfully');
+        });
+    </script>
+    
+</body>
+</html>

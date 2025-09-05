@@ -1,0 +1,1012 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ t('admin.hours_management.title') }}{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+    <div class="mb-6">
+        <h1 class="text-3xl font-bold text-gray-900">{{ t('admin.hours_management.title') }}</h1>
+        <p class="mt-2 text-gray-600">{{ t('admin.hours_management.subtitle') }}</p>
+    </div>
+    
+    <!-- Current Week Overview -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-8">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-800">{{ t('admin.hours_management.current_week') }}</h2>
+        </div>
+        <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-7 gap-4" id="current-week">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Regular Hours Management -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Weekly Hours -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h2 class="text-lg font-semibold text-gray-800">{{ t('admin.hours_management.regular_hours.title') }}</h2>
+                <p class="text-sm text-gray-600">{{ t('admin.hours_management.regular_hours.subtitle') }}</p>
+                
+                <!-- Bulk Set Hours - Individual Day Selection -->
+                <div class="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <h3 class="text-sm font-medium text-blue-800 mb-3">
+                        <i class="fas fa-magic mr-2"></i>Mehrere Tage gleichzeitig bearbeiten
+                    </h3>
+                    
+                    <!-- Time Input Section -->
+                    <div class="mb-4">
+                        <label class="text-sm font-medium text-blue-700 mb-2 block">Öffnungszeiten</label>
+                        <div class="flex items-center space-x-3">
+                            <input type="time" id="bulk-start-time" value="08:00" 
+                                   class="px-3 py-2 border border-blue-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500">
+                            <span class="text-blue-600 text-sm font-medium">bis</span>
+                            <input type="time" id="bulk-end-time" value="17:00"
+                                   class="px-3 py-2 border border-blue-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+                    
+                    <!-- Day Selection with Checkboxes -->
+                    <div class="mb-4">
+                        <label class="text-sm font-medium text-blue-700 mb-2 block">Tage auswählen</label>
+                        <div class="grid grid-cols-3 md:grid-cols-7 gap-2">
+                            <label class="flex items-center space-x-2 p-2 border border-blue-200 rounded-md hover:bg-blue-100 cursor-pointer">
+                                <input type="checkbox" id="bulk-monday" class="text-blue-600 focus:ring-blue-500">
+                                <span class="text-sm text-blue-700">Mo</span>
+                            </label>
+                            <label class="flex items-center space-x-2 p-2 border border-blue-200 rounded-md hover:bg-blue-100 cursor-pointer">
+                                <input type="checkbox" id="bulk-tuesday" class="text-blue-600 focus:ring-blue-500">
+                                <span class="text-sm text-blue-700">Di</span>
+                            </label>
+                            <label class="flex items-center space-x-2 p-2 border border-blue-200 rounded-md hover:bg-blue-100 cursor-pointer">
+                                <input type="checkbox" id="bulk-wednesday" class="text-blue-600 focus:ring-blue-500">
+                                <span class="text-sm text-blue-700">Mi</span>
+                            </label>
+                            <label class="flex items-center space-x-2 p-2 border border-blue-200 rounded-md hover:bg-blue-100 cursor-pointer">
+                                <input type="checkbox" id="bulk-thursday" class="text-blue-600 focus:ring-blue-500">
+                                <span class="text-sm text-blue-700">Do</span>
+                            </label>
+                            <label class="flex items-center space-x-2 p-2 border border-blue-200 rounded-md hover:bg-blue-100 cursor-pointer">
+                                <input type="checkbox" id="bulk-friday" class="text-blue-600 focus:ring-blue-500">
+                                <span class="text-sm text-blue-700">Fr</span>
+                            </label>
+                            <label class="flex items-center space-x-2 p-2 border border-blue-200 rounded-md hover:bg-blue-100 cursor-pointer">
+                                <input type="checkbox" id="bulk-saturday" class="text-blue-600 focus:ring-blue-500">
+                                <span class="text-sm text-blue-700">Sa</span>
+                            </label>
+                            <label class="flex items-center space-x-2 p-2 border border-blue-200 rounded-md hover:bg-blue-100 cursor-pointer">
+                                <input type="checkbox" id="bulk-sunday" class="text-blue-600 focus:ring-blue-500">
+                                <span class="text-sm text-blue-700">So</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Selection Buttons -->
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <button type="button" onclick="selectWeekdays()" 
+                                class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded hover:bg-blue-200 transition-colors">
+                            Mo-Fr auswählen
+                        </button>
+                        <button type="button" onclick="selectWeekend()" 
+                                class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded hover:bg-green-200 transition-colors">
+                            Wochenende auswählen
+                        </button>
+                        <button type="button" onclick="selectAll()" 
+                                class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded hover:bg-purple-200 transition-colors">
+                            Alle auswählen
+                        </button>
+                        <button type="button" onclick="selectNone()" 
+                                class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded hover:bg-gray-200 transition-colors">
+                            Alle abwählen
+                        </button>
+                    </div>
+                    
+                    <!-- Apply Button -->
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs text-blue-600" id="bulk-selection-info">Keine Tage ausgewählt</span>
+                        <button type="button" onclick="applyBulkHours()" 
+                                class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors text-sm font-medium">
+                            Zeiten auf ausgewählte Tage anwenden
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="p-6">
+                <form id="weekly-hours-form" method="POST" class="space-y-4">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    {% set weekdays = [
+                        ('monday', t('admin.hours_management.regular_hours.monday')),
+                        ('tuesday', t('admin.hours_management.regular_hours.tuesday')),
+                        ('wednesday', t('admin.hours_management.regular_hours.wednesday')),
+                        ('thursday', t('admin.hours_management.regular_hours.thursday')),
+                        ('friday', t('admin.hours_management.regular_hours.friday')),
+                        ('saturday', t('admin.hours_management.regular_hours.saturday')),
+                        ('sunday', t('admin.hours_management.regular_hours.sunday'))
+                    ] %}
+                    
+                    {% for day_key, day_name in weekdays %}
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <label class="text-sm font-medium text-gray-700">{{ day_name }}</label>
+                            <div class="flex items-center space-x-4">
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="{{ day_key }}-single" class="sr-only peer day-single-toggle" data-day="{{ day_key }}">
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+                                    <span class="ml-3 text-sm font-medium text-gray-700">Durchgehend</span>
+                                </label>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="{{ day_key }}-closed" class="sr-only peer day-closed-toggle" data-day="{{ day_key }}">
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
+                                    <span class="ml-3 text-sm font-medium text-gray-700">{{ t('admin.hours_management.regular_hours.closed') }}</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div id="{{ day_key }}-hours" class="space-y-2">
+                            <!-- Hours will be dynamically added -->
+                        </div>
+                        <button type="button" onclick="addTimeSlot('{{ day_key }}')" 
+                                class="mt-2 text-sm text-blue-600 hover:text-blue-800 flex items-center" id="{{ day_key }}-add-btn">
+                            <i class="fas fa-plus mr-1"></i>{{ t('admin.hours_management.regular_hours.add_timeslot') }}
+                        </button>
+                    </div>
+                    {% endfor %}
+                    
+                    <div class="flex justify-end space-x-3 pt-4">
+                        <button type="button" onclick="resetWeeklyHours()" 
+                                class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                            {{ t('admin.hours_management.regular_hours.reset') }}
+                        </button>
+                        <button type="submit" 
+                                class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                            {{ t('admin.hours_management.regular_hours.save') }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Special Days / Exceptions -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-800">{{ t('admin.hours_management.exceptions.title') }}</h2>
+                    <p class="text-sm text-gray-600">{{ t('admin.hours_management.exceptions.subtitle') }}</p>
+                </div>
+                <button onclick="showAddExceptionModal()" 
+                        class="px-3 py-1.5 bg-green-600 text-white text-sm rounded-md hover:bg-green-700">
+                    <i class="fas fa-plus mr-1"></i>{{ t('admin.hours_management.exceptions.add') }}
+                </button>
+            </div>
+            <div class="p-6">
+                <div id="exceptions-list" class="space-y-3">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+                <div id="no-exceptions" class="text-center py-8 text-gray-500 hidden">
+                    <i class="fas fa-calendar-alt text-3xl mb-2"></i>
+                    <p>{{ t('admin.hours_management.exceptions.no_exceptions') }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Exception Modal -->
+<div id="exception-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden" style="z-index: 1000;">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-medium text-gray-900">{{ t('admin.hours_management.exception_modal.title') }}</h3>
+                <button onclick="hideAddExceptionModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="add-exception-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('admin.hours_management.exception_modal.date_label') }}</label>
+                    <input type="date" id="exception-date" required 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label class="flex items-center">
+                        <input type="checkbox" id="exception-closed" class="rounded">
+                        <span class="ml-2 text-sm text-gray-700">{{ t('admin.hours_management.exception_modal.closed_all_day') }}</span>
+                    </label>
+                </div>
+                <div id="exception-hours" class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">{{ t('admin.hours_management.exception_modal.opening_hours') }}</label>
+                    <div class="flex space-x-2">
+                        <input type="time" id="exception-start" 
+                               class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <span class="py-2">{{ t('admin.hours_management.exception_modal.to') }}</span>
+                        <input type="time" id="exception-end" 
+                               class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('admin.hours_management.exception_modal.note_label') }}</label>
+                    <input type="text" id="exception-note" placeholder="{{ t('admin.hours_management.exception_modal.note_placeholder') }}" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="flex justify-end space-x-2">
+                    <button type="button" onclick="hideAddExceptionModal()" 
+                            class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">
+                        {{ t('admin.hours_management.exception_modal.cancel') }}
+                    </button>
+                    <button type="submit" 
+                            class="px-4 py-2 text-white bg-green-600 rounded-md hover:bg-green-700">
+                        {{ t('admin.hours_management.exception_modal.add') }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+let weeklyHours = {
+    monday: [],
+    tuesday: [],
+    wednesday: [],
+    thursday: [],
+    friday: [],
+    saturday: [],
+    sunday: []
+};
+let exceptions = [];
+
+// Initialize page
+document.addEventListener('DOMContentLoaded', function() {
+    loadWeeklyHours();
+    loadExceptions();
+    loadCurrentWeek();
+    
+    // Setup form handlers
+    document.getElementById('weekly-hours-form').addEventListener('submit', saveWeeklyHours);
+    document.getElementById('add-exception-form').addEventListener('submit', addException);
+    
+    // Setup bulk selection checkboxes
+    const allDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+    allDays.forEach(day => {
+        const checkbox = document.getElementById(`bulk-${day}`);
+        if (checkbox) {
+            checkbox.addEventListener('change', updateBulkSelectionInfo);
+        }
+    });
+    
+    // Setup closed toggle handlers
+    document.querySelectorAll('.day-closed-toggle').forEach(toggle => {
+        toggle.addEventListener('change', function() {
+            const day = this.dataset.day;
+            const hoursDiv = document.getElementById(day + '-hours');
+            const addBtn = document.getElementById(day + '-add-btn');
+            const singleToggle = document.getElementById(day + '-single');
+            
+            if (this.checked) {
+                hoursDiv.style.display = 'none';
+                addBtn.style.display = 'none';
+                weeklyHours[day] = [];
+                singleToggle.checked = false;
+            } else {
+                hoursDiv.style.display = 'block';
+                addBtn.style.display = 'flex';
+                // Nur einen neuen Slot hinzufügen, wenn wirklich keine Zeiten gesetzt sind
+                // NICHT wenn Zeiten durch Bulk-Funktion gesetzt wurden!
+                if (!weeklyHours[day] || weeklyHours[day].length === 0) {
+                    addTimeSlot(day);
+                }
+            }
+        });
+    });
+    
+    // Setup single continuous time toggle handlers
+    document.querySelectorAll('.day-single-toggle').forEach(toggle => {
+        toggle.addEventListener('change', function() {
+            const day = this.dataset.day;
+            const hoursDiv = document.getElementById(day + '-hours');
+            const addBtn = document.getElementById(day + '-add-btn');
+            const closedToggle = document.getElementById(day + '-closed');
+            
+            // Mark this as user-set to prevent auto-reset
+            this.setAttribute('data-user-set', 'true');
+            
+            if (this.checked) {
+                // Single continuous time - show only one slot, hide add button
+                closedToggle.checked = false;
+                // WICHTIG: Nur auf Default setzen wenn noch keine Zeiten vorhanden sind!
+                if (!weeklyHours[day] || weeklyHours[day].length === 0) {
+                    weeklyHours[day] = ['08:00-17:00']; // Default single slot
+                } else if (weeklyHours[day].length > 1) {
+                    // Wenn mehrere Slots vorhanden, nur den ersten behalten
+                    weeklyHours[day] = [weeklyHours[day][0]];
+                }
+                // Zeiten beibehalten falls durch Bulk gesetzt!
+                renderWeeklyHours();
+                addBtn.style.display = 'none';
+            } else {
+                // Multiple slots allowed - show add button
+                addBtn.style.display = 'flex';
+                // Remove user-set flag when unchecked
+                this.removeAttribute('data-user-set');
+            }
+        });
+    });
+    
+    // Setup exception closed toggle
+    document.getElementById('exception-closed').addEventListener('change', function() {
+        const hoursDiv = document.getElementById('exception-hours');
+        if (this.checked) {
+            hoursDiv.style.display = 'none';
+        } else {
+            hoursDiv.style.display = 'block';
+        }
+    });
+});
+
+function loadWeeklyHours() {
+    fetch('/admin/api/weekly-hours')
+        .then(response => response.json())
+        .then(data => {
+            weeklyHours = data.hours || weeklyHours;
+            renderWeeklyHours();
+            
+            // CRITICAL: Ensure checkbox states are synchronized after loading
+            setTimeout(() => {
+                syncCheckboxStates();
+                console.log('Checkbox states synchronized after loading weekly hours');
+            }, 150);
+        })
+        .catch(error => {
+            console.error('Failed to load weekly hours:', error);
+            renderWeeklyHours(); // Render with defaults
+            
+            // Sync checkboxes even with defaults
+            setTimeout(() => {
+                syncCheckboxStates();
+            }, 150);
+        });
+}
+
+function renderWeeklyHours() {
+    Object.keys(weeklyHours).forEach(day => {
+        const hoursDiv = document.getElementById(day + '-hours');
+        const closedToggle = document.getElementById(day + '-closed');
+        const singleToggle = document.getElementById(day + '-single');
+        const addBtn = document.getElementById(day + '-add-btn');
+        
+        hoursDiv.innerHTML = '';
+        
+        if (weeklyHours[day].length === 0) {
+            closedToggle.checked = true;
+            singleToggle.checked = false;
+            hoursDiv.style.display = 'none';
+            addBtn.style.display = 'none';
+        } else if (weeklyHours[day].length === 1) {
+            // Tag ist aktiv mit einer Zeitspanne
+            closedToggle.checked = false;
+            hoursDiv.style.display = 'block';
+            
+            // WICHTIG: Single Toggle aktivieren, da nur ein Zeitslot vorhanden ist
+            singleToggle.checked = true;
+            
+            // Das verhindert das Default-Werte-Problem bei manuellen Änderungen
+            const timeRange = weeklyHours[day][0];
+            
+            // Markiere als system-gesetzt, nicht user-gesetzt
+            singleToggle.setAttribute('data-system-set', 'true');
+            
+            if (singleToggle.checked) {
+                addBtn.style.display = 'none';
+            } else {
+                addBtn.style.display = 'flex';
+            }
+            
+            weeklyHours[day].forEach((timeRange, index) => {
+                const [start, end] = timeRange.split('-');
+                addTimeSlotElement(day, start, end, index);
+            });
+        } else {
+            // Multiple slots - definitely not single mode
+            closedToggle.checked = false;
+            singleToggle.checked = false;
+            hoursDiv.style.display = 'block';
+            addBtn.style.display = 'flex';
+            
+            weeklyHours[day].forEach((timeRange, index) => {
+                const [start, end] = timeRange.split('-');
+                addTimeSlotElement(day, start, end, index);
+            });
+        }
+    });
+    
+    // Re-check Font Awesome after re-rendering
+    checkFontAwesomeIcons();
+}
+
+function addTimeSlot(day) {
+    const index = weeklyHours[day].length;
+    addTimeSlotElement(day, '08:00', '17:00', index);
+    weeklyHours[day].push('08:00-17:00');
+    
+    // Check Font Awesome icons after adding new slot
+    checkFontAwesomeIcons();
+}
+
+function addTimeSlotElement(day, start, end, index) {
+    const hoursDiv = document.getElementById(day + '-hours');
+    const slotDiv = document.createElement('div');
+    slotDiv.className = 'flex space-x-2 items-center';
+    slotDiv.dataset.day = day;
+    slotDiv.dataset.index = index;
+    
+    // Check if this is single continuous mode
+    const singleToggle = document.getElementById(day + '-single');
+    const isSingleMode = singleToggle && singleToggle.checked;
+    const showDeleteBtn = !isSingleMode; // Show delete button unless in single mode
+    
+    slotDiv.innerHTML = `
+        <input type="time" value="${start}" class="time-start flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm"
+               onchange="updateTimeSlot('${day}', ${index}, this.value, this.parentNode.querySelector('.time-end').value)">
+        <span class="text-gray-500">bis</span>
+        <input type="time" value="${end}" class="time-end flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm"
+               onchange="updateTimeSlot('${day}', ${index}, this.parentNode.querySelector('.time-start').value, this.value)">
+        ${showDeleteBtn ? `
+        <button type="button" class="delete-slot-btn text-red-600 hover:text-red-800 px-2 py-2 rounded hover:bg-red-50 transition-colors duration-200 flex items-center justify-center"
+                title="Zeitslot löschen">
+            <i class="fas fa-trash text-sm"></i>
+            <span class="font-bold text-lg hidden fa-fallback">✕</span>
+        </button>` : `<div class="w-8"></div>`}
+    `;
+    
+    // Add event listener for delete button if it exists
+    const deleteBtn = slotDiv.querySelector('.delete-slot-btn');
+    if (deleteBtn) {
+        deleteBtn.addEventListener('click', function() {
+            removeTimeSlot(day, parseInt(slotDiv.dataset.index));
+        });
+    }
+    
+    hoursDiv.appendChild(slotDiv);
+}
+
+function updateTimeSlot(day, index, start, end) {
+    weeklyHours[day][index] = `${start}-${end}`;
+}
+
+function removeTimeSlot(day, index) {
+    // Confirm deletion if there are multiple slots
+    if (weeklyHours[day].length > 1) {
+        if (!confirm('Möchten Sie diesen Zeitslot wirklich löschen?')) {
+            return;
+        }
+    }
+    
+    // Remove the slot from data
+    weeklyHours[day].splice(index, 1);
+    
+    // Re-render all slots for this day to fix indices
+    renderWeeklyHours();
+    
+    // Show user feedback
+    console.log(`Zeitslot ${index} für ${day} entfernt. Verbleibende Slots:`, weeklyHours[day].length);
+}
+
+function resetWeeklyHours() {
+    if (confirm('Möchten Sie wirklich alle Öffnungszeiten auf die Standardwerte zurücksetzen?')) {
+        weeklyHours = {
+            monday: ['08:00-17:00'],
+            tuesday: ['08:00-17:00'],
+            wednesday: ['08:00-12:00'],
+            thursday: ['08:00-17:00'],
+            friday: ['08:00-17:00'],
+            saturday: [],
+            sunday: []
+        };
+        renderWeeklyHours();
+        
+        // CRITICAL: Synchronize checkbox states after reset
+        setTimeout(() => {
+            syncCheckboxStates();
+            console.log('Checkbox states synchronized after reset');
+        }, 100);
+    }
+}
+
+function saveWeeklyHours(event) {
+    event.preventDefault();
+    
+    fetch('/admin/api/weekly-hours', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': document.querySelector('input[name="csrf_token"]').value
+        },
+        body: JSON.stringify({ hours: weeklyHours })
+    })
+    .then(response => {
+        if (!response.ok && response.status === 403) {
+            // CSRF Token error - reload page to get new token
+            adminUtils.showNotification('Sicherheitstoken abgelaufen. Seite wird neu geladen...', 'warning');
+            setTimeout(() => window.location.reload(), 2000);
+            return null;
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (!data) return; // Aborted due to reload
+        
+        if (data.success) {
+            adminUtils.showNotification('Öffnungszeiten erfolgreich gespeichert', 'success');
+            loadCurrentWeek(); // Refresh current week display
+        } else {
+            if (data.error && data.error.includes('CSRF')) {
+                adminUtils.showNotification('Sicherheitstoken ungültig. Bitte Seite neu laden.', 'error');
+            } else {
+                adminUtils.showNotification('Fehler beim Speichern der Öffnungszeiten: ' + data.error, 'error');
+            }
+        }
+    })
+    .catch(error => {
+        adminUtils.showNotification('Netzwerkfehler. Bitte versuchen Sie es erneut.', 'error');
+        console.error('Save error:', error);
+    });
+}
+
+function loadExceptions() {
+    fetch('/admin/api/hour-exceptions')
+        .then(response => response.json())
+        .then(data => {
+            exceptions = data.exceptions || [];
+            renderExceptions();
+        })
+        .catch(error => {
+            console.error('Failed to load exceptions:', error);
+            renderExceptions();
+        });
+}
+
+function renderExceptions() {
+    const listDiv = document.getElementById('exceptions-list');
+    const noExceptionsDiv = document.getElementById('no-exceptions');
+    
+    if (exceptions.length === 0) {
+        listDiv.innerHTML = '';
+        noExceptionsDiv.classList.remove('hidden');
+        return;
+    }
+    
+    noExceptionsDiv.classList.add('hidden');
+    listDiv.innerHTML = '';
+    
+    exceptions.forEach((exception, index) => {
+        const exceptionDiv = document.createElement('div');
+        exceptionDiv.className = 'border border-gray-200 rounded-lg p-3';
+        
+        const dateStr = adminUtils.formatDate(exception.date);
+        const hoursStr = exception.closed ? 'Geschlossen' : 
+                        exception.hours.map(h => h.start + '-' + h.end).join(', ');
+        
+        exceptionDiv.innerHTML = `
+            <div class="flex justify-between items-start">
+                <div class="flex-1">
+                    <div class="flex items-center space-x-2">
+                        <span class="font-medium text-gray-900">${dateStr}</span>
+                        <span class="px-2 py-1 text-xs rounded-full ${exception.closed ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}">
+                            ${hoursStr}
+                        </span>
+                    </div>
+                    ${exception.note ? `<p class="text-sm text-gray-600 mt-1">${exception.note}</p>` : ''}
+                </div>
+                <div class="flex space-x-1 ml-4">
+                    <button onclick="editException(${index})" class="text-blue-600 hover:text-blue-800 px-2 py-1">
+                        <i class="fas fa-edit text-sm"></i>
+                    </button>
+                    <button onclick="deleteException(${index})" class="text-red-600 hover:text-red-800 px-2 py-1">
+                        <i class="fas fa-trash text-sm"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        listDiv.appendChild(exceptionDiv);
+    });
+}
+
+function showAddExceptionModal() {
+    document.getElementById('exception-modal').classList.remove('hidden');
+    document.getElementById('exception-date').value = '';
+    document.getElementById('exception-closed').checked = false;
+    document.getElementById('exception-start').value = '08:00';
+    document.getElementById('exception-end').value = '17:00';
+    document.getElementById('exception-note').value = '';
+    document.getElementById('exception-hours').style.display = 'block';
+}
+
+function hideAddExceptionModal() {
+    document.getElementById('exception-modal').classList.add('hidden');
+}
+
+function addException(event) {
+    event.preventDefault();
+    
+    const date = document.getElementById('exception-date').value;
+    const closed = document.getElementById('exception-closed').checked;
+    const start = document.getElementById('exception-start').value;
+    const end = document.getElementById('exception-end').value;
+    const note = document.getElementById('exception-note').value;
+    
+    if (!date) {
+        adminUtils.showNotification('Bitte wählen Sie ein Datum aus', 'error');
+        return;
+    }
+    
+    if (!closed && (!start || !end)) {
+        adminUtils.showNotification('Bitte geben Sie Öffnungszeiten an oder wählen Sie "Ganztägig geschlossen"', 'error');
+        return;
+    }
+    
+    const exception = {
+        date: date,
+        closed: closed,
+        hours: closed ? [] : [{ start: start, end: end }],
+        note: note || null
+    };
+    
+    fetch('/admin/api/hour-exceptions', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': document.querySelector('input[name="csrf_token"]').value
+        },
+        body: JSON.stringify(exception)
+    })
+    .then(response => {
+        if (!response.ok && response.status === 403) {
+            // CSRF Token error - reload page to get new token
+            adminUtils.showNotification('Sicherheitstoken abgelaufen. Seite wird neu geladen...', 'warning');
+            setTimeout(() => window.location.reload(), 2000);
+            return null;
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (!data) return; // Aborted due to reload
+        
+        if (data.success) {
+            adminUtils.showNotification('Ausnahme erfolgreich hinzugefügt', 'success');
+            loadExceptions();
+            hideAddExceptionModal();
+        } else {
+            if (data.error && data.error.includes('CSRF')) {
+                adminUtils.showNotification('Sicherheitstoken ungültig. Bitte Seite neu laden.', 'error');
+            } else {
+                adminUtils.showNotification('Fehler beim Hinzufügen der Ausnahme: ' + data.error, 'error');
+            }
+        }
+    })
+    .catch(error => {
+        adminUtils.showNotification('Netzwerkfehler beim Hinzufügen der Ausnahme', 'error');
+        console.error('Add exception error:', error);
+    });
+}
+
+function deleteException(index) {
+    const exception = exceptions[index];
+    const dateStr = adminUtils.formatDate(exception.date);
+    
+    if (confirm('Möchten Sie die Ausnahme für ' + dateStr + ' wirklich löschen?')) {
+        fetch(`/admin/api/hour-exceptions/${exception.id}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-Token': document.querySelector('input[name="csrf_token"]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                adminUtils.showNotification('Ausnahme erfolgreich gelöscht', 'success');
+                loadExceptions();
+            } else {
+                adminUtils.showNotification('Fehler beim Löschen der Ausnahme: ' + data.error, 'error');
+            }
+        })
+        .catch(error => {
+            adminUtils.showNotification('Netzwerkfehler beim Löschen der Ausnahme', 'error');
+            console.error('Delete exception error:', error);
+        });
+    }
+}
+
+function loadCurrentWeek() {
+    fetch('/admin/api/current-week-hours')
+        .then(response => response.json())
+        .then(data => {
+            renderCurrentWeek(data.week);
+        })
+        .catch(error => {
+            console.error('Failed to load current week:', error);
+        });
+}
+
+function renderCurrentWeek(weekData) {
+    const weekDiv = document.getElementById('current-week');
+    weekDiv.innerHTML = '';
+    
+    const weekdays = {{ t('admin.hours_management.current_week_days') | tojson }};
+    
+    weekData.forEach((day, index) => {
+        const dayDiv = document.createElement('div');
+        dayDiv.className = `text-center p-3 rounded-lg border ${day.is_today ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}`;
+        
+        const hoursStr = day.closed ? t('admin.hours_management.exceptions.closed') : 
+                        (day.exception ? day.exception_hours : day.regular_hours);
+        
+        dayDiv.innerHTML = `
+            <div class="font-medium text-sm text-gray-900">${weekdays[index]}</div>
+            <div class="text-xs text-gray-500 mt-1">${day.date}</div>
+            <div class="mt-2 text-xs ${day.closed ? 'text-red-600' : 'text-green-600'}">
+                ${hoursStr}
+            </div>
+            ${day.note ? `<div class="text-xs text-gray-500 mt-1">${day.note}</div>` : ''}
+        `;
+        
+        weekDiv.appendChild(dayDiv);
+    });
+}
+
+// Function to check Font Awesome and show fallbacks
+function checkFontAwesomeIcons() {
+    setTimeout(() => {
+        const icons = document.querySelectorAll('.fas.fa-trash');
+        if (icons.length > 0) {
+            const testIcon = icons[0];
+            const computed = window.getComputedStyle(testIcon);
+            const fontFamily = computed.getPropertyValue('font-family');
+            
+            if (!fontFamily.includes('Font Awesome')) {
+                console.warn('Font Awesome not loaded, using fallback icons');
+                document.querySelectorAll('.fa-fallback').forEach(fallback => {
+                    fallback.classList.remove('hidden');
+                    if (fallback.previousElementSibling) {
+                        fallback.previousElementSibling.style.display = 'none';
+                    }
+                });
+            }
+        }
+    }, 100); // Shorter timeout since we're calling it after DOM changes
+}
+
+// New Bulk operations with checkbox selection
+function selectWeekdays() {
+    const weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
+    weekdays.forEach(day => {
+        const checkbox = document.getElementById(`bulk-${day}`);
+        if (checkbox) checkbox.checked = true;
+    });
+    updateBulkSelectionInfo();
+}
+
+function selectWeekend() {
+    const weekendDays = ['saturday', 'sunday'];
+    weekendDays.forEach(day => {
+        const checkbox = document.getElementById(`bulk-${day}`);
+        if (checkbox) checkbox.checked = true;
+    });
+    updateBulkSelectionInfo();
+}
+
+function selectAll() {
+    const allDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+    allDays.forEach(day => {
+        const checkbox = document.getElementById(`bulk-${day}`);
+        if (checkbox) checkbox.checked = true;
+    });
+    updateBulkSelectionInfo();
+}
+
+function selectNone() {
+    const allDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+    allDays.forEach(day => {
+        const checkbox = document.getElementById(`bulk-${day}`);
+        if (checkbox) checkbox.checked = false;
+    });
+    updateBulkSelectionInfo();
+}
+
+function updateBulkSelectionInfo() {
+    const allDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+    const dayLabels = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+    const selectedDays = [];
+    
+    allDays.forEach((day, index) => {
+        const checkbox = document.getElementById(`bulk-${day}`);
+        if (checkbox && checkbox.checked) {
+            selectedDays.push(dayLabels[index]);
+        }
+    });
+    
+    const infoElement = document.getElementById('bulk-selection-info');
+    if (selectedDays.length === 0) {
+        infoElement.textContent = 'Keine Tage ausgewählt';
+    } else if (selectedDays.length === 7) {
+        infoElement.textContent = 'Alle Tage ausgewählt';
+    } else {
+        infoElement.textContent = `${selectedDays.length} Tage ausgewählt: ${selectedDays.join(', ')}`;
+    }
+}
+
+// Helper function to synchronize checkbox states with data
+function syncCheckboxStates() {
+    Object.keys(weeklyHours).forEach(day => {
+        const closedCheckbox = document.getElementById(`${day}-closed`);
+        const singleCheckbox = document.getElementById(`${day}-single`);
+        
+        if (closedCheckbox) {
+            const shouldBeClosed = (weeklyHours[day].length === 0);
+            if (closedCheckbox.checked !== shouldBeClosed) {
+                closedCheckbox.checked = shouldBeClosed;
+                console.log(`Sync: ${day} closed checkbox set to ${shouldBeClosed}`);
+            }
+        }
+        
+        if (singleCheckbox) {
+            const shouldBeSingle = (weeklyHours[day].length === 1);
+            if (singleCheckbox.checked !== shouldBeSingle) {
+                singleCheckbox.checked = shouldBeSingle;
+                console.log(`Sync: ${day} single checkbox set to ${shouldBeSingle}`);
+            }
+        }
+    });
+}
+
+// Debug function for tracking checkbox state changes
+function debugCheckboxState(day, action) {
+    const closedCheckbox = document.getElementById(`${day}-closed`);
+    const singleCheckbox = document.getElementById(`${day}-single`);
+    
+    console.log(`Checkbox Debug [${day}] ${action}:`, {
+        weeklyHours: weeklyHours[day],
+        closedChecked: closedCheckbox ? closedCheckbox.checked : 'not found',
+        singleChecked: singleCheckbox ? singleCheckbox.checked : 'not found',
+        expectedClosed: weeklyHours[day].length === 0,
+        expectedSingle: weeklyHours[day].length === 1
+    });
+}
+
+function applyBulkHours() {
+    const startTime = document.getElementById('bulk-start-time').value;
+    const endTime = document.getElementById('bulk-end-time').value;
+    
+    if (!startTime || !endTime) {
+        alert('Bitte geben Sie Start- und Endzeit ein');
+        return;
+    }
+    
+    if (startTime >= endTime) {
+        alert('Endzeit muss nach der Startzeit liegen');
+        return;
+    }
+    
+    // Get selected days
+    const allDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+    const dayLabels = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+    const selectedDays = [];
+    const selectedLabels = [];
+    
+    allDays.forEach((day, index) => {
+        const checkbox = document.getElementById(`bulk-${day}`);
+        if (checkbox && checkbox.checked) {
+            selectedDays.push(day);
+            selectedLabels.push(dayLabels[index]);
+        }
+    });
+    
+    if (selectedDays.length === 0) {
+        alert('Bitte wählen Sie mindestens einen Tag aus');
+        return;
+    }
+    
+    // Confirm action
+    const timeStr = `${startTime}-${endTime}`;
+    const dayStr = selectedLabels.join(', ');
+    if (!confirm(`${timeStr} auf folgende Tage anwenden: ${dayStr}?`)) {
+        return;
+    }
+    
+    console.log('Bulk hours operation starting...', {selectedDays, timeStr});
+    
+    // Apply to selected days with explicit checkbox state management
+    selectedDays.forEach(day => {
+        // Debug state before changes
+        debugCheckboxState(day, 'before_bulk');
+        
+        // Setze die Stunden zuerst
+        weeklyHours[day] = [timeStr];
+        
+        // CRITICAL FIX: Explicit checkbox state updates with event dispatching
+        const closedCheckbox = document.getElementById(`${day}-closed`);
+        const singleCheckbox = document.getElementById(`${day}-single`);
+        
+        // Deaktiviere "Geschlossen" falls aktiviert
+        if (closedCheckbox && closedCheckbox.checked) {
+            closedCheckbox.checked = false;
+            // Trigger change event to ensure UI consistency
+            closedCheckbox.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+        
+        // Aktiviere "Durchgehend" da wir nur einen Zeitslot setzen
+        if (singleCheckbox && !singleCheckbox.checked) {
+            singleCheckbox.checked = true;
+            // Trigger change event to ensure UI consistency
+            singleCheckbox.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+        
+        // Debug state after changes
+        debugCheckboxState(day, 'after_bulk');
+    });
+    
+    // Force UI update and synchronization
+    renderWeeklyHours();
+    
+    // CRITICAL: Additional synchronization after render
+    setTimeout(() => {
+        syncCheckboxStates();
+        selectedDays.forEach(day => {
+            debugCheckboxState(day, 'after_sync');
+        });
+    }, 100);
+    
+    showNotification(`Öffnungszeiten erfolgreich auf ${selectedDays.length} Tage angewendet!`, 'success');
+    
+    // Clear selection after applying
+    selectNone();
+}
+
+// Notification helper function
+function showNotification(message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg max-w-sm transition-all transform translate-x-full ${
+        type === 'success' ? 'bg-green-100 border border-green-200 text-green-800' :
+        type === 'error' ? 'bg-red-100 border border-red-200 text-red-800' :
+        'bg-blue-100 border border-blue-200 text-blue-800'
+    }`;
+    
+    notification.innerHTML = `
+        <div class="flex items-center justify-between">
+            <div class="flex items-center">
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'} mr-2"></i>
+                <span class="text-sm font-medium">${message}</span>
+            </div>
+            <button onclick="this.parentElement.parentElement.remove()" class="ml-3 text-sm hover:opacity-75">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => {
+        notification.classList.remove('translate-x-full');
+    }, 100);
+    
+    // Auto-remove after 4 seconds
+    setTimeout(() => {
+        notification.classList.add('translate-x-full');
+        setTimeout(() => {
+            if (notification.parentElement) {
+                notification.remove();
+            }
+        }, 300);
+    }, 4000);
+}
+
+// Initial check when page loads
+setTimeout(() => {
+    checkFontAwesomeIcons();
+}, 1000);
+</script>
+{% endblock %}

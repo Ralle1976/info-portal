@@ -1,0 +1,1178 @@
+/* ================================================
+   THAI MEDICAL COMPONENTS LIBRARY
+   Specific component implementations for QR Portal
+   ================================================ */
+
+/* ========================================
+   MEDICAL SERVICE COMPONENTS
+   ======================================== */
+
+/* Service Grid Container */
+.medical-services-container {
+  margin: var(--space-8) 0;
+}
+
+.medical-services-header {
+  text-align: center;
+  margin-bottom: var(--space-8);
+}
+
+.medical-services-title {
+  font-size: var(--text-3xl);
+  font-weight: var(--font-bold);
+  background: linear-gradient(135deg, var(--thai-turquoise-600), var(--thai-coral-600));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: var(--space-2);
+}
+
+.medical-services-subtitle {
+  font-size: var(--text-lg);
+  color: var(--gray-600);
+  font-weight: var(--font-medium);
+}
+
+/* Individual Service Card */
+.medical-service-card {
+  background: white;
+  border-radius: var(--radius-2xl);
+  border: 1px solid rgba(20, 184, 166, 0.1);
+  box-shadow: var(--shadow-thai);
+  padding: var(--space-6);
+  transition: var(--transition-thai);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.medical-service-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--service-color);
+  transform: scaleY(0);
+  transition: transform var(--transition);
+}
+
+.medical-service-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-thai-xl);
+}
+
+.medical-service-card:hover::before {
+  transform: scaleY(1);
+}
+
+/* Service-specific color variants */
+.service-blood {
+  --service-color: var(--service-blood);
+  --service-bg: var(--service-blood-bg);
+}
+
+.service-consultation {
+  --service-color: var(--service-consultation);
+  --service-bg: var(--service-consultation-bg);
+}
+
+.service-vaccination {
+  --service-color: var(--service-vaccination);
+  --service-bg: var(--service-vaccination-bg);
+}
+
+.service-followup {
+  --service-color: var(--service-followup);
+  --service-bg: var(--service-followup-bg);
+}
+
+.service-results {
+  --service-color: var(--service-results);
+  --service-bg: var(--service-results-bg);
+}
+
+/* Service Icon with Medical Styling */
+.medical-service-icon {
+  width: var(--icon-2xl);
+  height: var(--icon-2xl);
+  border-radius: var(--radius-xl);
+  background: linear-gradient(135deg, var(--service-color), var(--service-color));
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--icon-lg);
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  filter: brightness(1) saturate(1.1);
+}
+
+.medical-service-icon::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+
+.medical-service-card:hover .medical-service-icon::before {
+  opacity: 1;
+}
+
+.medical-service-content {
+  flex: 1;
+}
+
+.medical-service-title {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--gray-800);
+  margin-bottom: var(--space-1);
+}
+
+.medical-service-description {
+  font-size: var(--text-sm);
+  color: var(--gray-600);
+  line-height: var(--leading-relaxed);
+  margin-bottom: var(--space-2);
+}
+
+.medical-service-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--gray-500);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+}
+
+/* ========================================
+   STATUS BANNER COMPONENTS
+   ======================================== */
+
+.status-banner-thai-medical {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-2xl);
+  padding: var(--space-8);
+  margin-bottom: var(--space-8);
+  animation: thai-entrance 0.6s ease-out;
+  background: var(--status-gradient);
+  border: 2px solid var(--status-border);
+  box-shadow: var(--status-shadow);
+}
+
+/* Status Banner Variants */
+.status-banner-open {
+  --status-gradient: linear-gradient(135deg, var(--medical-open-bg), rgba(5, 150, 105, 0.1));
+  --status-border: var(--medical-open);
+  --status-shadow: var(--shadow-medical-success);
+}
+
+.status-banner-closed {
+  --status-gradient: linear-gradient(135deg, var(--medical-closed-bg), rgba(220, 38, 38, 0.1));
+  --status-border: var(--medical-closed);
+  --status-shadow: var(--shadow-medical-error);
+}
+
+.status-banner-warning {
+  --status-gradient: linear-gradient(135deg, var(--medical-warning-bg), rgba(217, 119, 6, 0.1));
+  --status-border: var(--medical-warning);
+  --status-shadow: var(--shadow-medical-warning);
+}
+
+.status-content-thai {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.status-icon-large-thai {
+  width: 100px;
+  height: 100px;
+  border-radius: var(--radius-full);
+  background: var(--status-border);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-4xl);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.status-icon-large-thai::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: var(--radius-full);
+  background: inherit;
+  opacity: 0.3;
+  z-index: -1;
+  animation: pulse-ring-thai 3s infinite;
+}
+
+.status-text-thai {
+  flex: 1;
+}
+
+.status-title-large-thai {
+  font-size: var(--text-3xl);
+  font-weight: var(--font-bold);
+  color: var(--gray-900);
+  margin-bottom: var(--space-2);
+}
+
+.status-description-thai {
+  font-size: var(--text-lg);
+  color: var(--gray-700);
+  line-height: var(--leading-relaxed);
+}
+
+.status-meta-thai {
+  margin-top: var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--gray-600);
+}
+
+/* ========================================
+   TIME & DATE COMPONENTS
+   ======================================== */
+
+.time-display-hero-thai {
+  text-align: center;
+  margin: var(--space-8) 0;
+  padding: var(--space-8);
+  background: linear-gradient(135deg, rgba(20, 184, 166, 0.05), rgba(255, 107, 107, 0.05));
+  border-radius: var(--radius-2xl);
+  border: 1px solid rgba(20, 184, 166, 0.2);
+}
+
+.time-hero-clock {
+  font-family: var(--font-mono);
+  font-size: var(--text-6xl);
+  font-weight: var(--font-bold);
+  background: linear-gradient(135deg, var(--thai-turquoise-500), var(--thai-coral-500));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+  margin-bottom: var(--space-4);
+}
+
+.time-hero-date {
+  font-size: var(--text-xl);
+  color: var(--gray-700);
+  font-weight: var(--font-medium);
+  margin-bottom: var(--space-2);
+}
+
+.time-hero-timezone {
+  font-size: var(--text-sm);
+  color: var(--gray-500);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+}
+
+/* Compact Time Display */
+.time-compact-thai {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: rgba(20, 184, 166, 0.1);
+  border-radius: var(--radius-full);
+  font-family: var(--font-mono);
+  font-weight: var(--font-semibold);
+  color: var(--thai-turquoise-700);
+}
+
+/* ========================================
+   OPENING HOURS COMPONENTS
+   ======================================== */
+
+.hours-display-thai {
+  background: white;
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(20, 184, 166, 0.1);
+  overflow: hidden;
+}
+
+.hours-header-thai {
+  padding: var(--space-6);
+  background: linear-gradient(135deg, var(--gray-50), var(--gray-100));
+  border-bottom: 1px solid rgba(20, 184, 166, 0.1);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.hours-icon-thai {
+  width: var(--icon-xl);
+  height: var(--icon-xl);
+  border-radius: var(--radius-lg);
+  background: var(--thai-turquoise-500);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--icon-lg);
+}
+
+.hours-title-thai {
+  flex: 1;
+}
+
+.hours-title-main {
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold);
+  color: var(--gray-800);
+  margin-bottom: var(--space-1);
+}
+
+.hours-title-sub {
+  font-size: var(--text-sm);
+  color: var(--gray-600);
+}
+
+.hours-body-thai {
+  padding: var(--space-6);
+}
+
+/* Today's Schedule Specific */
+.todays-schedule-thai {
+  background: linear-gradient(135deg, var(--thai-turquoise-50), white);
+}
+
+.schedule-closed-thai {
+  text-align: center;
+  padding: var(--space-8);
+}
+
+.schedule-closed-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto var(--space-4);
+  background: var(--medical-closed-bg);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--medical-closed);
+  font-size: var(--text-3xl);
+}
+
+.schedule-closed-title {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  color: var(--medical-closed);
+  margin-bottom: var(--space-2);
+}
+
+.schedule-closed-note {
+  background: var(--gray-50);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  color: var(--gray-700);
+  font-style: italic;
+}
+
+/* Time Range Display */
+.time-ranges-thai {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.time-range-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4);
+  background: var(--gray-50);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(20, 184, 166, 0.1);
+  transition: var(--transition-thai);
+}
+
+.time-range-item:hover {
+  background: rgba(20, 184, 166, 0.05);
+  border-color: rgba(20, 184, 166, 0.2);
+}
+
+.time-range-content {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.time-range-icon {
+  width: var(--icon-lg);
+  height: var(--icon-lg);
+  border-radius: var(--radius-lg);
+  background: var(--medical-open-bg);
+  color: var(--medical-open);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--icon-sm);
+}
+
+.time-range-text {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--gray-800);
+  font-family: var(--font-mono);
+}
+
+.time-range-status {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  background: var(--medical-open-bg);
+  color: var(--medical-open);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+/* ========================================
+   CONTACT COMPONENTS
+   ======================================== */
+
+.contact-card-thai {
+  background: white;
+  border-radius: var(--radius-2xl);
+  border: 1px solid rgba(20, 184, 166, 0.1);
+  box-shadow: var(--shadow-thai);
+  overflow: hidden;
+}
+
+.contact-header-thai {
+  padding: var(--space-6);
+  background: linear-gradient(135deg, var(--thai-coral-50), white);
+  border-bottom: 1px solid rgba(255, 107, 107, 0.2);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.contact-icon-thai {
+  width: var(--icon-xl);
+  height: var(--icon-xl);
+  border-radius: var(--radius-lg);
+  background: var(--thai-coral-500);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--icon-lg);
+}
+
+.contact-methods-thai {
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.contact-method-item {
+  display: flex;
+  align-items: center;
+  padding: var(--space-4);
+  background: var(--method-bg);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--method-border);
+  text-decoration: none;
+  color: inherit;
+  transition: var(--transition-thai);
+  position: relative;
+  overflow: hidden;
+}
+
+.contact-method-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+  transition: left var(--transition-slow);
+}
+
+.contact-method-item:hover::before {
+  left: 100%;
+}
+
+.contact-method-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-thai-md);
+}
+
+/* Contact Method Variants */
+.contact-phone {
+  --method-bg: var(--thai-turquoise-50);
+  --method-border: rgba(20, 184, 166, 0.2);
+  --method-color: var(--thai-turquoise-600);
+}
+
+.contact-email {
+  --method-bg: var(--thai-coral-50);
+  --method-border: rgba(255, 107, 107, 0.2);
+  --method-color: var(--thai-coral-600);
+}
+
+.contact-method-icon {
+  width: var(--icon-lg);
+  height: var(--icon-lg);
+  border-radius: var(--radius-full);
+  background: var(--method-color);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: var(--space-4);
+  font-size: var(--icon-base);
+  flex-shrink: 0;
+}
+
+.contact-method-content {
+  flex: 1;
+}
+
+.contact-method-label {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--gray-700);
+  margin-bottom: var(--space-1);
+}
+
+.contact-method-value {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--method-color);
+}
+
+.contact-method-external {
+  width: var(--icon-base);
+  height: var(--icon-base);
+  color: var(--gray-400);
+  margin-left: var(--space-2);
+  transition: var(--transition);
+}
+
+.contact-method-item:hover .contact-method-external {
+  color: var(--method-color);
+}
+
+/* ========================================
+   LOCATION COMPONENTS
+   ======================================== */
+
+.location-card-thai {
+  background: white;
+  border-radius: var(--radius-2xl);
+  border: 1px solid rgba(20, 184, 166, 0.1);
+  box-shadow: var(--shadow-thai);
+  overflow: hidden;
+}
+
+.location-header-thai {
+  padding: var(--space-6);
+  background: linear-gradient(135deg, var(--medical-open-bg), white);
+  border-bottom: 1px solid rgba(5, 150, 105, 0.2);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.location-icon-thai {
+  width: var(--icon-xl);
+  height: var(--icon-xl);
+  border-radius: var(--radius-lg);
+  background: var(--medical-open);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--icon-lg);
+}
+
+.location-body-thai {
+  padding: var(--space-6);
+}
+
+.location-address-thai {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--gray-50);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-4);
+}
+
+.location-address-icon {
+  width: var(--icon-base);
+  height: var(--icon-base);
+  color: var(--medical-open);
+  margin-top: var(--space-1);
+}
+
+.location-address-content {
+  flex: 1;
+}
+
+.location-address-label {
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--gray-800);
+  margin-bottom: var(--space-1);
+}
+
+.location-address-text {
+  font-size: var(--text-base);
+  color: var(--gray-700);
+  line-height: var(--leading-relaxed);
+}
+
+.location-navigate-button {
+  width: 100%;
+  justify-content: center;
+  margin-top: var(--space-4);
+}
+
+/* Location Amenities */
+.location-amenities-thai {
+  margin-top: var(--space-6);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--space-3);
+}
+
+.amenity-item-thai {
+  background: var(--amenity-bg);
+  border: 1px solid var(--amenity-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3);
+  text-align: center;
+  transition: var(--transition-thai);
+}
+
+.amenity-item-thai:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-thai-sm);
+}
+
+.amenity-parking {
+  --amenity-bg: #DBEAFE;
+  --amenity-border: rgba(37, 99, 235, 0.2);
+  --amenity-color: #1D4ED8;
+}
+
+.amenity-wheelchair {
+  --amenity-bg: #D1FAE5;
+  --amenity-border: rgba(5, 150, 105, 0.2);
+  --amenity-color: #059669;
+}
+
+.amenity-transport {
+  --amenity-bg: #EDE9FE;
+  --amenity-border: rgba(124, 58, 237, 0.2);
+  --amenity-color: #7C3AED;
+}
+
+.amenity-icon-thai {
+  font-size: var(--icon-lg);
+  color: var(--amenity-color);
+  margin-bottom: var(--space-1);
+}
+
+.amenity-label-thai {
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  color: var(--amenity-color);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+}
+
+/* ========================================
+   ANNOUNCEMENT COMPONENTS
+   ======================================== */
+
+.announcements-container-thai {
+  margin: var(--space-8) 0;
+}
+
+.announcement-item-thai {
+  background: var(--announcement-bg);
+  border-left: 4px solid var(--announcement-border);
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+  padding: var(--space-6);
+  margin-bottom: var(--space-4);
+  box-shadow: var(--shadow-thai-sm);
+  transition: var(--transition-thai);
+}
+
+.announcement-item-thai:hover {
+  transform: translateX(4px);
+  box-shadow: var(--shadow-thai-md);
+}
+
+/* Announcement Types */
+.announcement-info {
+  --announcement-bg: var(--medical-info-bg);
+  --announcement-border: var(--medical-info);
+}
+
+.announcement-warning {
+  --announcement-bg: var(--medical-warning-bg);
+  --announcement-border: var(--medical-warning);
+}
+
+.announcement-success {
+  --announcement-bg: var(--medical-open-bg);
+  --announcement-border: var(--medical-open);
+}
+
+.announcement-header-thai {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.announcement-icon-thai {
+  width: var(--icon-lg);
+  height: var(--icon-lg);
+  border-radius: var(--radius-full);
+  background: var(--announcement-border);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--icon-sm);
+  flex-shrink: 0;
+}
+
+.announcement-title-thai {
+  font-size: var(--text-lg);
+  font-weight: var(--font-bold);
+  color: var(--gray-900);
+  line-height: var(--leading-tight);
+}
+
+.announcement-body-thai {
+  font-size: var(--text-base);
+  color: var(--gray-700);
+  line-height: var(--leading-relaxed);
+}
+
+/* ========================================
+   KIOSK SPECIFIC COMPONENTS
+   ======================================== */
+
+.kiosk-grid-thai {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-8);
+  padding: var(--space-8);
+  min-height: 100vh;
+  background: linear-gradient(135deg, #F0FDF4, #E0F2FE);
+}
+
+.kiosk-panel-thai {
+  background: white;
+  border-radius: var(--radius-3xl);
+  padding: var(--space-12);
+  box-shadow: var(--shadow-thai-2xl);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.kiosk-panel-thai::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background: var(--panel-gradient);
+}
+
+/* Kiosk Panel Types */
+.kiosk-panel-today {
+  --panel-gradient: linear-gradient(90deg, var(--thai-turquoise-500), var(--thai-turquoise-600));
+}
+
+.kiosk-panel-week {
+  --panel-gradient: linear-gradient(90deg, var(--thai-coral-500), var(--thai-coral-600));
+}
+
+.kiosk-panel-preview {
+  --panel-gradient: linear-gradient(90deg, var(--medical-open), var(--medical-info));
+}
+
+.kiosk-panel-header {
+  text-align: center;
+  margin-bottom: var(--space-8);
+  padding-bottom: var(--space-6);
+  border-bottom: 2px solid rgba(20, 184, 166, 0.1);
+}
+
+.kiosk-panel-title {
+  font-size: var(--text-4xl);
+  font-weight: var(--font-bold);
+  background: var(--panel-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: var(--space-2);
+}
+
+.kiosk-panel-subtitle {
+  font-size: var(--text-xl);
+  color: var(--gray-600);
+  font-weight: var(--font-medium);
+}
+
+.kiosk-panel-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.kiosk-panel-footer {
+  margin-top: auto;
+  padding-top: var(--space-6);
+  border-top: 1px solid rgba(20, 184, 166, 0.1);
+  text-align: center;
+}
+
+/* Kiosk QR Overlay */
+.kiosk-qr-overlay {
+  position: fixed;
+  bottom: var(--space-8);
+  right: var(--space-8);
+  background: white;
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-thai-xl);
+  border: 2px solid var(--thai-turquoise-500);
+  z-index: var(--z-fixed);
+}
+
+.kiosk-qr-overlay img {
+  width: 120px;
+  height: 120px;
+  border-radius: var(--radius-md);
+}
+
+.kiosk-qr-label {
+  text-align: center;
+  margin-top: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
+  color: var(--thai-turquoise-600);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+}
+
+/* ========================================
+   WEEK/MONTH VIEW COMPONENTS
+   ======================================== */
+
+.calendar-thai-container {
+  background: white;
+  border-radius: var(--radius-2xl);
+  border: 1px solid rgba(20, 184, 166, 0.1);
+  box-shadow: var(--shadow-thai);
+  overflow: hidden;
+}
+
+.calendar-header-thai {
+  background: linear-gradient(135deg, var(--thai-turquoise-500), var(--thai-turquoise-600));
+  color: white;
+  padding: var(--space-6);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.calendar-title-thai {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+}
+
+.calendar-nav-thai {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.calendar-nav-button {
+  width: var(--icon-xl);
+  height: var(--icon-xl);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.calendar-nav-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+.calendar-grid-thai {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.calendar-day-header {
+  background: var(--gray-100);
+  padding: var(--space-3);
+  text-align: center;
+  font-weight: var(--font-semibold);
+  color: var(--gray-700);
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+}
+
+.calendar-day-thai {
+  min-height: 120px;
+  padding: var(--space-3);
+  border: 1px solid rgba(20, 184, 166, 0.1);
+  background: white;
+  position: relative;
+  transition: var(--transition-thai);
+  cursor: pointer;
+}
+
+.calendar-day-thai:hover {
+  background: rgba(20, 184, 166, 0.02);
+  border-color: rgba(20, 184, 166, 0.2);
+}
+
+.calendar-day-number {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--gray-800);
+  margin-bottom: var(--space-2);
+}
+
+.calendar-day-today {
+  background: var(--thai-turquoise-50);
+  border-color: var(--thai-turquoise-500);
+  border-width: 2px;
+}
+
+.calendar-day-today .calendar-day-number {
+  color: var(--thai-turquoise-600);
+}
+
+.calendar-day-other-month {
+  background: var(--gray-50);
+  color: var(--gray-400);
+}
+
+.calendar-day-events {
+  position: absolute;
+  bottom: var(--space-2);
+  left: var(--space-2);
+  right: var(--space-2);
+}
+
+.calendar-event-indicator {
+  width: 100%;
+  height: 4px;
+  background: var(--event-color);
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-1);
+}
+
+.event-open { --event-color: var(--medical-open); }
+.event-closed { --event-color: var(--medical-closed); }
+.event-special { --event-color: var(--thai-coral-500); }
+
+/* ========================================
+   RESPONSIVE COMPONENT ADJUSTMENTS
+   ======================================== */
+
+@media (max-width: 640px) {
+  /* Service Cards Mobile */
+  .medical-service-card {
+    padding: var(--space-4);
+    flex-direction: column;
+    text-align: center;
+    gap: var(--space-3);
+  }
+  
+  .medical-service-icon {
+    width: var(--icon-xl);
+    height: var(--icon-xl);
+  }
+  
+  /* Contact Methods Mobile */
+  .contact-methods-thai {
+    padding: var(--space-4);
+  }
+  
+  .contact-method-item {
+    padding: var(--space-3);
+  }
+  
+  /* Time Display Mobile */
+  .time-hero-clock {
+    font-size: var(--text-4xl);
+  }
+  
+  /* Status Banner Mobile */
+  .status-banner-thai-medical {
+    padding: var(--space-4);
+  }
+  
+  .status-content-thai {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--space-4);
+  }
+  
+  .status-icon-large-thai {
+    width: 70px;
+    height: 70px;
+    font-size: var(--text-2xl);
+  }
+  
+  /* Calendar Mobile */
+  .calendar-day-thai {
+    min-height: 80px;
+    padding: var(--space-2);
+  }
+  
+  .calendar-day-number {
+    font-size: var(--text-base);
+  }
+  
+  /* Kiosk Mobile (Tablets in portrait) */
+  .kiosk-grid-thai {
+    grid-template-columns: 1fr;
+    padding: var(--space-4);
+  }
+  
+  .kiosk-panel-thai {
+    padding: var(--space-6);
+  }
+  
+  .kiosk-panel-title {
+    font-size: var(--text-2xl);
+  }
+}
+
+@media (max-width: 480px) {
+  /* Extra small mobile adjustments */
+  .location-amenities-thai {
+    grid-template-columns: 1fr;
+  }
+  
+  .time-compact-thai {
+    font-size: var(--text-sm);
+  }
+  
+  .qr-code-thai img {
+    width: 150px;
+    height: 150px;
+  }
+}
+
+/* ========================================
+   PRINT COMPONENT OPTIMIZATIONS
+   ======================================== */
+
+@media print {
+  /* Service Cards for print */
+  .medical-service-card {
+    box-shadow: none !important;
+    border: 2px solid var(--gray-300) !important;
+    page-break-inside: avoid;
+    margin-bottom: var(--space-4);
+  }
+  
+  .medical-service-icon {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  /* Status Banner for print */
+  .status-banner-thai-medical {
+    box-shadow: none !important;
+    border: 3px solid var(--status-border) !important;
+    background: white !important;
+  }
+  
+  /* Contact methods for print */
+  .contact-method-item {
+    border: 2px solid var(--method-border) !important;
+    background: white !important;
+  }
+  
+  /* QR Codes optimized for print */
+  .qr-container-thai {
+    background: white !important;
+    border: 3px solid #000 !important;
+    page-break-inside: avoid;
+  }
+  
+  .qr-code-thai {
+    background: white !important;
+    box-shadow: none !important;
+  }
+  
+  .qr-code-thai img {
+    width: 200px !important;
+    height: 200px !important;
+  }
+  
+  /* Calendar for print */
+  .calendar-thai-container {
+    box-shadow: none !important;
+    border: 2px solid var(--gray-300) !important;
+  }
+  
+  .calendar-header-thai {
+    background: var(--gray-100) !important;
+    color: var(--gray-900) !important;
+  }
+  
+  .calendar-day-thai {
+    border: 1px solid var(--gray-300) !important;
+    background: white !important;
+  }
+  
+  .calendar-day-today {
+    border: 2px solid var(--thai-turquoise-500) !important;
+    background: var(--thai-turquoise-50) !important;
+  }
+}

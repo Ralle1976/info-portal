@@ -1,0 +1,1391 @@
+<!-- QR Info Portal - Getting Started Wizard Component -->
+<!-- This wizard guides new users through the setup process -->
+
+<!-- Wizard Container -->
+<div id="gettingStartedWizard" class="getting-started-wizard" 
+     x-data="gettingStartedWizard()" 
+     x-show="showWizard" 
+     x-cloak>
+    
+    <!-- Wizard Backdrop -->
+    <div class="wizard-backdrop" @click="closeWizard()"></div>
+    
+    <!-- Wizard Content -->
+    <div class="wizard-content" @click.stop>
+        
+        <!-- Wizard Header -->
+        <div class="wizard-header">
+            <div class="wizard-icon">
+                <i class="fas fa-magic text-thai-turquoise"></i>
+            </div>
+            <h1 class="wizard-title" x-text="currentStep.title"></h1>
+            <p class="wizard-subtitle" x-text="currentStep.subtitle"></p>
+            <button class="wizard-close" @click="closeWizard()" aria-label="{{ t('close') }}">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <!-- Progress Indicator -->
+        <div class="wizard-progress">
+            <div class="progress-bar">
+                <div class="progress-fill" :style="`width: ${progress}%`"></div>
+            </div>
+            <div class="progress-text">
+                <span x-text="`${t('step')} ${currentStepIndex + 1} ${t('of')} ${totalSteps}`"></span>
+            </div>
+        </div>
+        
+        <!-- Step Content -->
+        <div class="wizard-body">
+            
+            <!-- Step 1: Welcome -->
+            <div class="wizard-step" x-show="currentStepIndex === 0" x-transition>
+                <div class="step-content">
+                    <div class="welcome-animation">
+                        <div class="animated-icon">
+                            <i class="fas fa-hospital text-6xl text-thai-turquoise mb-6"></i>
+                        </div>
+                    </div>
+                    
+                    <h2>{{ t('welcome_to_qr_portal') }}</h2>
+                    <p class="step-description">
+                        {{ t('wizard_welcome_description') }}
+                    </p>
+                    
+                    <div class="feature-highlights">
+                        <div class="feature-item">
+                            <i class="fas fa-qrcode text-thai-coral"></i>
+                            <span>{{ t('qr_code_integration') }}</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-mobile-alt text-thai-coral"></i>
+                            <span>{{ t('mobile_friendly') }}</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-language text-thai-coral"></i>
+                            <span>{{ t('multi_language_support') }}</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-clock text-thai-coral"></i>
+                            <span>{{ t('real_time_updates') }}</span>
+                        </div>
+                    </div>
+                    
+                    {% if request.endpoint and 'admin' in request.endpoint %}
+                    <div class="admin-welcome-note">
+                        <div class="note-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="note-content">
+                            <h3>{{ t('admin_setup_wizard') }}</h3>
+                            <p>{{ t('admin_wizard_description') }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Step 2: Basic Information -->
+            <div class="wizard-step" x-show="currentStepIndex === 1" x-transition>
+                <div class="step-content">
+                    <div class="step-icon">
+                        <i class="fas fa-info-circle text-4xl text-thai-turquoise mb-4"></i>
+                    </div>
+                    
+                    <h2>{{ t('basic_information') }}</h2>
+                    <p class="step-description">
+                        {{ t('basic_info_description') }}
+                    </p>
+                    
+                    {% if request.endpoint and 'admin' in request.endpoint %}
+                    <!-- Admin: Practice Information Form -->
+                    <form class="wizard-form" @submit.prevent>
+                        <div class="form-group">
+                            <label for="practice_name">{{ t('practice_name') }} *</label>
+                            <input type="text" id="practice_name" x-model="wizardData.practice_name" 
+                                   :placeholder="t('practice_name_placeholder')" required>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="contact_phone">{{ t('phone_number') }} *</label>
+                                <input type="tel" id="contact_phone" x-model="wizardData.contact_phone" 
+                                       placeholder="+66 XX XXX XXXX" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="contact_email">{{ t('email_address') }} *</label>
+                                <input type="email" id="contact_email" x-model="wizardData.contact_email" 
+                                       placeholder="info@example.com" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="address">{{ t('address') }} *</label>
+                            <textarea id="address" x-model="wizardData.address" rows="2" 
+                                      :placeholder="t('address_placeholder')" required></textarea>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="default_language">{{ t('default_language') }}</label>
+                                <select id="default_language" x-model="wizardData.default_language">
+                                    <option value="th">🇹🇭 ไทย (Thai)</option>
+                                    <option value="de">🇩🇪 Deutsch (German)</option>
+                                    <option value="en">🇺🇸 English</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="timezone">{{ t('timezone') }}</label>
+                                <select id="timezone" x-model="wizardData.timezone">
+                                    <option value="Asia/Bangkok">{{ t('asia_bangkok') }}</option>
+                                    <option value="Europe/Berlin">{{ t('europe_berlin') }}</option>
+                                    <option value="America/New_York">{{ t('america_new_york') }}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                    {% else %}
+                    <!-- Public: Usage Guide -->
+                    <div class="usage-guide">
+                        <div class="guide-item">
+                            <div class="guide-number">1</div>
+                            <div class="guide-content">
+                                <h3>{{ t('check_current_status') }}</h3>
+                                <p>{{ t('status_check_description') }}</p>
+                            </div>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-number">2</div>
+                            <div class="guide-content">
+                                <h3>{{ t('view_opening_hours') }}</h3>
+                                <p>{{ t('hours_view_description') }}</p>
+                            </div>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-number">3</div>
+                            <div class="guide-content">
+                                <h3>{{ t('contact_practice') }}</h3>
+                                <p>{{ t('contact_description') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Step 3: Opening Hours -->
+            <div class="wizard-step" x-show="currentStepIndex === 2" x-transition>
+                <div class="step-content">
+                    <div class="step-icon">
+                        <i class="fas fa-clock text-4xl text-thai-turquoise mb-4"></i>
+                    </div>
+                    
+                    <h2>{{ t('opening_hours') }}</h2>
+                    <p class="step-description">
+                        {{ t('opening_hours_description') }}
+                    </p>
+                    
+                    {% if request.endpoint and 'admin' in request.endpoint %}
+                    <!-- Admin: Hours Configuration -->
+                    <div class="hours-config">
+                        <div class="quick-hours-templates">
+                            <h4>{{ t('quick_templates') }}</h4>
+                            <div class="template-buttons">
+                                <button type="button" @click="applyHoursTemplate('standard')" 
+                                        class="template-btn">
+                                    {{ t('standard_hours') }}
+                                    <small>{{ t('mon_fri_8_5') }}</small>
+                                </button>
+                                <button type="button" @click="applyHoursTemplate('medical')" 
+                                        class="template-btn">
+                                    {{ t('medical_hours') }}
+                                    <small>{{ t('extended_availability') }}</small>
+                                </button>
+                                <button type="button" @click="applyHoursTemplate('halfday')" 
+                                        class="template-btn">
+                                    {{ t('half_day') }}
+                                    <small>{{ t('morning_only') }}</small>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="weekly-schedule">
+                            <h4>{{ t('weekly_schedule') }}</h4>
+                            <div class="days-grid">
+                                <template x-for="(day, index) in weekDays" :key="index">
+                                    <div class="day-config">
+                                        <label class="day-label" x-text="t(day.name)"></label>
+                                        <input type="text" 
+                                               x-model="wizardData.hours[day.key]" 
+                                               :placeholder="t('hours_format_example')"
+                                               class="hours-input">
+                                        <small class="help-text">{{ t('hours_format_help') }}</small>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <!-- Public: Hours Display -->
+                    <div class="hours-display">
+                        <div class="current-hours">
+                            <h3>{{ t('todays_hours') }}</h3>
+                            <div class="today-status">
+                                <div class="status-indicator" :class="isCurrentlyOpen ? 'open' : 'closed'">
+                                    <i class="fas" :class="isCurrentlyOpen ? 'fa-check-circle' : 'fa-times-circle'"></i>
+                                    <span x-text="isCurrentlyOpen ? t('currently_open') : t('currently_closed')"></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="weekly-hours">
+                            <h3>{{ t('this_week') }}</h3>
+                            <div class="week-grid">
+                                <template x-for="day in sampleWeek" :key="day.name">
+                                    <div class="day-row">
+                                        <div class="day-name" x-text="day.name"></div>
+                                        <div class="day-hours" x-text="day.hours"></div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Step 4: Features & Settings -->
+            <div class="wizard-step" x-show="currentStepIndex === 3" x-transition>
+                <div class="step-content">
+                    <div class="step-icon">
+                        <i class="fas fa-cogs text-4xl text-thai-turquoise mb-4"></i>
+                    </div>
+                    
+                    <h2>{{ t('features_and_settings') }}</h2>
+                    <p class="step-description">
+                        {{ t('features_description') }}
+                    </p>
+                    
+                    {% if request.endpoint and 'admin' in request.endpoint %}
+                    <!-- Admin: Feature Configuration -->
+                    <div class="features-config">
+                        <div class="feature-categories">
+                            <div class="category">
+                                <h4>{{ t('core_features') }}</h4>
+                                <div class="feature-toggles">
+                                    <div class="toggle-item">
+                                        <input type="checkbox" id="feature_qr" x-model="wizardData.features.qr_codes" checked disabled>
+                                        <label for="feature_qr">
+                                            <i class="fas fa-qrcode"></i>
+                                            {{ t('qr_code_generation') }}
+                                            <small>{{ t('essential_feature') }}</small>
+                                        </label>
+                                    </div>
+                                    <div class="toggle-item">
+                                        <input type="checkbox" id="feature_kiosk" x-model="wizardData.features.kiosk_mode">
+                                        <label for="feature_kiosk">
+                                            <i class="fas fa-tv"></i>
+                                            {{ t('kiosk_mode') }}
+                                            <small>{{ t('display_screens') }}</small>
+                                        </label>
+                                    </div>
+                                    <div class="toggle-item">
+                                        <input type="checkbox" id="feature_multilang" x-model="wizardData.features.multi_language" checked disabled>
+                                        <label for="feature_multilang">
+                                            <i class="fas fa-language"></i>
+                                            {{ t('multi_language') }}
+                                            <small>{{ t('essential_feature') }}</small>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="category">
+                                <h4>{{ t('optional_features') }}</h4>
+                                <div class="feature-toggles">
+                                    <div class="toggle-item">
+                                        <input type="checkbox" id="feature_social" x-model="wizardData.features.social_media">
+                                        <label for="feature_social">
+                                            <i class="fas fa-share-alt"></i>
+                                            {{ t('social_media_integration') }}
+                                            <small>{{ t('line_facebook_whatsapp') }}</small>
+                                        </label>
+                                    </div>
+                                    <div class="toggle-item">
+                                        <input type="checkbox" id="feature_booking" x-model="wizardData.features.appointment_booking">
+                                        <label for="feature_booking">
+                                            <i class="fas fa-calendar-check"></i>
+                                            {{ t('appointment_booking') }}
+                                            <small>{{ t('online_appointments') }}</small>
+                                        </label>
+                                    </div>
+                                    <div class="toggle-item">
+                                        <input type="checkbox" id="feature_analytics" x-model="wizardData.features.analytics">
+                                        <label for="feature_analytics">
+                                            <i class="fas fa-chart-bar"></i>
+                                            {{ t('visitor_analytics') }}
+                                            <small>{{ t('usage_statistics') }}</small>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <!-- Public: Feature Overview -->
+                    <div class="features-overview">
+                        <div class="feature-grid">
+                            <div class="feature-card">
+                                <i class="fas fa-qrcode"></i>
+                                <h3>{{ t('qr_code_access') }}</h3>
+                                <p>{{ t('scan_qr_description') }}</p>
+                            </div>
+                            <div class="feature-card">
+                                <i class="fas fa-mobile-alt"></i>
+                                <h3>{{ t('mobile_optimized') }}</h3>
+                                <p>{{ t('mobile_description') }}</p>
+                            </div>
+                            <div class="feature-card">
+                                <i class="fas fa-language"></i>
+                                <h3>{{ t('multiple_languages') }}</h3>
+                                <p>{{ t('language_description') }}</p>
+                            </div>
+                            <div class="feature-card">
+                                <i class="fas fa-clock"></i>
+                                <h3>{{ t('real_time_info') }}</h3>
+                                <p>{{ t('realtime_description') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Step 5: Final Setup -->
+            <div class="wizard-step" x-show="currentStepIndex === 4" x-transition>
+                <div class="step-content">
+                    <div class="step-icon">
+                        <i class="fas fa-rocket text-4xl text-thai-turquoise mb-4"></i>
+                    </div>
+                    
+                    <h2>{{ t('ready_to_launch') }}</h2>
+                    <p class="step-description">
+                        {{ t('launch_description') }}
+                    </p>
+                    
+                    {% if request.endpoint and 'admin' in request.endpoint %}
+                    <!-- Admin: Configuration Summary -->
+                    <div class="config-summary">
+                        <h4>{{ t('configuration_summary') }}</h4>
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <label>{{ t('practice_name') }}:</label>
+                                <span x-text="wizardData.practice_name || t('not_set')"></span>
+                            </div>
+                            <div class="summary-item">
+                                <label>{{ t('phone') }}:</label>
+                                <span x-text="wizardData.contact_phone || t('not_set')"></span>
+                            </div>
+                            <div class="summary-item">
+                                <label>{{ t('email') }}:</label>
+                                <span x-text="wizardData.contact_email || t('not_set')"></span>
+                            </div>
+                            <div class="summary-item">
+                                <label>{{ t('language') }}:</label>
+                                <span x-text="getLanguageName(wizardData.default_language)"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="next-steps">
+                            <h4>{{ t('next_steps') }}</h4>
+                            <ul class="steps-list">
+                                <li>
+                                    <i class="fas fa-check-circle text-thai-turquoise"></i>
+                                    {{ t('generate_qr_codes') }}
+                                </li>
+                                <li>
+                                    <i class="fas fa-check-circle text-thai-turquoise"></i>
+                                    {{ t('test_mobile_access') }}
+                                </li>
+                                <li>
+                                    <i class="fas fa-check-circle text-thai-turquoise"></i>
+                                    {{ t('print_door_sign') }}
+                                </li>
+                                <li>
+                                    <i class="fas fa-check-circle text-thai-turquoise"></i>
+                                    {{ t('share_with_staff') }}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    {% else %}
+                    <!-- Public: Success Message -->
+                    <div class="success-message">
+                        <div class="success-animation">
+                            <i class="fas fa-check-circle text-6xl text-green-500 mb-4"></i>
+                        </div>
+                        <h3>{{ t('wizard_complete') }}</h3>
+                        <p>{{ t('wizard_complete_description') }}</p>
+                        
+                        <div class="quick-actions">
+                            <a href="tel:{{ contact.phone }}" class="action-button primary">
+                                <i class="fas fa-phone"></i>
+                                {{ t('call_now') }}
+                            </a>
+                            <a href="{{ contact.maps_link }}" target="_blank" class="action-button secondary">
+                                <i class="fas fa-map-marker-alt"></i>
+                                {{ t('get_directions') }}
+                            </a>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+        </div>
+        
+        <!-- Wizard Footer -->
+        <div class="wizard-footer">
+            <div class="wizard-actions">
+                <!-- Previous Button -->
+                <button type="button" 
+                        class="btn-secondary" 
+                        x-show="currentStepIndex > 0"
+                        @click="previousStep()"
+                        :disabled="isLoading">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    {{ t('previous') }}
+                </button>
+                
+                <!-- Skip Button -->
+                <button type="button" 
+                        class="btn-ghost" 
+                        x-show="currentStepIndex > 0 && currentStepIndex < totalSteps - 1"
+                        @click="skipWizard()">
+                    {{ t('skip_wizard') }}
+                </button>
+                
+                <!-- Next/Finish Button -->
+                <button type="button" 
+                        class="btn-primary"
+                        @click="nextStep()"
+                        :disabled="!canProceed || isLoading">
+                    <template x-if="isLoading">
+                        <i class="fas fa-spinner fa-spin mr-2"></i>
+                    </template>
+                    <template x-if="!isLoading">
+                        <i class="fas" :class="isLastStep ? 'fa-rocket' : 'fa-arrow-right'" class="mr-2"></i>
+                    </template>
+                    <span x-text="isLastStep ? t('finish_setup') : t('next')"></span>
+                </button>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<!-- Alpine.js Component Script -->
+<script>
+function gettingStartedWizard() {
+    return {
+        // State
+        showWizard: false,
+        currentStepIndex: 0,
+        isLoading: false,
+        
+        // Wizard data
+        wizardData: {
+            practice_name: '',
+            contact_phone: '',
+            contact_email: '',
+            address: '',
+            default_language: 'th',
+            timezone: 'Asia/Bangkok',
+            hours: {
+                monday: '08:30-12:00, 13:00-16:00',
+                tuesday: '08:30-12:00, 13:00-16:00',
+                wednesday: '08:30-12:00',
+                thursday: '08:30-12:00, 13:00-16:00',
+                friday: '08:30-13:00',
+                saturday: '',
+                sunday: ''
+            },
+            features: {
+                qr_codes: true,
+                kiosk_mode: true,
+                multi_language: true,
+                social_media: false,
+                appointment_booking: false,
+                analytics: false
+            }
+        },
+        
+        // Static data
+        weekDays: [
+            { key: 'monday', name: 'monday' },
+            { key: 'tuesday', name: 'tuesday' },
+            { key: 'wednesday', name: 'wednesday' },
+            { key: 'thursday', name: 'thursday' },
+            { key: 'friday', name: 'friday' },
+            { key: 'saturday', name: 'saturday' },
+            { key: 'sunday', name: 'sunday' }
+        ],
+        
+        sampleWeek: [
+            { name: 'Mon', hours: '08:30-16:00' },
+            { name: 'Tue', hours: '08:30-16:00' },
+            { name: 'Wed', hours: '08:30-12:00' },
+            { name: 'Thu', hours: '08:30-16:00' },
+            { name: 'Fri', hours: '08:30-13:00' },
+            { name: 'Sat', hours: 'Closed' },
+            { name: 'Sun', hours: 'Closed' }
+        ],
+        
+        // Steps configuration
+        steps: [
+            {
+                title: '{{ t("welcome") }}',
+                subtitle: '{{ t("lets_get_started") }}'
+            },
+            {
+                title: '{{ t("basic_information") }}',
+                subtitle: '{{ t("tell_us_about_practice") }}'
+            },
+            {
+                title: '{{ t("opening_hours") }}',
+                subtitle: '{{ t("set_your_schedule") }}'
+            },
+            {
+                title: '{{ t("features") }}',
+                subtitle: '{{ t("customize_your_portal") }}'
+            },
+            {
+                title: '{{ t("all_set") }}',
+                subtitle: '{{ t("ready_to_go_live") }}'
+            }
+        ],
+        
+        // Computed properties
+        get totalSteps() {
+            return this.steps.length;
+        },
+        
+        get progress() {
+            return ((this.currentStepIndex + 1) / this.totalSteps) * 100;
+        },
+        
+        get currentStep() {
+            return this.steps[this.currentStepIndex];
+        },
+        
+        get isLastStep() {
+            return this.currentStepIndex === this.totalSteps - 1;
+        },
+        
+        get canProceed() {
+            switch(this.currentStepIndex) {
+                case 0: return true; // Welcome step
+                case 1: // Basic info
+                    {% if request.endpoint and 'admin' in request.endpoint %}
+                    return this.wizardData.practice_name && 
+                           this.wizardData.contact_phone && 
+                           this.wizardData.contact_email && 
+                           this.wizardData.address;
+                    {% else %}
+                    return true;
+                    {% endif %}
+                case 2: return true; // Hours
+                case 3: return true; // Features
+                case 4: return true; // Final
+                default: return true;
+            }
+        },
+        
+        get isCurrentlyOpen() {
+            // Simple mock - in real app this would check actual hours
+            const now = new Date();
+            const hour = now.getHours();
+            const day = now.getDay();
+            return day >= 1 && day <= 5 && hour >= 8 && hour <= 16;
+        },
+        
+        // Methods
+        init() {
+            // Check if user is first-time or explicitly requested wizard
+            const urlParams = new URLSearchParams(window.location.search);
+            const firstTime = !localStorage.getItem('qr_portal_setup_complete');
+            const forceWizard = urlParams.get('wizard') === 'true';
+            
+            if (firstTime || forceWizard) {
+                this.showWizard = true;
+                this.trackEvent('wizard_started');
+            }
+            
+            // Load existing data if available
+            this.loadExistingData();
+        },
+        
+        nextStep() {
+            if (!this.canProceed) return;
+            
+            if (this.isLastStep) {
+                this.finishWizard();
+            } else {
+                this.currentStepIndex++;
+                this.trackEvent('wizard_step_completed', { step: this.currentStepIndex });
+            }
+        },
+        
+        previousStep() {
+            if (this.currentStepIndex > 0) {
+                this.currentStepIndex--;
+            }
+        },
+        
+        async finishWizard() {
+            this.isLoading = true;
+            
+            try {
+                {% if request.endpoint and 'admin' in request.endpoint %}
+                // Save wizard data for admin setup
+                await this.saveWizardData();
+                {% endif %}
+                
+                // Mark setup as complete
+                localStorage.setItem('qr_portal_setup_complete', 'true');
+                localStorage.setItem('qr_portal_wizard_completed', Date.now());
+                
+                // Track completion
+                this.trackEvent('wizard_completed');
+                
+                // Show success and close
+                this.showSuccessMessage();
+                
+                setTimeout(() => {
+                    this.closeWizard();
+                    {% if request.endpoint and 'admin' in request.endpoint %}
+                    // Redirect to admin dashboard
+                    window.location.href = '/admin?setup=complete';
+                    {% endif %}
+                }, 2000);
+                
+            } catch (error) {
+                console.error('Wizard completion failed:', error);
+                this.showErrorMessage();
+            } finally {
+                this.isLoading = false;
+            }
+        },
+        
+        async saveWizardData() {
+            {% if request.endpoint and 'admin' in request.endpoint %}
+            // Save configuration via API
+            const response = await fetch('/api/admin/wizard/complete', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrf-token]')?.content
+                },
+                body: JSON.stringify(this.wizardData)
+            });
+            
+            if (!response.ok) {
+                throw new Error('Failed to save wizard data');
+            }
+            {% endif %}
+        },
+        
+        skipWizard() {
+            if (confirm(this.t('confirm_skip_wizard'))) {
+                this.trackEvent('wizard_skipped', { step: this.currentStepIndex });
+                this.closeWizard();
+            }
+        },
+        
+        closeWizard() {
+            this.showWizard = false;
+        },
+        
+        applyHoursTemplate(template) {
+            const templates = {
+                standard: {
+                    monday: '09:00-17:00',
+                    tuesday: '09:00-17:00', 
+                    wednesday: '09:00-17:00',
+                    thursday: '09:00-17:00',
+                    friday: '09:00-17:00',
+                    saturday: '',
+                    sunday: ''
+                },
+                medical: {
+                    monday: '08:00-12:00, 13:00-17:00',
+                    tuesday: '08:00-12:00, 13:00-17:00',
+                    wednesday: '08:00-12:00, 13:00-17:00',
+                    thursday: '08:00-12:00, 13:00-17:00',
+                    friday: '08:00-12:00, 13:00-17:00',
+                    saturday: '09:00-13:00',
+                    sunday: ''
+                },
+                halfday: {
+                    monday: '08:30-12:00',
+                    tuesday: '08:30-12:00',
+                    wednesday: '08:30-12:00',
+                    thursday: '08:30-12:00',
+                    friday: '08:30-12:00',
+                    saturday: '',
+                    sunday: ''
+                }
+            };
+            
+            if (templates[template]) {
+                this.wizardData.hours = { ...templates[template] };
+            }
+        },
+        
+        loadExistingData() {
+            // Load any existing configuration
+            {% if request.endpoint and 'admin' in request.endpoint %}
+            // For admin, try to load current settings
+            fetch('/api/admin/current-config')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Populate wizard with existing data
+                        Object.assign(this.wizardData, data.config);
+                    }
+                })
+                .catch(error => {
+                    console.warn('Could not load existing config:', error);
+                });
+            {% endif %}
+        },
+        
+        getLanguageName(code) {
+            const names = {
+                'th': '🇹🇭 ไทย',
+                'de': '🇩🇪 Deutsch',
+                'en': '🇺🇸 English'
+            };
+            return names[code] || code;
+        },
+        
+        showSuccessMessage() {
+            // Could integrate with notification system
+            console.log('Setup completed successfully!');
+        },
+        
+        showErrorMessage() {
+            // Could integrate with notification system
+            console.error('Setup failed. Please try again.');
+        },
+        
+        trackEvent(eventName, data = {}) {
+            // Analytics tracking
+            if (window.analytics) {
+                window.analytics.track(eventName, {
+                    ...data,
+                    timestamp: Date.now(),
+                    user_agent: navigator.userAgent
+                });
+            }
+        },
+        
+        t(key) {
+            // Translation helper - integrate with existing i18n system
+            const translations = {
+                // Would be populated from server-side translations
+                'welcome': '{{ t("welcome") }}',
+                'next': '{{ t("next") }}',
+                'previous': '{{ t("previous") }}',
+                'finish_setup': '{{ t("finish_setup") }}',
+                'skip_wizard': '{{ t("skip_wizard") }}',
+                // ... etc
+            };
+            return translations[key] || key;
+        }
+    }
+}
+
+// Auto-initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if wizard should be shown
+    const hasSeenWizard = localStorage.getItem('qr_portal_setup_complete');
+    const forceWizard = new URLSearchParams(window.location.search).get('wizard') === 'true';
+    
+    if (!hasSeenWizard || forceWizard) {
+        // Initialize wizard
+        setTimeout(() => {
+            if (window.Alpine) {
+                // Trigger wizard if Alpine.js is available
+                const wizardElement = document.getElementById('gettingStartedWizard');
+                if (wizardElement) {
+                    wizardElement._x_dataStack[0].showWizard = true;
+                }
+            }
+        }, 1000);
+    }
+});
+</script>
+
+<!-- Wizard Styles -->
+<style>
+/* Getting Started Wizard Styles */
+.getting-started-wizard {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Sarabun', sans-serif;
+}
+
+.wizard-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+}
+
+.wizard-content {
+    position: relative;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.wizard-header {
+    padding: 24px 32px;
+    background: linear-gradient(135deg, #40E0D0, #20B2AA);
+    color: white;
+    text-align: center;
+    position: relative;
+}
+
+.wizard-icon {
+    font-size: 2rem;
+    margin-bottom: 8px;
+}
+
+.wizard-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+}
+
+.wizard-subtitle {
+    font-size: 1rem;
+    opacity: 0.9;
+    margin: 0;
+}
+
+.wizard-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.25rem;
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.wizard-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.wizard-progress {
+    padding: 16px 32px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.progress-bar {
+    height: 6px;
+    background: #e5e7eb;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #40E0D0, #20B2AA);
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    text-align: center;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.wizard-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 32px;
+}
+
+.wizard-step {
+    display: none;
+}
+
+.wizard-step.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+.step-content {
+    text-align: center;
+}
+
+.step-icon {
+    margin-bottom: 16px;
+}
+
+.step-content h2 {
+    font-size: 1.375rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 12px 0;
+}
+
+.step-description {
+    font-size: 1rem;
+    color: #6b7280;
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+/* Feature highlights */
+.feature-highlights {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin: 24px 0;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    background: #f0fdfa;
+    border-radius: 8px;
+    text-align: left;
+}
+
+.feature-item i {
+    margin-right: 12px;
+    font-size: 1.25rem;
+}
+
+/* Forms */
+.wizard-form {
+    text-align: left;
+    max-width: 100%;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #40E0D0;
+    box-shadow: 0 0 0 3px rgba(64, 224, 208, 0.1);
+}
+
+/* Hours configuration */
+.hours-config {
+    text-align: left;
+}
+
+.quick-hours-templates {
+    margin-bottom: 24px;
+}
+
+.template-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.template-btn {
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.template-btn:hover {
+    border-color: #40E0D0;
+    background: #f0fdfa;
+}
+
+.template-btn small {
+    display: block;
+    color: #6b7280;
+    margin-top: 4px;
+}
+
+.days-grid {
+    display: grid;
+    gap: 16px;
+}
+
+.day-config {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 12px;
+    align-items: center;
+}
+
+.day-label {
+    font-weight: 500;
+    color: #374151;
+}
+
+.hours-input {
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+}
+
+.help-text {
+    grid-column: 2;
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+/* Features configuration */
+.features-config {
+    text-align: left;
+}
+
+.feature-categories {
+    display: grid;
+    gap: 24px;
+}
+
+.category h4 {
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 12px;
+}
+
+.feature-toggles {
+    display: grid;
+    gap: 12px;
+}
+
+.toggle-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    transition: border-color 0.2s;
+}
+
+.toggle-item:hover {
+    border-color: #40E0D0;
+}
+
+.toggle-item input[type="checkbox"] {
+    width: auto;
+    margin-right: 12px;
+}
+
+.toggle-item label {
+    flex: 1;
+    margin: 0;
+    cursor: pointer;
+}
+
+.toggle-item label i {
+    margin-right: 8px;
+    width: 20px;
+    text-align: center;
+}
+
+.toggle-item label small {
+    display: block;
+    color: #6b7280;
+    margin-top: 2px;
+}
+
+/* Configuration summary */
+.config-summary {
+    text-align: left;
+}
+
+.summary-grid {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 24px;
+    background: #f9fafb;
+    padding: 16px;
+    border-radius: 8px;
+}
+
+.summary-item {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 12px;
+}
+
+.summary-item label {
+    font-weight: 500;
+    color: #374151;
+}
+
+.next-steps {
+    margin-top: 24px;
+}
+
+.steps-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.steps-list li {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    color: #374151;
+}
+
+.steps-list li i {
+    margin-right: 12px;
+}
+
+/* Footer */
+.wizard-footer {
+    padding: 20px 32px;
+    background: #f9fafb;
+    border-top: 1px solid #e5e7eb;
+}
+
+.wizard-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Buttons */
+.btn-primary {
+    background: linear-gradient(135deg, #40E0D0, #20B2AA);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+}
+
+.btn-primary:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(64, 224, 208, 0.3);
+}
+
+.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-secondary {
+    background: white;
+    color: #374151;
+    border: 1px solid #d1d5db;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+}
+
+.btn-secondary:hover:not(:disabled) {
+    background: #f9fafb;
+    border-color: #9ca3af;
+}
+
+.btn-ghost {
+    background: none;
+    color: #6b7280;
+    border: none;
+    padding: 12px 16px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.btn-ghost:hover {
+    color: #374151;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.welcome-animation,
+.success-animation {
+    animation: bounce 1s ease-in-out;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .wizard-content {
+        width: 95%;
+        max-height: 95vh;
+    }
+    
+    .wizard-header,
+    .wizard-body,
+    .wizard-footer {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .feature-highlights {
+        grid-template-columns: 1fr;
+    }
+    
+    .template-buttons {
+        grid-template-columns: 1fr;
+    }
+    
+    .day-config {
+        grid-template-columns: 1fr;
+    }
+    
+    .summary-item {
+        grid-template-columns: 1fr;
+        gap: 4px;
+    }
+    
+    .wizard-actions {
+        flex-direction: column;
+        gap: 12px;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .wizard-content {
+        background: #1f2937;
+        color: white;
+    }
+    
+    .wizard-progress {
+        background: #374151;
+    }
+    
+    .progress-bar {
+        background: #4b5563;
+    }
+    
+    .feature-item {
+        background: #374151;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        background: #374151;
+        border-color: #4b5563;
+        color: white;
+    }
+    
+    .template-btn {
+        background: #374151;
+        border-color: #4b5563;
+        color: white;
+    }
+    
+    .wizard-footer {
+        background: #374151;
+        border-color: #4b5563;
+    }
+}
+
+/* Print styles */
+@media print {
+    .getting-started-wizard {
+        display: none !important;
+    }
+}
+</style>

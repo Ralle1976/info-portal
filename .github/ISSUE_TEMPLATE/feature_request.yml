@@ -1,0 +1,201 @@
+name: 🚀 Feature Request
+description: Suggest a new feature or enhancement
+title: "[FEATURE] "
+labels: ["enhancement", "triage"]
+assignees: ["Ralle1976"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a new feature! Please provide as much detail as possible.
+
+  - type: checkboxes
+    id: preliminary-checks
+    attributes:
+      label: Preliminary Checks
+      description: Please confirm you have done the following
+      options:
+        - label: I have searched existing issues to ensure this feature hasn't been requested before
+          required: true
+        - label: I have checked the roadmap and documentation
+          required: true
+        - label: This feature aligns with the project's goals
+
+  - type: dropdown
+    id: feature-category
+    attributes:
+      label: Feature Category
+      description: What type of feature is this?
+      options:
+        - User Interface/Experience
+        - Admin Dashboard
+        - QR Code Functionality
+        - Multi-language Support
+        - Analytics/Reporting
+        - Security/Compliance
+        - Performance
+        - Integration/API
+        - Mobile/Responsive
+        - Kiosk Mode
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: feature-summary
+    attributes:
+      label: Feature Summary
+      description: A brief, clear description of the feature
+      placeholder: "As a user, I want to..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem-statement
+    attributes:
+      label: Problem Statement
+      description: What problem does this feature solve? What is the current limitation?
+      placeholder: "Currently, users cannot... This makes it difficult to..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-solution
+    attributes:
+      label: Proposed Solution
+      description: How would you like this feature to work?
+      placeholder: "I propose that..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: user-stories
+    attributes:
+      label: User Stories
+      description: Describe the feature from different user perspectives
+      placeholder: |
+        **As a patient/visitor:**
+        - I want to... so that I can...
+        
+        **As an admin:**
+        - I want to... so that I can...
+        
+        **As a staff member:**
+        - I want to... so that I can...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: user-types
+    attributes:
+      label: Target Users
+      description: Who would benefit from this feature?
+      multiple: true
+      options:
+        - Patients/Visitors
+        - Administrative Staff
+        - Medical Staff
+        - System Administrators
+        - QR Code Scanners
+        - Kiosk Users
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: What conditions must be met for this feature to be considered complete?
+      placeholder: |
+        - [ ] Criterion 1
+        - [ ] Criterion 2
+        - [ ] Criterion 3
+
+  - type: textarea
+    id: mockups-wireframes
+    attributes:
+      label: Mockups/Wireframes
+      description: If you have any visual ideas, please share them
+      placeholder: "Attach mockups, wireframes, or describe the visual layout"
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How important is this feature?
+      options:
+        - 🔴 Critical - Essential for operation
+        - 🟠 High - Important for user experience
+        - 🟡 Medium - Nice to have
+        - 🟢 Low - Future enhancement
+    validations:
+      required: true
+
+  - type: dropdown
+    id: complexity
+    attributes:
+      label: Estimated Complexity
+      description: How complex do you think this feature would be to implement?
+      options:
+        - 🟢 Simple - Small change or addition
+        - 🟡 Medium - Moderate development effort
+        - 🟠 Complex - Significant development effort
+        - 🔴 Very Complex - Major architectural changes
+        - 🤷 Unknown - Need technical assessment
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternative Solutions
+      description: Have you considered any alternative approaches?
+      placeholder: "I also considered... but this approach is better because..."
+
+  - type: textarea
+    id: technical-considerations
+    attributes:
+      label: Technical Considerations
+      description: Any technical aspects to consider (performance, security, compatibility, etc.)
+      placeholder: "This might affect... We should consider..."
+
+  - type: checkboxes
+    id: language-support
+    attributes:
+      label: Multi-language Support
+      description: Should this feature support multiple languages?
+      options:
+        - label: This feature needs Thai language support
+        - label: This feature needs German language support
+        - label: This feature needs English language support
+        - label: Language support is not applicable
+
+  - type: checkboxes
+    id: platforms
+    attributes:
+      label: Platform Support
+      description: Which platforms should support this feature?
+      options:
+        - label: Desktop browsers
+        - label: Mobile browsers
+        - label: Kiosk mode
+        - label: Admin interface
+        - label: QR code functionality
+
+  - type: textarea
+    id: business-value
+    attributes:
+      label: Business Value
+      description: What business benefit would this feature provide?
+      placeholder: "This feature would improve... reduce... enable..."
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      description: How can you help with this feature?
+      options:
+        - label: I can provide detailed requirements
+        - label: I can help with design/mockups
+        - label: I can help with testing
+        - label: I am willing to contribute code
+        - label: I can provide feedback during development

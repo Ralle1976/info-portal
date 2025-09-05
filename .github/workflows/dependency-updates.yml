@@ -1,0 +1,243 @@
+name: Dependency Updates
+
+on:
+  schedule:
+    # Run every Monday at 10:00 AM UTC
+    - cron: '0 10 * * 1'
+  workflow_dispatch:
+
+jobs:
+  update-python-dependencies:
+    name: Update Python Dependencies
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install pip-tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install pip-tools
+      
+      - name: Update requirements
+        run: |
+          # Backup current requirements
+          cp requirements.txt requirements.txt.bak
+          
+          # Generate updated requirements
+          pip-compile --upgrade requirements.in
+          
+          # Check if there are changes
+          if ! cmp -s requirements.txt requirements.txt.bak; then
+            echo "DEPENDENCIES_UPDATED=true" >> $GITHUB_ENV
+            echo "Dependencies have been updated"
+          else
+            echo "DEPENDENCIES_UPDATED=false" >> $GITHUB_ENV
+            echo "No dependency updates available"
+          fi
+      
+      - name: Test updated dependencies
+        if: env.DEPENDENCIES_UPDATED == 'true'
+        run: |
+          # Install updated dependencies
+          pip install -r requirements.txt
+          pip install pytest pytest-flask
+          
+          # Run basic tests
+          python -m pytest tests/ -v --tb=short
+          
+          # Test application startup
+          export FLASK_ENV=testing
+          export SECRET_KEY=test-key
+          export ADMIN_USERNAME=test
+          export ADMIN_PASSWORD=test
+          python -c "from app import create_app; app = create_app(); print('App starts successfully')"
+      
+      - name: Create Pull Request
+        if: env.DEPENDENCIES_UPDATED == 'true'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: Update Python dependencies"
+          title: "🔄 Automated Python Dependency Updates"
+          body: |
+            This PR contains automated updates to Python dependencies.
+            
+            ## Changes
+            - Updated requirements.txt with latest compatible versions
+            - All tests pass with new dependencies
+            - Application startup test successful
+            
+            ## Review Checklist
+            - [ ] Review dependency changes
+            - [ ] Check for breaking changes in major version updates
+            - [ ] Verify security implications
+            - [ ] Run full test suite after merge
+            
+            This PR was created automatically by GitHub Actions.
+          branch: dependency-updates/python-$(date +%Y%m%d)
+          delete-branch: true
+
+  update-github-actions:
+    name: Update GitHub Actions
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Update GitHub Actions
+        id: update-actions
+        run: |
+          # List of action files to check
+          action_files=(.github/workflows/*.yml)
+          updated_files=()
+          
+          for file in "${action_files[@]}"; do
+            if [[ -f "$file" ]]; then
+              echo "Checking $file for action updates..."
+              
+              # Update common actions to latest versions
+              sed -i 's/actions\/checkout@v[0-9]/actions\/checkout@v4/g' "$file"
+              sed -i 's/actions\/setup-python@v[0-9]/actions\/setup-python@v4/g' "$file"
+              sed -i 's/actions\/setup-node@v[0-9]/actions\/setup-node@v4/g' "$file"
+              sed -i 's/actions\/cache@v[0-9]/actions\/cache@v3/g' "$file"
+              sed -i 's/docker\/build-push-action@v[0-9]/docker\/build-push-action@v5/g' "$file"
+              sed -i 's/docker\/setup-buildx-action@v[0-9]/docker\/setup-buildx-action@v3/g' "$file"
+              
+              # Check if file was modified
+              if ! git diff --quiet "$file"; then
+                updated_files+=("$file")
+              fi
+            fi
+          done
+          
+          if [ ${#updated_files[@]} -gt 0 ]; then
+            echo "ACTIONS_UPDATED=true" >> $GITHUB_ENV
+            echo "Updated files: ${updated_files[@]}"
+          else
+            echo "ACTIONS_UPDATED=false" >> $GITHUB_ENV
+            echo "No action updates needed"
+          fi
+      
+      - name: Create Pull Request for Actions
+        if: env.ACTIONS_UPDATED == 'true'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "ci: Update GitHub Actions to latest versions"
+          title: "🔄 Update GitHub Actions Dependencies"
+          body: |
+            This PR updates GitHub Actions to their latest versions.
+            
+            ## Changes
+            - Updated action versions for better security and features
+            - All workflow files have been checked and updated
+            
+            ## Benefits
+            - Latest security fixes
+            - Improved performance
+            - New features and bug fixes
+            
+            This PR was created automatically by GitHub Actions.
+          branch: dependency-updates/actions-$(date +%Y%m%d)
+          delete-branch: true
+
+  security-audit:
+    name: Security Dependency Audit
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install security tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install safety pip-audit
+          pip install -r requirements.txt
+      
+      - name: Run security audit
+        run: |
+          echo "## Security Audit Report" > security-report.md
+          echo "Date: $(date)" >> security-report.md
+          echo "" >> security-report.md
+          
+          echo "### Safety Check" >> security-report.md
+          safety check --json > safety-output.json || true
+          
+          if [ -s safety-output.json ]; then
+            echo "⚠️ Security vulnerabilities found:" >> security-report.md
+            cat safety-output.json >> security-report.md
+          else
+            echo "✅ No known security vulnerabilities found." >> security-report.md
+          fi
+          
+          echo "" >> security-report.md
+          echo "### Pip Audit" >> security-report.md
+          pip-audit --format=json > pip-audit-output.json || true
+          
+          if [ -s pip-audit-output.json ]; then
+            echo "⚠️ Pip audit findings:" >> security-report.md
+            cat pip-audit-output.json >> security-report.md
+          else
+            echo "✅ No pip audit findings." >> security-report.md
+          fi
+      
+      - name: Create security issue if vulnerabilities found
+        run: |
+          if [ -s safety-output.json ] || [ -s pip-audit-output.json ]; then
+            echo "SECURITY_ISSUES_FOUND=true" >> $GITHUB_ENV
+          else
+            echo "SECURITY_ISSUES_FOUND=false" >> $GITHUB_ENV
+          fi
+      
+      - name: Upload security report
+        uses: actions/upload-artifact@v3
+        with:
+          name: security-audit-report
+          path: security-report.md
+      
+      - name: Create Security Issue
+        if: env.SECURITY_ISSUES_FOUND == 'true'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "security: Address dependency vulnerabilities"
+          title: "🚨 Security Alert: Dependency Vulnerabilities Found"
+          body: |
+            ## Security Alert
+            
+            Automated security scan has detected potential vulnerabilities in dependencies.
+            
+            **Action Required:**
+            1. Review the security report (attached as artifact)
+            2. Update affected dependencies
+            3. Test thoroughly after updates
+            4. Deploy security fixes as soon as possible
+            
+            ### Security Report Summary
+            See the attached security-audit-report artifact for detailed findings.
+            
+            ### Priority
+            🔴 **HIGH** - Security vulnerabilities require immediate attention
+            
+            This issue was created automatically by scheduled security scans.
+          branch: security-updates/$(date +%Y%m%d)
+          labels: security,high-priority
+          draft: false

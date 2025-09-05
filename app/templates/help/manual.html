@@ -1,0 +1,470 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page_title }} - QR Info Portal{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/help-system.css') }}">
+<style>
+.manual-nav {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    overflow: hidden;
+}
+
+.manual-nav-header {
+    background: linear-gradient(135deg, #40E0D0, #20B2AA);
+    color: white;
+    padding: 1rem 1.5rem;
+    font-weight: 600;
+}
+
+.manual-nav-item {
+    padding: 12px 24px;
+    border-bottom: 1px solid #f3f4f6;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+}
+
+.manual-nav-item:hover {
+    background-color: #f9fafb;
+}
+
+.manual-nav-item.active {
+    background-color: #f0fdfa;
+    border-left: 4px solid #40E0D0;
+}
+
+.manual-nav-item:last-child {
+    border-bottom: none;
+}
+
+.manual-content {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    min-height: 500px;
+}
+
+.manual-content-header {
+    background: linear-gradient(135deg, #40E0D0, #20B2AA);
+    color: white;
+    padding: 1.5rem 2rem;
+    border-radius: 8px 8px 0 0;
+}
+
+.manual-content-body {
+    padding: 2rem;
+}
+
+.manual-section {
+    display: none;
+}
+
+.manual-section.active {
+    display: block;
+}
+
+.help-section-item {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    border-left: 4px solid #40E0D0;
+}
+
+.help-section-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #1f2937;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.help-section-content {
+    color: #4b5563;
+    line-height: 1.6;
+}
+
+.help-section-content ul, .help-section-content ol {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+}
+
+.help-section-content li {
+    margin-bottom: 0.5rem;
+}
+
+.quick-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.quick-action-card {
+    background: #f0fdfa;
+    border: 2px solid #99f6e4;
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-center;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.quick-action-card:hover {
+    border-color: #5eead4;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(64, 224, 208, 0.2);
+}
+
+.search-manual {
+    max-width: 400px;
+    margin: 0 auto 2rem auto;
+    position: relative;
+}
+
+@media (max-width: 768px) {
+    .manual-container {
+        flex-direction: column;
+    }
+    
+    .manual-nav {
+        order: 2;
+        margin-top: 2rem;
+        margin-bottom: 0;
+    }
+    
+    .manual-content {
+        order: 1;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-thai-turquoise/5 to-thai-coral/5">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">
+                <i class="fas fa-book text-thai-turquoise mr-3"></i>
+                {{ page_title }}
+            </h1>
+            <p class="text-gray-600">{{ t('manual_subtitle', 'Vollständige Anleitung für das QR Info Portal') }}</p>
+        </div>
+
+        <!-- Search -->
+        <div class="search-manual">
+            <div class="relative">
+                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                <input type="text" 
+                       class="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-full focus:border-thai-turquoise focus:outline-none" 
+                       id="manualSearch"
+                       placeholder="{{ t('search_manual_placeholder', 'Handbuch durchsuchen...') }}">
+            </div>
+        </div>
+
+        <div class="manual-container flex gap-6">
+            <!-- Navigation -->
+            <div class="manual-nav w-80">
+                <div class="manual-nav-header">
+                    <i class="fas fa-list mr-2"></i>
+                    {{ t('table_of_contents', 'Inhaltsverzeichnis') }}
+                </div>
+                
+                <div class="manual-nav-item active" data-section="overview">
+                    <i class="fas fa-home mr-3 text-thai-turquoise"></i>
+                    {{ t('overview', 'Übersicht') }}
+                </div>
+                
+                {% for page_id, help_data in pages_help.items() %}
+                <div class="manual-nav-item" data-section="{{ page_id }}">
+                    <i class="fas fa-{{ 
+                        'tachometer-alt' if 'dashboard' in page_id else
+                        'info-circle' if 'status' in page_id else
+                        'clock' if 'hours' in page_id else
+                        'bullhorn' if 'announcements' in page_id else
+                        'home'
+                    }} mr-3 text-thai-turquoise"></i>
+                    {{ help_data.title or page_id.replace('_', ' ').title() }}
+                </div>
+                {% endfor %}
+                
+                <div class="manual-nav-item" data-section="troubleshooting">
+                    <i class="fas fa-tools mr-3 text-thai-turquoise"></i>
+                    {{ t('troubleshooting', 'Problemlösung') }}
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="manual-content flex-1">
+                <div class="manual-content-header">
+                    <h2 id="currentSectionTitle">{{ t('overview', 'Übersicht') }}</h2>
+                </div>
+                
+                <div class="manual-content-body">
+                    <!-- Overview Section -->
+                    <div class="manual-section active" data-section="overview">
+                        <h3 class="text-xl font-semibold mb-4">{{ t('welcome_to_manual', 'Willkommen zum QR Info Portal Handbuch') }}</h3>
+                        
+                        <p class="text-gray-600 mb-6">
+                            {{ t('manual_intro', 'Dieses interaktive Handbuch führt Sie durch alle Funktionen des QR Info Portals. Wählen Sie ein Thema aus dem Menü links oder nutzen Sie die Suchfunktion oben.') }}
+                        </p>
+                        
+                        <div class="quick-actions-grid">
+                            <div class="quick-action-card" onclick="showSection('admin_dashboard')">
+                                <i class="fas fa-tachometer-alt text-3xl text-thai-turquoise mb-3"></i>
+                                <h4 class="font-semibold">{{ t('admin_guide', 'Admin-Anleitung') }}</h4>
+                                <p class="text-sm text-gray-600 mt-2">{{ t('admin_guide_desc', 'Verwaltung und Konfiguration') }}</p>
+                            </div>
+                            
+                            <div class="quick-action-card" onclick="showSection('home')">
+                                <i class="fas fa-users text-3xl text-thai-coral mb-3"></i>
+                                <h4 class="font-semibold">{{ t('visitor_guide', 'Besucher-Anleitung') }}</h4>
+                                <p class="text-sm text-gray-600 mt-2">{{ t('visitor_guide_desc', 'Nutzung der öffentlichen Seite') }}</p>
+                            </div>
+                            
+                            <div class="quick-action-card" onclick="showSection('troubleshooting')">
+                                <i class="fas fa-tools text-3xl text-thai-gold mb-3"></i>
+                                <h4 class="font-semibold">{{ t('troubleshooting', 'Problemlösung') }}</h4>
+                                <p class="text-sm text-gray-600 mt-2">{{ t('troubleshooting_desc', 'Häufige Probleme lösen') }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic sections from help data -->
+                    {% for page_id, help_data in pages_help.items() %}
+                    <div class="manual-section" data-section="{{ page_id }}">
+                        <h3 class="text-xl font-semibold mb-4">{{ help_data.title }}</h3>
+                        
+                        {% if help_data.description %}
+                        <p class="text-gray-600 mb-6">{{ help_data.description }}</p>
+                        {% endif %}
+                        
+                        {% for section in help_data.sections %}
+                        <div class="help-section-item">
+                            <div class="help-section-title">
+                                <i class="fas fa-{{ 
+                                    'info-circle' if loop.index == 1 else
+                                    'cog' if loop.index == 2 else
+                                    'lightbulb' if loop.index == 3 else
+                                    'question-circle'
+                                }} mr-2 text-thai-turquoise"></i>
+                                {{ section.title }}
+                            </div>
+                            <div class="help-section-content">
+                                {{ section.content|replace('\n', '<br>')|replace('**', '<strong>')|replace('**', '</strong>')|safe }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                        
+                        {% if help_data.quick_actions %}
+                        <h4 class="text-lg font-semibold mt-6 mb-4">{{ t('quick_actions', 'Schnellaktionen') }}</h4>
+                        <div class="quick-actions-grid">
+                            {% for action in help_data.quick_actions %}
+                            <div class="quick-action-card">
+                                <div class="font-medium">{{ action.title }}</div>
+                                <p class="text-sm text-gray-600 mt-1">{{ action.description }}</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+
+                    <!-- Troubleshooting Section -->
+                    <div class="manual-section" data-section="troubleshooting">
+                        <h3 class="text-xl font-semibold mb-4">{{ t('troubleshooting', 'Problemlösung') }}</h3>
+                        
+                        <div class="help-section-item">
+                            <div class="help-section-title">
+                                <i class="fas fa-wifi mr-2 text-thai-turquoise"></i>
+                                {{ t('connection_issues', 'Verbindungsprobleme') }}
+                            </div>
+                            <div class="help-section-content">
+                                <ul>
+                                    <li>{{ t('check_internet', 'Internetverbindung prüfen') }}</li>
+                                    <li>{{ t('try_refresh', 'Seite neu laden (F5 oder Strg+R)') }}</li>
+                                    <li>{{ t('clear_cache', 'Browser-Cache leeren') }}</li>
+                                    <li>{{ t('try_different_browser', 'Anderen Browser versuchen') }}</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="help-section-item">
+                            <div class="help-section-title">
+                                <i class="fas fa-mobile-alt mr-2 text-thai-turquoise"></i>
+                                {{ t('mobile_issues', 'Mobile Probleme') }}
+                            </div>
+                            <div class="help-section-content">
+                                <ul>
+                                    <li>{{ t('qr_scan_issues', 'QR-Code scannen: Kamera-App oder QR-Scanner verwenden') }}</li>
+                                    <li>{{ t('touch_issues', 'Touch-Probleme: Seite zoom zurücksetzen') }}</li>
+                                    <li>{{ t('slow_loading', 'Langsames Laden: WLAN-Verbindung prüfen') }}</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="help-section-item">
+                            <div class="help-section-title">
+                                <i class="fas fa-user-shield mr-2 text-thai-turquoise"></i>
+                                {{ t('admin_issues', 'Admin-Probleme') }}
+                            </div>
+                            <div class="help-section-content">
+                                <ul>
+                                    <li>{{ t('login_issues', 'Login-Probleme: Passwort prüfen, Caps Lock beachten') }}</li>
+                                    <li>{{ t('changes_not_visible', 'Änderungen nicht sichtbar: Browser neu laden') }}</li>
+                                    <li>{{ t('session_expired', 'Sitzung abgelaufen: Erneut anmelden') }}</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Back to Portal -->
+        <div class="text-center mt-8">
+            <a href="{{ url_for('public.home') }}" class="text-thai-turquoise hover:text-thai-turquoise/80 font-medium">
+                <i class="fas fa-arrow-left mr-2"></i>
+                {{ t('back_to_portal', 'Zurück zum Portal') }}
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+// Manual navigation
+function showSection(sectionId) {
+    // Hide all sections
+    document.querySelectorAll('.manual-section').forEach(section => {
+        section.classList.remove('active');
+    });
+    
+    // Remove active class from nav items
+    document.querySelectorAll('.manual-nav-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    
+    // Show selected section
+    const section = document.querySelector(`[data-section="${sectionId}"]`);
+    if (section && section.classList.contains('manual-section')) {
+        section.classList.add('active');
+    }
+    
+    // Activate nav item
+    const navItem = document.querySelector(`.manual-nav-item[data-section="${sectionId}"]`);
+    if (navItem) {
+        navItem.classList.add('active');
+        
+        // Update header title
+        const title = navItem.textContent.trim();
+        document.getElementById('currentSectionTitle').textContent = title;
+    }
+    
+    // Scroll to top of content
+    document.querySelector('.manual-content-body').scrollTop = 0;
+}
+
+// Navigation click handlers
+document.querySelectorAll('.manual-nav-item').forEach(item => {
+    item.addEventListener('click', function() {
+        const sectionId = this.dataset.section;
+        showSection(sectionId);
+    });
+});
+
+// Search functionality
+document.getElementById('manualSearch').addEventListener('input', function(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    
+    if (searchTerm === '') {
+        // Clear highlights
+        clearHighlights();
+        return;
+    }
+    
+    // Search through all sections
+    let foundResults = false;
+    document.querySelectorAll('.manual-section').forEach(section => {
+        const content = section.textContent.toLowerCase();
+        const hasMatch = content.includes(searchTerm);
+        
+        if (hasMatch) {
+            foundResults = true;
+            highlightText(section, searchTerm);
+            
+            // Show this section if it has matches
+            if (!section.classList.contains('active')) {
+                showSection(section.dataset.section);
+            }
+        }
+    });
+    
+    if (foundResults) {
+        // Scroll to first highlight
+        const firstHighlight = document.querySelector('mark');
+        if (firstHighlight) {
+            firstHighlight.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+});
+
+function highlightText(container, term) {
+    // Simple text highlighting
+    const walker = document.createTreeWalker(
+        container,
+        NodeFilter.SHOW_TEXT,
+        null,
+        false
+    );
+    
+    const nodes = [];
+    let node;
+    while (node = walker.nextNode()) {
+        nodes.push(node);
+    }
+    
+    nodes.forEach(textNode => {
+        const parent = textNode.parentNode;
+        if (parent.tagName !== 'SCRIPT' && parent.tagName !== 'STYLE') {
+            const text = textNode.textContent;
+            const regex = new RegExp(`(${term})`, 'gi');
+            if (regex.test(text)) {
+                const newHTML = text.replace(regex, '<mark>$1</mark>');
+                const wrapper = document.createElement('span');
+                wrapper.innerHTML = newHTML;
+                parent.insertBefore(wrapper, textNode);
+                parent.removeChild(textNode);
+            }
+        }
+    });
+}
+
+function clearHighlights() {
+    document.querySelectorAll('mark').forEach(mark => {
+        const parent = mark.parentNode;
+        parent.replaceChild(document.createTextNode(mark.textContent), mark);
+        parent.normalize();
+    });
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        document.getElementById('manualSearch').value = '';
+        clearHighlights();
+    }
+    
+    if (e.ctrlKey && e.key === 'f') {
+        e.preventDefault();
+        document.getElementById('manualSearch').focus();
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,1030 @@
+/* ================================================
+   ENHANCED UI COMPONENTS
+   Medical Portal with Thai Cultural Elements
+   ================================================ */
+
+/* ========================================
+   ENHANCED STATUS COMMUNICATION
+   Clear visual indicators for portal status
+   ======================================== */
+
+/* Live Status Banner */
+.status-banner {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  margin-bottom: var(--space-6);
+  animation: status-entrance 0.5s ease-out;
+}
+
+.status-banner-open {
+  background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
+  border: 2px solid var(--color-status-open);
+  box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.2);
+}
+
+.status-banner-closed {
+  background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+  border: 2px solid var(--color-status-closed);
+  box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.2);
+}
+
+.status-banner-warning {
+  background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+  border: 2px solid var(--color-status-warning);
+  box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.2);
+}
+
+/* Animated Status Icon */
+.status-icon-container {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  margin-bottom: var(--space-4);
+}
+
+.status-icon {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: white;
+  position: relative;
+  z-index: 2;
+}
+
+.status-icon-open {
+  background: var(--color-status-open);
+  animation: pulse-grow 2s ease-in-out infinite;
+}
+
+.status-icon-closed {
+  background: var(--color-status-closed);
+}
+
+.status-icon-warning {
+  background: var(--color-status-warning);
+  animation: shake 2s ease-in-out infinite;
+}
+
+/* Status Icon Effects */
+.status-icon::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: var(--radius-full);
+  background: inherit;
+  opacity: 0.3;
+  z-index: -1;
+  animation: pulse-ring 2s ease-in-out infinite;
+}
+
+@keyframes status-entrance {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-grow {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.1;
+  }
+  100% {
+    transform: scale(1.2);
+    opacity: 0;
+  }
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-2px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(2px);
+  }
+}
+
+/* ========================================
+   ENHANCED CARD SYSTEM
+   Medical-grade professional cards
+   ======================================== */
+
+.card-medical-enhanced {
+  background: white;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  position: relative;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0, 168, 107, 0.1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05),
+              0 2px 4px -1px rgba(0, 0, 0, 0.02);
+}
+
+.card-medical-enhanced::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--color-medical-green) 0%, var(--color-medical-green-light) 100%);
+}
+
+.card-medical-enhanced:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08),
+              0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Card with Icon Header */
+.card-icon-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%);
+  border-bottom: 1px solid rgba(0, 168, 107, 0.1);
+}
+
+.card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-lg);
+  background: var(--color-medical-green);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+/* Interactive Card */
+.card-interactive-enhanced {
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.card-interactive-enhanced::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(0, 206, 209, 0.1);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.card-interactive-enhanced:active::after {
+  width: 600px;
+  height: 600px;
+}
+
+/* ========================================
+   TIME DISPLAY COMPONENTS
+   Enhanced clock and date displays
+   ======================================== */
+
+.time-display-large {
+  font-family: var(--font-mono);
+  font-size: 4rem;
+  font-weight: 700;
+  color: var(--color-primary-500);
+  text-align: center;
+  letter-spacing: -0.025em;
+  line-height: 1;
+  margin: var(--space-6) 0;
+  position: relative;
+}
+
+.time-display-large::after {
+  content: 'Bangkok Time';
+  position: absolute;
+  bottom: -1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: var(--color-gray-500);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Animated Time Separator */
+.time-separator {
+  display: inline-block;
+  animation: blink 1s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Date Display with Thai Style */
+.date-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  background: linear-gradient(135deg, rgba(64, 224, 208, 0.05) 0%, rgba(255, 127, 80, 0.05) 100%);
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(64, 224, 208, 0.2);
+}
+
+.date-display-day {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-primary-500);
+}
+
+.date-display-month {
+  font-size: 1.125rem;
+  color: var(--color-gray-700);
+  font-weight: 500;
+}
+
+.date-display-year {
+  font-size: 1rem;
+  color: var(--color-gray-500);
+}
+
+/* ========================================
+   ENHANCED BUTTON SYSTEM
+   Professional medical-grade buttons
+   ======================================== */
+
+/* 3D Button Effect */
+.btn-3d {
+  position: relative;
+  transform-style: preserve-3d;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.2),
+              0 6px 12px 0 rgba(0, 0, 0, 0.1);
+}
+
+.btn-3d:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2),
+              0 8px 16px 0 rgba(0, 0, 0, 0.15);
+}
+
+.btn-3d:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 0 rgba(0, 0, 0, 0.2),
+              0 2px 4px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Gradient Buttons */
+.btn-gradient-medical {
+  background: linear-gradient(135deg, var(--color-medical-green) 0%, var(--color-medical-green-light) 100%);
+  color: white;
+  border: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-gradient-medical::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.btn-gradient-medical:hover::before {
+  left: 100%;
+}
+
+/* Icon Button with Tooltip */
+.btn-icon-tooltip {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-white);
+  border: 2px solid var(--color-gray-200);
+  color: var(--color-gray-700);
+  transition: all 0.2s ease;
+}
+
+.btn-icon-tooltip:hover {
+  border-color: var(--color-primary-500);
+  color: var(--color-primary-500);
+  transform: scale(1.1);
+}
+
+.btn-icon-tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) scale(0.8);
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-gray-900);
+  color: var(--color-white);
+  font-size: var(--text-sm);
+  white-space: nowrap;
+  border-radius: var(--radius-md);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.2s ease;
+}
+
+.btn-icon-tooltip:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+
+/* ========================================
+   FORM ENHANCEMENTS
+   Medical-grade form inputs
+   ======================================== */
+
+/* Floating Label Input */
+.form-floating {
+  position: relative;
+  margin-bottom: var(--space-6);
+}
+
+.form-floating-input {
+  width: 100%;
+  padding: var(--space-5) var(--space-4) var(--space-2);
+  font-size: var(--text-base);
+  border: 2px solid var(--color-gray-300);
+  border-radius: var(--radius-lg);
+  background: var(--color-white);
+  transition: all 0.2s ease;
+}
+
+.form-floating-label {
+  position: absolute;
+  top: 50%;
+  left: var(--space-4);
+  transform: translateY(-50%);
+  font-size: var(--text-base);
+  color: var(--color-gray-500);
+  background: var(--color-white);
+  padding: 0 var(--space-2);
+  pointer-events: none;
+  transition: all 0.2s ease;
+}
+
+.form-floating-input:focus,
+.form-floating-input:not(:placeholder-shown) {
+  border-color: var(--color-primary-500);
+  padding-top: var(--space-6);
+  padding-bottom: var(--space-2);
+}
+
+.form-floating-input:focus ~ .form-floating-label,
+.form-floating-input:not(:placeholder-shown) ~ .form-floating-label {
+  top: 0;
+  transform: translateY(-50%);
+  font-size: var(--text-sm);
+  color: var(--color-primary-500);
+}
+
+/* Enhanced Radio & Checkbox */
+.form-check-enhanced {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.form-check-enhanced:hover {
+  background: var(--color-gray-50);
+  border-radius: var(--radius-lg);
+}
+
+.form-check-input-enhanced {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--color-gray-400);
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.form-check-input-enhanced:checked {
+  background: var(--color-primary-500);
+  border-color: var(--color-primary-500);
+}
+
+.form-check-input-enhanced:checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.form-radio-enhanced {
+  border-radius: var(--radius-full);
+}
+
+.form-radio-enhanced:checked::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background: white;
+  border-radius: var(--radius-full);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* ========================================
+   NAVIGATION ENHANCEMENTS
+   Medical portal navigation
+   ======================================== */
+
+.nav-medical {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0, 168, 107, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+}
+
+.nav-item-medical {
+  position: relative;
+  padding: var(--space-4) var(--space-6);
+  color: var(--color-gray-700);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.nav-item-medical::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background: var(--color-medical-green);
+  transition: width 0.3s ease;
+}
+
+.nav-item-medical:hover::before,
+.nav-item-medical.active::before {
+  width: 100%;
+}
+
+.nav-item-medical:hover {
+  color: var(--color-medical-green);
+}
+
+.nav-item-medical.active {
+  color: var(--color-medical-green);
+  background: rgba(0, 168, 107, 0.05);
+}
+
+/* Mobile Navigation */
+.nav-mobile-toggle {
+  display: none;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  position: relative;
+}
+
+.nav-mobile-toggle span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--color-gray-700);
+  margin: 5px auto;
+  transition: all 0.3s ease;
+}
+
+.nav-mobile-toggle.active span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.nav-mobile-toggle.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.nav-mobile-toggle.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(5px, -5px);
+}
+
+@media (max-width: 768px) {
+  .nav-mobile-toggle {
+    display: block;
+  }
+  
+  .nav-items {
+    position: fixed;
+    top: 60px;
+    left: -100%;
+    width: 100%;
+    height: calc(100vh - 60px);
+    background: white;
+    flex-direction: column;
+    padding: var(--space-6);
+    transition: left 0.3s ease;
+    box-shadow: var(--shadow-xl);
+  }
+  
+  .nav-items.active {
+    left: 0;
+  }
+}
+
+/* ========================================
+   LOADING & SKELETON SCREENS
+   Medical-grade loading states
+   ======================================== */
+
+.skeleton-medical {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite;
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Medical Loading Spinner */
+.loading-medical {
+  width: 48px;
+  height: 48px;
+  position: relative;
+}
+
+.loading-medical::before,
+.loading-medical::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  border-top-color: var(--color-medical-green);
+  animation: spin 1.2s linear infinite;
+}
+
+.loading-medical::after {
+  border-top-color: var(--color-medical-green-light);
+  animation-delay: 0.3s;
+  width: 80%;
+  height: 80%;
+  top: 10%;
+  left: 10%;
+}
+
+/* ========================================
+   NOTIFICATIONS & ALERTS
+   Medical-grade notification system
+   ======================================== */
+
+.alert-medical {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-6);
+  border-radius: var(--radius-lg);
+  border: 1px solid;
+  position: relative;
+  animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.alert-medical-success {
+  background: var(--color-status-success-bg);
+  border-color: var(--color-status-success);
+  color: var(--color-status-success);
+}
+
+.alert-medical-error {
+  background: var(--color-status-closed-bg);
+  border-color: var(--color-status-closed);
+  color: var(--color-status-closed);
+}
+
+.alert-medical-warning {
+  background: var(--color-status-warning-bg);
+  border-color: var(--color-status-warning);
+  color: var(--color-status-warning);
+}
+
+.alert-medical-info {
+  background: var(--color-status-info-bg);
+  border-color: var(--color-status-info);
+  color: var(--color-status-info);
+}
+
+.alert-icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  background: currentColor;
+  color: white;
+}
+
+.alert-content {
+  flex: 1;
+}
+
+.alert-title {
+  font-weight: var(--font-semibold);
+  margin-bottom: var(--space-1);
+  color: var(--color-gray-900);
+}
+
+.alert-message {
+  font-size: var(--text-sm);
+  color: var(--color-gray-700);
+}
+
+.alert-dismiss {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  width: 24px;
+  height: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: currentColor;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+.alert-dismiss:hover {
+  opacity: 1;
+}
+
+/* ========================================
+   MODAL & DIALOG ENHANCEMENTS
+   Medical portal modals
+   ======================================== */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: var(--z-modal-backdrop);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.modal-backdrop.active {
+  opacity: 1;
+}
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  background: var(--color-white);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-2xl);
+  max-width: 90%;
+  max-height: 90vh;
+  overflow: hidden;
+  z-index: var(--z-modal);
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.modal.active {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.modal-header {
+  padding: var(--space-6);
+  border-bottom: 1px solid var(--color-gray-200);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-title {
+  font-size: var(--text-xl);
+  font-weight: var(--font-semibold);
+  color: var(--color-gray-900);
+}
+
+.modal-body {
+  padding: var(--space-6);
+  max-height: calc(90vh - 200px);
+  overflow-y: auto;
+}
+
+.modal-footer {
+  padding: var(--space-4) var(--space-6);
+  border-top: 1px solid var(--color-gray-200);
+  display: flex;
+  gap: var(--space-3);
+  justify-content: flex-end;
+}
+
+/* ========================================
+   KIOSK MODE ENHANCEMENTS
+   Large display optimizations
+   ======================================== */
+
+.kiosk-container-enhanced {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #F0FDF4 0%, #E0F2FE 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8);
+}
+
+.kiosk-card-enhanced {
+  background: white;
+  border-radius: var(--radius-3xl);
+  box-shadow: var(--shadow-2xl);
+  padding: var(--space-10);
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.kiosk-card-enhanced::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background: linear-gradient(90deg, var(--color-primary-500) 0%, var(--color-secondary-500) 50%, var(--color-accent) 100%);
+}
+
+.kiosk-time-display {
+  font-size: 6rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--color-primary-500);
+  font-family: var(--font-mono);
+  letter-spacing: -0.05em;
+  margin: var(--space-8) 0;
+}
+
+.kiosk-status-large {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-6) var(--space-10);
+  font-size: 2rem;
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  box-shadow: var(--shadow-lg);
+}
+
+/* ========================================
+   QR CODE ENHANCEMENTS
+   Medical portal QR styling
+   ======================================== */
+
+.qr-container-enhanced {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  background: linear-gradient(135deg, rgba(64, 224, 208, 0.05) 0%, rgba(255, 127, 80, 0.05) 100%);
+  border: 2px dashed var(--color-primary-300);
+  border-radius: var(--radius-xl);
+  position: relative;
+}
+
+.qr-container-enhanced::before {
+  content: 'SCAN ME';
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-white);
+  padding: 0 var(--space-3);
+  color: var(--color-primary-500);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  letter-spacing: 0.1em;
+}
+
+.qr-code-enhanced {
+  padding: var(--space-4);
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.qr-code-enhanced img {
+  display: block;
+  width: 200px;
+  height: 200px;
+}
+
+/* ========================================
+   ACCESSIBILITY ENHANCEMENTS
+   WCAG 2.1 AA Compliance
+   ======================================== */
+
+/* Enhanced Focus States */
+*:focus-visible {
+  outline: 3px solid var(--color-primary-500);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 6px rgba(0, 206, 209, 0.2);
+}
+
+/* Skip Links */
+.skip-links {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--color-primary-500);
+  color: white;
+  padding: var(--space-3) var(--space-4);
+  text-decoration: none;
+  border-radius: 0 0 var(--radius-lg) 0;
+  z-index: var(--z-tooltip);
+  transition: top 0.2s ease;
+}
+
+.skip-links:focus {
+  top: 0;
+}
+
+/* Keyboard Navigation Indicators */
+.keyboard-focus-indicator {
+  position: relative;
+}
+
+.keyboard-focus-indicator::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border: 2px solid var(--color-primary-500);
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.keyboard-focus-indicator:focus-visible::after {
+  opacity: 1;
+}
+
+/* ========================================
+   RESPONSIVE ADJUSTMENTS
+   Mobile-first responsive design
+   ======================================== */
+
+@media (max-width: 640px) {
+  .status-banner {
+    padding: var(--space-4);
+  }
+  
+  .status-icon-container {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .time-display-large {
+    font-size: 2.5rem;
+  }
+  
+  .card-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.25rem;
+  }
+  
+  .btn {
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--text-sm);
+  }
+}
+
+@media (min-width: 1024px) {
+  .kiosk-time-display {
+    font-size: 8rem;
+  }
+  
+  .kiosk-status-large {
+    font-size: 2.5rem;
+    padding: var(--space-8) var(--space-12);
+  }
+  
+  .qr-code-enhanced img {
+    width: 300px;
+    height: 300px;
+  }
+}
+
+/* ========================================
+   PRINT OPTIMIZATIONS
+   Clean print styles
+   ======================================== */
+
+@media print {
+  .status-banner {
+    background: white !important;
+    border: 2px solid black !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  .no-print {
+    display: none !important;
+  }
+  
+  .qr-code-enhanced {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}

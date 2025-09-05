@@ -1,0 +1,1738 @@
+/* ================================================
+   QR-INFO-PORTAL: THAI MEDICAL DESIGN SYSTEM V2.0
+   Konsolidiertes, kohärentes Design System
+   Performance-optimiert, Thai-First, Medical Grade
+   ================================================ */
+
+/* ========================================
+   DESIGN TOKENS & CSS CUSTOM PROPERTIES  
+   ======================================== */
+
+:root {
+  /* =====================================
+     THAI MEDICAL COLOR SYSTEM
+     ===================================== */
+     
+  /* Primary - Thai Turquoise (Medical Trust) */
+  --thai-turquoise-50:  #E0FFFE;
+  --thai-turquoise-100: #B0FDFC;
+  --thai-turquoise-200: #80F9FA;
+  --thai-turquoise-300: #50F5F7;
+  --thai-turquoise-400: #20F1F5;
+  --thai-turquoise-500: #14B8A6; /* MAIN BRAND */
+  --thai-turquoise-600: #0F9488;
+  --thai-turquoise-700: #0D7377;
+  --thai-turquoise-800: #0A5D61;
+  --thai-turquoise-900: #084748;
+  
+  /* Secondary - Thai Coral (Medical Warmth) */
+  --thai-coral-50:  #FFF5F1;
+  --thai-coral-100: #FFE6DD;
+  --thai-coral-200: #FFD7C9;
+  --thai-coral-300: #FFC8B5;
+  --thai-coral-400: #FFB9A1;
+  --thai-coral-500: #FF6B6B; /* MAIN ACCENT */
+  --thai-coral-600: #E55555;
+  --thai-coral-700: #CC4444;
+  --thai-coral-800: #B23333;
+  --thai-coral-900: #992222;
+  
+  /* Medical Status Colors - Clear Communication */
+  --medical-open:    #059669; /* Vertrauensvolles Grün */
+  --medical-open-bg: #D1FAE5;
+  --medical-closed:  #DC2626; /* Klares Warnsignal Rot */
+  --medical-closed-bg: #FEE2E2;
+  --medical-warning: #D97706; /* Aufmerksamkeits Orange */
+  --medical-warning-bg: #FED7AA;
+  --medical-info:    #2563EB; /* Informatives Blau */
+  --medical-info-bg: #DBEAFE;
+  
+  /* Thai Cultural Accents */
+  --thai-gold:   #FFD700;
+  --thai-red:    #DC143C;
+  --thai-green:  #228B22;
+  
+  /* Service-Specific Colors */
+  --service-blood:        #DC2626;
+  --service-blood-bg:     #FEE2E2;
+  --service-consultation: #2563EB;
+  --service-consultation-bg: #DBEAFE;
+  --service-vaccination:  #059669;
+  --service-vaccination-bg: #D1FAE5;
+  --service-followup:     #7C3AED;
+  --service-followup-bg:  #EDE9FE;
+  --service-results:      #EA580C;
+  --service-results-bg:   #FED7AA;
+  
+  /* Neutral Grays - Professional Medical */
+  --gray-50:  #F9FAFB;
+  --gray-100: #F3F4F6;
+  --gray-200: #E5E7EB;
+  --gray-300: #D1D5DB;
+  --gray-400: #9CA3AF;
+  --gray-500: #6B7280;
+  --gray-600: #4B5563;
+  --gray-700: #374151;
+  --gray-800: #1F2937;
+  --gray-900: #111827;
+  
+  /* =====================================
+     TYPOGRAPHY SYSTEM - THAI OPTIMIZED
+     ===================================== */
+     
+  /* Font Families - Thai First */
+  --font-primary: 'Sarabun', 'Noto Sans Thai', 'Inter', system-ui, sans-serif;
+  --font-display: 'Sarabun', sans-serif;
+  --font-mono: 'SF Mono', 'Cascadia Code', 'Roboto Mono', 'Courier New', monospace;
+  
+  /* Type Scale - Thai Reading Optimized */
+  --text-xs:   0.75rem;   /* 12px - Meta, Captions */
+  --text-sm:   0.875rem;  /* 14px - Labels, Small text */
+  --text-base: 1rem;      /* 16px - Body (Thai baseline) */
+  --text-lg:   1.125rem;  /* 18px - Body Large (Thai comfortable) */
+  --text-xl:   1.25rem;   /* 20px - Small headers */
+  --text-2xl:  1.5rem;    /* 24px - Section headers */
+  --text-3xl:  1.875rem;  /* 30px - Page headers */
+  --text-4xl:  2.25rem;   /* 36px - Display headers */
+  --text-5xl:  3rem;      /* 48px - Hero text */
+  --text-6xl:  4rem;      /* 64px - Kiosk display */
+  
+  /* Font Weights */
+  --font-light: 300;
+  --font-regular: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  
+  /* Line Heights - Thai Optimized */
+  --leading-tight: 1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --leading-thai: 1.75;    /* Spezial für Thai Text */
+  
+  /* Letter Spacing */
+  --tracking-tight: -0.025em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.025em;
+  --tracking-thai: 0.05em; /* Bessere Thai Lesbarkeit */
+  
+  /* =====================================
+     SPACING SYSTEM - 8PT GRID
+     ===================================== */
+     
+  --space-0:  0;
+  --space-1:  0.25rem;  /* 4px */
+  --space-2:  0.5rem;   /* 8px */
+  --space-3:  0.75rem;  /* 12px */
+  --space-4:  1rem;     /* 16px - Base */
+  --space-5:  1.25rem;  /* 20px */
+  --space-6:  1.5rem;   /* 24px */
+  --space-8:  2rem;     /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+  --space-20: 5rem;     /* 80px */
+  --space-24: 6rem;     /* 96px */
+  
+  /* =====================================
+     SHADOWS & DEPTH
+     ===================================== */
+     
+  --shadow-thai-sm: 0 2px 4px 0 rgba(20, 184, 166, 0.05);
+  --shadow-thai: 0 4px 6px -1px rgba(20, 184, 166, 0.1), 
+                 0 2px 4px -1px rgba(20, 184, 166, 0.06);
+  --shadow-thai-md: 0 10px 15px -3px rgba(20, 184, 166, 0.1), 
+                    0 4px 6px -2px rgba(20, 184, 166, 0.05);
+  --shadow-thai-lg: 0 20px 25px -5px rgba(20, 184, 166, 0.1), 
+                    0 10px 10px -5px rgba(20, 184, 166, 0.04);
+  --shadow-thai-xl: 0 25px 50px -12px rgba(20, 184, 166, 0.25);
+  --shadow-thai-2xl: 0 35px 60px -15px rgba(20, 184, 166, 0.3);
+  
+  /* Medical Colored Shadows */
+  --shadow-medical-success: 0 10px 25px -5px rgba(5, 150, 105, 0.3);
+  --shadow-medical-error: 0 10px 25px -5px rgba(220, 38, 38, 0.3);
+  --shadow-medical-warning: 0 10px 25px -5px rgba(217, 119, 6, 0.3);
+  
+  /* =====================================
+     BORDER RADIUS - THAI SOFT
+     ===================================== */
+     
+  --radius-sm:   0.25rem;  /* 4px */
+  --radius:      0.375rem; /* 6px */
+  --radius-md:   0.5rem;   /* 8px */
+  --radius-lg:   0.75rem;  /* 12px */
+  --radius-xl:   1rem;     /* 16px */
+  --radius-2xl:  1.5rem;   /* 24px */
+  --radius-3xl:  2rem;     /* 32px */
+  --radius-full: 9999px;
+  
+  /* =====================================
+     TRANSITIONS & ANIMATIONS
+     ===================================== */
+     
+  --transition-fast: 150ms ease-out;
+  --transition: 300ms ease-out;
+  --transition-slow: 500ms ease-out;
+  --transition-thai: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* =====================================
+     Z-INDEX SYSTEM
+     ===================================== */
+     
+  --z-base: 0;
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-notification: 1080;
+  
+  /* =====================================
+     ICON SIZES
+     ===================================== */
+     
+  --icon-xs:  1rem;    /* 16px */
+  --icon-sm:  1.25rem; /* 20px */
+  --icon-base: 1.5rem; /* 24px */
+  --icon-lg:  2rem;    /* 32px */
+  --icon-xl:  2.5rem;  /* 40px */
+  --icon-2xl: 3rem;    /* 48px */
+  --icon-3xl: 4rem;    /* 64px */
+}
+
+/* ========================================
+   BASE STYLES - THAI FOUNDATION
+   ======================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  line-height: 1.5;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: var(--text-base);
+  font-weight: var(--font-regular);
+  line-height: var(--leading-normal);
+  color: var(--gray-900);
+  background-color: var(--gray-50);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Thai Language Specific Adjustments */
+:lang(th) {
+  font-family: 'Sarabun', 'Noto Sans Thai', sans-serif;
+  line-height: var(--leading-thai);
+  letter-spacing: var(--tracking-thai);
+}
+
+/* ========================================
+   TYPOGRAPHY CLASSES - THAI MEDICAL
+   ======================================== */
+
+.heading-thai-1 {
+  font-size: var(--text-4xl);
+  font-weight: var(--font-bold);
+  line-height: var(--leading-tight);
+  color: var(--gray-900);
+  margin-bottom: var(--space-4);
+  background: linear-gradient(135deg, var(--thai-turquoise-600), var(--thai-coral-600));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.heading-thai-2 {
+  font-size: var(--text-3xl);
+  font-weight: var(--font-semibold);
+  line-height: var(--leading-tight);
+  color: var(--gray-800);
+  margin-bottom: var(--space-3);
+}
+
+.heading-thai-3 {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-semibold);
+  color: var(--gray-800);
+  margin-bottom: var(--space-3);
+}
+
+.body-thai-large {
+  font-size: var(--text-lg);
+  line-height: var(--leading-relaxed);
+  color: var(--gray-700);
+}
+
+.body-thai {
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  color: var(--gray-700);
+}
+
+.caption-thai {
+  font-size: var(--text-sm);
+  color: var(--gray-600);
+  font-weight: var(--font-medium);
+}
+
+/* Thai Text Specific */
+:lang(th) .heading-thai-1,
+:lang(th) .heading-thai-2,
+:lang(th) .heading-thai-3 {
+  line-height: var(--leading-thai);
+  letter-spacing: var(--tracking-thai);
+}
+
+/* ========================================
+   CARD SYSTEM - THAI MEDICAL
+   ======================================== */
+
+.card-thai-medical {
+  background: white;
+  border-radius: var(--radius-2xl);
+  border: 1px solid rgba(20, 184, 166, 0.1);
+  box-shadow: var(--shadow-thai);
+  overflow: hidden;
+  position: relative;
+  transition: var(--transition-thai);
+}
+
+.card-thai-medical::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--thai-turquoise-500), var(--thai-coral-500));
+}
+
+.card-thai-medical:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-thai-lg);
+}
+
+/* Card Components */
+.card-header-thai {
+  padding: var(--space-6);
+  background: linear-gradient(135deg, var(--gray-50), var(--gray-100));
+  border-bottom: 1px solid rgba(20, 184, 166, 0.1);
+}
+
+.card-body-thai {
+  padding: var(--space-6);
+}
+
+.card-footer-thai {
+  padding: var(--space-4) var(--space-6);
+  background: var(--gray-50);
+  border-top: 1px solid rgba(20, 184, 166, 0.1);
+}
+
+/* Status Card Variants */
+.card-status-thai {
+  position: relative;
+  border-left: 6px solid var(--status-color);
+  background: linear-gradient(135deg, var(--status-bg), white);
+}
+
+.card-status-open {
+  --status-color: var(--medical-open);
+  --status-bg: var(--medical-open-bg);
+}
+
+.card-status-closed {
+  --status-color: var(--medical-closed);
+  --status-bg: var(--medical-closed-bg);
+}
+
+.card-status-warning {
+  --status-color: var(--medical-warning);
+  --status-bg: var(--medical-warning-bg);
+}
+
+.card-status-info {
+  --status-color: var(--medical-info);
+  --status-bg: var(--medical-info-bg);
+}
+
+/* Service Cards */
+.card-service-thai {
+  cursor: pointer;
+  transition: all var(--transition-thai);
+}
+
+.card-service-thai:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: var(--shadow-thai-xl);
+}
+
+.card-service-blood {
+  border-left: 4px solid var(--service-blood);
+  background: linear-gradient(135deg, var(--service-blood-bg), white);
+}
+
+.card-service-consultation {
+  border-left: 4px solid var(--service-consultation);
+  background: linear-gradient(135deg, var(--service-consultation-bg), white);
+}
+
+.card-service-vaccination {
+  border-left: 4px solid var(--service-vaccination);
+  background: linear-gradient(135deg, var(--service-vaccination-bg), white);
+}
+
+/* ========================================
+   BUTTON SYSTEM - THAI MEDICAL
+   ======================================== */
+
+.btn-thai {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  font-family: var(--font-primary);
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  border-radius: var(--radius-lg);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: var(--transition-thai);
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* Shine Effect for Thai Buttons */
+.btn-thai::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left var(--transition-slow);
+}
+
+.btn-thai:hover::before {
+  left: 100%;
+}
+
+/* Primary Button - Thai Turquoise */
+.btn-primary-thai {
+  background: linear-gradient(135deg, var(--thai-turquoise-500), var(--thai-turquoise-600));
+  color: white;
+  box-shadow: var(--shadow-thai);
+}
+
+.btn-primary-thai:hover {
+  background: linear-gradient(135deg, var(--thai-turquoise-600), var(--thai-turquoise-700));
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px 0 rgba(20, 184, 166, 0.4);
+}
+
+/* Secondary Button - Thai Coral */
+.btn-secondary-thai {
+  background: linear-gradient(135deg, var(--thai-coral-500), var(--thai-coral-600));
+  color: white;
+  box-shadow: var(--shadow-thai);
+}
+
+.btn-secondary-thai:hover {
+  background: linear-gradient(135deg, var(--thai-coral-600), var(--thai-coral-700));
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px 0 rgba(255, 107, 107, 0.4);
+}
+
+/* Medical Emergency Button */
+.btn-emergency-thai {
+  background: linear-gradient(135deg, var(--medical-closed), #B91C1C);
+  color: white;
+  font-weight: var(--font-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  animation: pulse-emergency 2s infinite;
+  box-shadow: var(--shadow-medical-error);
+}
+
+/* Outline Button */
+.btn-outline-thai {
+  background: transparent;
+  color: var(--thai-turquoise-600);
+  border: 2px solid var(--thai-turquoise-500);
+}
+
+.btn-outline-thai:hover {
+  background: var(--thai-turquoise-500);
+  color: white;
+  border-color: var(--thai-turquoise-600);
+}
+
+/* Ghost Button */
+.btn-ghost-thai {
+  background: transparent;
+  color: var(--gray-700);
+  border: none;
+}
+
+.btn-ghost-thai:hover {
+  background: var(--gray-100);
+  color: var(--thai-turquoise-600);
+}
+
+/* Button Sizes */
+.btn-sm-thai {
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-sm);
+  border-radius: var(--radius-md);
+}
+
+.btn-lg-thai {
+  padding: var(--space-4) var(--space-8);
+  font-size: var(--text-lg);
+  border-radius: var(--radius-xl);
+}
+
+.btn-kiosk-thai {
+  padding: var(--space-6) var(--space-12);
+  font-size: var(--text-xl);
+  border-radius: var(--radius-2xl);
+  min-width: 200px;
+  font-weight: var(--font-bold);
+}
+
+/* Button States */
+.btn-thai:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.btn-thai:focus-visible {
+  outline: 3px solid var(--thai-turquoise-500);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 6px rgba(20, 184, 166, 0.2);
+}
+
+/* ========================================
+   STATUS INDICATORS - MEDICAL GRADE
+   ======================================== */
+
+.status-thai-live {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  position: relative;
+}
+
+.status-thai-live::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: pulse-thai 2s infinite;
+  flex-shrink: 0;
+}
+
+.status-open-thai {
+  background: var(--medical-open-bg);
+  color: var(--medical-open);
+  border: 1px solid var(--medical-open);
+}
+
+.status-closed-thai {
+  background: var(--medical-closed-bg);
+  color: var(--medical-closed);
+  border: 1px solid var(--medical-closed);
+}
+
+.status-warning-thai {
+  background: var(--medical-warning-bg);
+  color: var(--medical-warning);
+  border: 1px solid var(--medical-warning);
+}
+
+/* Status Banner - Enhanced */
+.status-banner-thai {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-2xl);
+  padding: var(--space-8);
+  margin-bottom: var(--space-8);
+  animation: thai-entrance 0.6s ease-out;
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.status-icon-thai {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: var(--text-2xl);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.status-icon-thai::before {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: var(--radius-full);
+  background: inherit;
+  opacity: 0.3;
+  z-index: -1;
+  animation: pulse-ring-thai 2s infinite;
+}
+
+/* ========================================
+   NAVIGATION - THAI MEDICAL
+   ======================================== */
+
+.nav-thai-medical {
+  background: linear-gradient(135deg, var(--thai-turquoise-500), var(--thai-turquoise-600));
+  backdrop-filter: blur(10px);
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  border-bottom: 1px solid rgba(20, 184, 166, 0.2);
+}
+
+.nav-container-thai {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-6);
+}
+
+.nav-items-thai {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.nav-item-thai {
+  color: white;
+  text-decoration: none;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  font-weight: var(--font-medium);
+  transition: var(--transition-thai);
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.nav-item-thai::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  width: 0;
+  height: 3px;
+  background: var(--thai-coral-500);
+  transition: all var(--transition);
+  transform: translateX(-50%);
+  border-radius: var(--radius-full);
+}
+
+.nav-item-thai:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.nav-item-thai:hover::after,
+.nav-item-thai.active::after {
+  width: 80%;
+}
+
+.nav-item-thai.active {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* ========================================
+   SERVICE ICONS - MEDICAL PROFESSIONAL
+   ======================================== */
+
+.service-icon-thai {
+  width: var(--icon-2xl);
+  height: var(--icon-2xl);
+  border-radius: var(--radius-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: var(--icon-lg);
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.service-icon-thai::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+
+.service-icon-thai:hover::before {
+  opacity: 1;
+}
+
+/* Service-Specific Icons */
+.service-icon-blood {
+  background: linear-gradient(135deg, var(--service-blood), #991B1B);
+}
+
+.service-icon-consultation {
+  background: linear-gradient(135deg, var(--service-consultation), #1D4ED8);
+}
+
+.service-icon-vaccination {
+  background: linear-gradient(135deg, var(--service-vaccination), #047857);
+}
+
+.service-icon-followup {
+  background: linear-gradient(135deg, var(--service-followup), #6D28D9);
+}
+
+.service-icon-results {
+  background: linear-gradient(135deg, var(--service-results), #C2410C);
+}
+
+/* Service Grid */
+.services-grid-thai {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-6);
+  margin: var(--space-8) 0;
+}
+
+.service-item-thai {
+  display: flex;
+  align-items: center;
+  padding: var(--space-6);
+  background: white;
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(20, 184, 166, 0.1);
+  box-shadow: var(--shadow-thai);
+  transition: var(--transition-thai);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.service-item-thai::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--thai-turquoise-500);
+  transform: scaleY(0);
+  transition: transform var(--transition);
+}
+
+.service-item-thai:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-thai-xl);
+}
+
+.service-item-thai:hover::before {
+  transform: scaleY(1);
+}
+
+.service-content-thai {
+  flex: 1;
+  margin-left: var(--space-4);
+}
+
+.service-title-thai {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--gray-800);
+  margin-bottom: var(--space-1);
+}
+
+.service-description-thai {
+  font-size: var(--text-sm);
+  color: var(--gray-600);
+  line-height: var(--leading-relaxed);
+}
+
+/* ========================================
+   TIME DISPLAY - BANGKOK TIMEZONE
+   ======================================== */
+
+.time-display-thai {
+  font-family: var(--font-mono);
+  font-size: var(--text-5xl);
+  font-weight: var(--font-bold);
+  background: linear-gradient(135deg, var(--thai-turquoise-500), var(--thai-coral-500));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-align: center;
+  line-height: 1;
+  margin: var(--space-6) 0;
+  position: relative;
+}
+
+.time-display-thai::after {
+  content: 'เวลาไทย / Bangkok Time';
+  position: absolute;
+  bottom: -2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: var(--text-sm);
+  font-weight: var(--font-regular);
+  color: var(--gray-500);
+  background: none;
+  -webkit-text-fill-color: var(--gray-500);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+.time-separator-thai {
+  display: inline-block;
+  animation: blink-thai 1.5s ease-in-out infinite;
+}
+
+/* ========================================
+   QR CODE SYSTEM - THAI STYLE
+   ======================================== */
+
+.qr-container-thai {
+  background: linear-gradient(135deg, 
+    rgba(20, 184, 166, 0.05), 
+    rgba(255, 107, 107, 0.05));
+  border: 3px dashed var(--thai-turquoise-300);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-8);
+  text-align: center;
+  position: relative;
+  margin: var(--space-8) 0;
+}
+
+.qr-container-thai::before {
+  content: 'สแกนที่นี่ / SCAN HERE';
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  padding: 0 var(--space-4);
+  color: var(--thai-turquoise-600);
+  font-weight: var(--font-bold);
+  font-size: var(--text-sm);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.qr-code-thai {
+  padding: var(--space-4);
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-thai-md);
+  display: inline-block;
+}
+
+.qr-code-thai img {
+  display: block;
+  width: 200px;
+  height: 200px;
+  border-radius: var(--radius-md);
+}
+
+/* ========================================
+   KIOSK MODE - LARGE DISPLAY
+   ======================================== */
+
+.kiosk-thai-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #F0FDF4, #E0F2FE);
+  padding: var(--space-8);
+}
+
+.kiosk-thai-triple {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--space-8);
+  height: 100%;
+}
+
+.kiosk-section-thai {
+  background: white;
+  border-radius: var(--radius-3xl);
+  padding: var(--space-10);
+  box-shadow: var(--shadow-thai-2xl);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.kiosk-section-thai::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background: linear-gradient(90deg, 
+    var(--thai-turquoise-500) 0%, 
+    var(--thai-coral-500) 50%, 
+    var(--medical-open) 100%);
+}
+
+.kiosk-header-thai {
+  text-align: center;
+  margin-bottom: var(--space-8);
+  padding-bottom: var(--space-6);
+  border-bottom: 2px solid rgba(20, 184, 166, 0.1);
+}
+
+.kiosk-title-thai {
+  font-size: var(--text-4xl);
+  font-weight: var(--font-bold);
+  color: var(--gray-800);
+  margin-bottom: var(--space-2);
+  background: linear-gradient(135deg, var(--thai-turquoise-600), var(--thai-coral-600));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.kiosk-time-thai {
+  font-family: var(--font-mono);
+  font-size: var(--text-6xl);
+  font-weight: var(--font-bold);
+  background: linear-gradient(135deg, var(--thai-turquoise-500), var(--thai-coral-500));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-align: center;
+  line-height: 1;
+  margin: var(--space-8) 0;
+}
+
+.kiosk-status-large-thai {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  padding: var(--space-6) var(--space-10);
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: var(--space-8) auto;
+  max-width: fit-content;
+  box-shadow: var(--shadow-thai-lg);
+}
+
+/* ========================================
+   FORM SYSTEM - MEDICAL GRADE
+   ======================================== */
+
+.form-group-thai {
+  margin-bottom: var(--space-6);
+}
+
+.form-label-thai {
+  display: block;
+  margin-bottom: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--gray-700);
+}
+
+.form-label-thai.required::after {
+  content: ' *';
+  color: var(--medical-closed);
+}
+
+.form-input-thai {
+  display: block;
+  width: 100%;
+  padding: var(--space-4);
+  font-size: var(--text-base);
+  font-family: var(--font-primary);
+  line-height: var(--leading-normal);
+  color: var(--gray-900);
+  background: white;
+  border: 2px solid var(--gray-300);
+  border-radius: var(--radius-lg);
+  transition: var(--transition-thai);
+}
+
+.form-input-thai:focus {
+  outline: none;
+  border-color: var(--thai-turquoise-500);
+  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+}
+
+/* Thai Input Specific */
+.form-input-thai:lang(th) {
+  line-height: var(--leading-thai);
+  letter-spacing: var(--tracking-thai);
+}
+
+/* ========================================
+   LANGUAGE SWITCHER - THAI MEDICAL
+   ======================================== */
+
+.lang-switcher-thai {
+  display: flex;
+  gap: var(--space-1);
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-full);
+  padding: var(--space-1);
+  backdrop-filter: blur(10px);
+}
+
+.lang-option-thai {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  color: white;
+  text-decoration: none;
+  font-weight: var(--font-medium);
+  font-size: var(--text-sm);
+  transition: var(--transition-thai);
+  position: relative;
+}
+
+.lang-option-thai:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.lang-option-thai.active {
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ========================================
+   ANIMATIONS - THAI CULTURAL
+   ======================================== */
+
+@keyframes thai-entrance {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes pulse-thai {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes pulse-ring-thai {
+  0% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.1;
+  }
+  100% {
+    transform: scale(1.3);
+    opacity: 0;
+  }
+}
+
+@keyframes pulse-emergency {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(220, 38, 38, 0);
+  }
+}
+
+@keyframes blink-thai {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes slide-up-thai {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========================================
+   UTILITY CLASSES - THAI MEDICAL
+   ======================================== */
+
+/* Animation Classes */
+.animate-thai-entrance { animation: thai-entrance 0.6s ease-out; }
+.animate-slide-up-thai { animation: slide-up-thai 0.4s ease-out; }
+.animate-pulse-thai { animation: pulse-thai 2s infinite; }
+
+/* Color Utilities */
+.text-thai-turquoise { color: var(--thai-turquoise-500); }
+.text-thai-coral { color: var(--thai-coral-500); }
+.text-medical-open { color: var(--medical-open); }
+.text-medical-closed { color: var(--medical-closed); }
+.text-medical-warning { color: var(--medical-warning); }
+
+.bg-thai-turquoise { background-color: var(--thai-turquoise-500); }
+.bg-thai-coral { background-color: var(--thai-coral-500); }
+.bg-medical-open { background-color: var(--medical-open); }
+
+/* Gradient Utilities */
+.bg-gradient-thai {
+  background: linear-gradient(135deg, var(--thai-turquoise-500), var(--thai-coral-500));
+}
+
+.bg-gradient-medical {
+  background: linear-gradient(135deg, var(--medical-open), var(--medical-info));
+}
+
+.text-gradient-thai {
+  background: linear-gradient(135deg, var(--thai-turquoise-600), var(--thai-coral-600));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Layout Utilities */
+.flex-thai { display: flex; }
+.items-center-thai { align-items: center; }
+.justify-between-thai { justify-content: space-between; }
+.justify-center-thai { justify-content: center; }
+.gap-thai { gap: var(--space-4); }
+.space-y-thai > * + * { margin-top: var(--space-4); }
+
+/* Spacing Utilities */
+.p-thai { padding: var(--space-4); }
+.p-thai-lg { padding: var(--space-6); }
+.m-thai { margin: var(--space-4); }
+.mb-thai { margin-bottom: var(--space-4); }
+.mt-thai { margin-top: var(--space-4); }
+
+/* Shadow Utilities */
+.shadow-thai { box-shadow: var(--shadow-thai); }
+.shadow-thai-md { box-shadow: var(--shadow-thai-md); }
+.shadow-thai-lg { box-shadow: var(--shadow-thai-lg); }
+.shadow-thai-xl { box-shadow: var(--shadow-thai-xl); }
+
+/* Border Utilities */
+.rounded-thai { border-radius: var(--radius-lg); }
+.rounded-thai-xl { border-radius: var(--radius-xl); }
+.rounded-thai-2xl { border-radius: var(--radius-2xl); }
+.rounded-thai-full { border-radius: var(--radius-full); }
+
+/* ========================================
+   RESPONSIVE DESIGN - MOBILE FIRST
+   ======================================== */
+
+/* Mobile (320px - 640px) */
+@media (max-width: 640px) {
+  /* Typography Adjustments */
+  :root {
+    --text-base: 0.9rem;
+    --text-lg: 1rem;
+    --text-xl: 1.125rem;
+    --text-2xl: 1.25rem;
+    --text-3xl: 1.5rem;
+    --text-4xl: 1.875rem;
+  }
+  
+  /* Component Adjustments */
+  .card-thai-medical {
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-thai-sm);
+  }
+  
+  .card-header-thai,
+  .card-body-thai {
+    padding: var(--space-4);
+  }
+  
+  .btn-thai {
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--text-sm);
+  }
+  
+  .service-icon-thai {
+    width: var(--icon-lg);
+    height: var(--icon-lg);
+    font-size: var(--icon-base);
+  }
+  
+  .services-grid-thai {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+  
+  .service-item-thai {
+    padding: var(--space-4);
+  }
+  
+  .time-display-thai {
+    font-size: var(--text-4xl);
+  }
+  
+  .status-banner-thai {
+    padding: var(--space-4);
+    flex-direction: column;
+    text-align: center;
+    gap: var(--space-4);
+  }
+  
+  .status-icon-thai {
+    width: 60px;
+    height: 60px;
+    font-size: var(--text-xl);
+  }
+  
+  /* Navigation Mobile */
+  .nav-container-thai {
+    flex-direction: column;
+    gap: var(--space-4);
+    padding: var(--space-4);
+  }
+  
+  .nav-items-thai {
+    width: 100%;
+    justify-content: space-around;
+  }
+  
+  .nav-item-thai {
+    flex-direction: column;
+    padding: var(--space-2);
+    font-size: var(--text-xs);
+  }
+}
+
+/* Tablet (641px - 1024px) */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .services-grid-thai {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .kiosk-thai-triple {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+  }
+  
+  .kiosk-section-thai {
+    padding: var(--space-8);
+  }
+  
+  .time-display-thai {
+    font-size: var(--text-5xl);
+  }
+}
+
+/* Desktop (1025px+) */
+@media (min-width: 1025px) {
+  .services-grid-thai {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .card-thai-medical:hover {
+    transform: translateY(-4px) scale(1.02);
+  }
+  
+  .service-item-thai:hover {
+    transform: translateY(-4px) scale(1.03);
+  }
+  
+  .kiosk-time-thai {
+    font-size: 8rem;
+  }
+}
+
+/* Large Desktop (1280px+) */
+@media (min-width: 1280px) {
+  .services-grid-thai {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  .service-icon-thai {
+    width: var(--icon-3xl);
+    height: var(--icon-3xl);
+    font-size: var(--icon-xl);
+  }
+  
+  .qr-code-thai img {
+    width: 300px;
+    height: 300px;
+  }
+}
+
+/* ========================================
+   ACCESSIBILITY ENHANCEMENTS
+   ======================================== */
+
+/* Focus Management */
+*:focus-visible {
+  outline: 3px solid var(--thai-turquoise-500);
+  outline-offset: 2px;
+  border-radius: var(--radius-md);
+}
+
+/* Screen Reader Only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.sr-only:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: var(--space-2) var(--space-4);
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+  background: var(--thai-turquoise-500);
+  color: white;
+  border-radius: var(--radius-md);
+}
+
+/* Skip Link */
+.skip-link-thai {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--thai-turquoise-500);
+  color: white;
+  padding: var(--space-3) var(--space-4);
+  text-decoration: none;
+  border-radius: 0 0 var(--radius-lg) 0;
+  z-index: var(--z-notification);
+  transition: top var(--transition);
+}
+
+.skip-link-thai:focus {
+  top: 0;
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  :root {
+    --thai-turquoise-500: #0F766E;
+    --thai-coral-500: #DC2626;
+    --gray-200: var(--gray-400);
+    --shadow-thai: 0 0 0 2px var(--gray-900);
+  }
+  
+  .btn-thai,
+  .form-input-thai {
+    border-width: 3px;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ========================================
+   PRINT STYLES - QR OPTIMIZED
+   ======================================== */
+
+@media print {
+  /* Reset for print */
+  body {
+    font-size: 12pt;
+    line-height: 1.5;
+    color: #000;
+    background: #fff;
+  }
+  
+  /* Hide interactive elements */
+  .btn-thai,
+  .nav-thai-medical,
+  .lang-switcher-thai {
+    display: none !important;
+  }
+  
+  /* Optimize cards for print */
+  .card-thai-medical {
+    box-shadow: none;
+    border: 2px solid var(--gray-300);
+    page-break-inside: avoid;
+    margin-bottom: var(--space-4);
+  }
+  
+  /* QR Code print optimization */
+  .qr-container-thai {
+    border: 3px solid #000;
+    background: white;
+    page-break-inside: avoid;
+  }
+  
+  .qr-code-thai img {
+    width: 250px;
+    height: 250px;
+    max-width: 100%;
+  }
+  
+  /* Force black text for readability */
+  .heading-thai-1,
+  .heading-thai-2,
+  .heading-thai-3 {
+    color: #000 !important;
+    background: none !important;
+    -webkit-text-fill-color: #000 !important;
+  }
+  
+  /* Status indicators for print */
+  .status-thai-live {
+    border: 2px solid currentColor !important;
+    font-weight: bold;
+  }
+  
+  /* Service icons for print */
+  .service-icon-thai {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+/* ========================================
+   PERFORMANCE OPTIMIZATIONS
+   ======================================== */
+
+/* GPU Acceleration for smooth animations */
+.card-thai-medical,
+.btn-thai,
+.service-item-thai {
+  will-change: transform;
+}
+
+/* Optimize repaint for status indicators */
+.status-thai-live::before,
+.status-icon-thai::before {
+  will-change: opacity, transform;
+}
+
+/* Container queries support (future-ready) */
+@supports (container-type: inline-size) {
+  .service-item-thai {
+    container-type: inline-size;
+  }
+  
+  @container (max-width: 300px) {
+    .service-icon-thai {
+      width: var(--icon-lg);
+      height: var(--icon-lg);
+    }
+  }
+}
+
+/* ========================================
+   DARK MODE SUPPORT - THAI MEDICAL
+   ======================================== */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --gray-50: #0F172A;
+    --gray-100: #1E293B;
+    --gray-200: #334155;
+    --gray-300: #475569;
+    --gray-400: #64748B;
+    --gray-500: #94A3B8;
+    --gray-600: #CBD5E1;
+    --gray-700: #E2E8F0;
+    --gray-800: #F1F5F9;
+    --gray-900: #F8FAFC;
+    
+    /* Adjust for dark mode */
+    --thai-turquoise-500: #22D3EE;
+    --thai-coral-500: #FB7185;
+    
+    --shadow-thai: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    --shadow-thai-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+  }
+  
+  body {
+    background-color: var(--gray-50);
+  }
+  
+  .card-thai-medical {
+    background: var(--gray-100);
+    border-color: rgba(34, 211, 238, 0.2);
+  }
+  
+  .nav-thai-medical {
+    background: linear-gradient(135deg, var(--gray-800), var(--gray-700));
+  }
+}
+
+/* ========================================
+   COMPONENT STATE MANAGEMENT
+   ======================================== */
+
+/* Loading States */
+.loading-thai {
+  pointer-events: none;
+  opacity: 0.6;
+  position: relative;
+}
+
+.loading-thai::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid var(--thai-turquoise-300);
+  border-top-color: var(--thai-turquoise-600);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Error States */
+.error-thai {
+  border-color: var(--medical-closed) !important;
+  background-color: var(--medical-closed-bg) !important;
+  color: var(--medical-closed) !important;
+}
+
+/* Success States */
+.success-thai {
+  border-color: var(--medical-open) !important;
+  background-color: var(--medical-open-bg) !important;
+  color: var(--medical-open) !important;
+}
+
+/* ========================================
+   LAYOUT GRID - THAI MEDICAL PORTAL
+   ======================================== */
+
+.container-thai {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-left: var(--space-4);
+  padding-right: var(--space-4);
+}
+
+@media (min-width: 640px) {
+  .container-thai {
+    padding-left: var(--space-6);
+    padding-right: var(--space-6);
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-thai {
+    padding-left: var(--space-8);
+    padding-right: var(--space-8);
+  }
+}
+
+.grid-thai {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.grid-thai-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.grid-thai-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 768px) {
+  .grid-thai-2,
+  .grid-thai-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .grid-thai-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ========================================
+   NOTIFICATION SYSTEM - MEDICAL
+   ======================================== */
+
+.notification-thai {
+  position: fixed;
+  top: var(--space-6);
+  right: var(--space-6);
+  max-width: 400px;
+  background: white;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-thai-xl);
+  border: 1px solid rgba(20, 184, 166, 0.2);
+  z-index: var(--z-notification);
+  transform: translateX(calc(100% + var(--space-6)));
+  transition: transform var(--transition-thai);
+}
+
+.notification-thai.show {
+  transform: translateX(0);
+}
+
+.notification-content-thai {
+  padding: var(--space-6);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+}
+
+.notification-icon-thai {
+  width: var(--icon-lg);
+  height: var(--icon-lg);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: var(--icon-base);
+  flex-shrink: 0;
+}
+
+.notification-success-thai .notification-icon-thai {
+  background: var(--medical-open);
+}
+
+.notification-error-thai .notification-icon-thai {
+  background: var(--medical-closed);
+}
+
+.notification-warning-thai .notification-icon-thai {
+  background: var(--medical-warning);
+}
+
+.notification-text-thai {
+  flex: 1;
+}
+
+.notification-title-thai {
+  font-weight: var(--font-semibold);
+  color: var(--gray-900);
+  margin-bottom: var(--space-1);
+}
+
+.notification-message-thai {
+  font-size: var(--text-sm);
+  color: var(--gray-600);
+}
+
+/* ========================================
+   CRITICAL CSS ABOVE THE FOLD
+   ======================================== */
+
+/* Most critical styles for initial render */
+.critical-thai {
+  font-family: var(--font-primary);
+  background: var(--gray-50);
+  color: var(--gray-900);
+}
+
+/* Header critical styles */
+.header-thai-critical {
+  background: var(--thai-turquoise-500);
+  color: white;
+  padding: var(--space-4);
+}
+
+/* Status banner critical */
+.status-critical-thai {
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+/* Time display critical */
+.time-critical-thai {
+  font-family: var(--font-mono);
+  font-size: var(--text-3xl);
+  font-weight: var(--font-bold);
+  color: var(--thai-turquoise-600);
+  text-align: center;
+}
+
+/* ========================================
+   END OF THAI MEDICAL DESIGN SYSTEM V2.0
+   ======================================== */

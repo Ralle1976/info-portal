@@ -1,0 +1,562 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ t('admin.announcements_management.title') }}{% endblock %}
+
+{% block content %}
+<!-- CSRF Token for AJAX requests -->
+<input type="hidden" id="csrf-token" value="{{ csrf_token }}">
+<div class="max-w-6xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+    <div class="mb-6">
+        <div class="flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">{{ t('admin.announcements_management.title') }}</h1>
+                <p class="mt-2 text-gray-600">{{ t('admin.announcements_management.subtitle') }}</p>
+            </div>
+            <button onclick="showAddAnnouncementModal()" 
+                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700">
+                <i class="fas fa-plus mr-2"></i>
+                {{ t('admin.announcements_management.add_new') }}
+            </button>
+        </div>
+    </div>
+    
+    <!-- Filter and Search -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
+        <div class="p-4">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0 sm:space-x-4">
+                <div class="flex-1">
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </div>
+                        <input type="text" id="search-input" placeholder="{{ t('admin.announcements_management.search_placeholder') }}" 
+                               class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md text-sm placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <select id="language-filter" 
+                            class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">{{ t('admin.announcements_management.filters.all_languages') }}</option>
+                        <option value="de">{{ t('admin.announcements_management.filters.german') }}</option>
+                        <option value="th">{{ t('admin.announcements_management.filters.thai') }}</option>
+                        <option value="en">{{ t('admin.announcements_management.filters.english') }}</option>
+                    </select>
+                    <select id="status-filter" 
+                            class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">{{ t('admin.announcements_management.filters.all_status') }}</option>
+                        <option value="active">{{ t('admin.announcements_management.filters.active') }}</option>
+                        <option value="inactive">{{ t('admin.announcements_management.filters.inactive') }}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Announcements List -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-800">{{ t('admin.announcements_management.current_announcements') }}</h2>
+        </div>
+        <div class="divide-y divide-gray-200">
+            <div id="announcements-list">
+                <!-- Will be populated by JavaScript -->
+            </div>
+            <div id="no-announcements" class="p-8 text-center text-gray-500 hidden">
+                <i class="fas fa-bullhorn text-4xl mb-4"></i>
+                <h3 class="text-lg font-medium mb-2">{{ t('admin.announcements_management.no_announcements.title') }}</h3>
+                <p class="mb-4">{{ t('admin.announcements_management.no_announcements.message') }}</p>
+                <button onclick="showAddAnnouncementModal()" 
+                        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200">
+                    <i class="fas fa-plus mr-2"></i>
+                    {{ t('admin.announcements_management.no_announcements.create_first') }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add/Edit Announcement Modal -->
+<div id="announcement-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden" style="z-index: 1000;">
+    <div class="relative top-20 mx-auto p-5 border w-full max-w-2xl shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <div class="flex items-center justify-between mb-4">
+                <h3 id="modal-title" class="text-lg font-medium text-gray-900">{{ t('admin.announcements_management.modal.title_add') }}</h3>
+                <button onclick="hideAnnouncementModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="announcement-form" class="space-y-6">
+                <input type="hidden" id="announcement-id">
+                
+                <!-- Language Selection -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('admin.announcements_management.modal.language_label') }}</label>
+                    <div class="grid grid-cols-3 gap-3">
+                        <label class="relative">
+                            <input type="radio" name="language" value="de" class="sr-only peer" checked>
+                            <div class="border-2 border-gray-200 rounded-lg p-3 text-center cursor-pointer peer-checked:border-blue-500 peer-checked:bg-blue-50">
+                                <div class="text-2xl mb-1">🇩🇪</div>
+                                <div class="text-sm font-medium">{{ t('admin.announcements_management.filters.german') }}</div>
+                            </div>
+                        </label>
+                        <label class="relative">
+                            <input type="radio" name="language" value="th" class="sr-only peer">
+                            <div class="border-2 border-gray-200 rounded-lg p-3 text-center cursor-pointer peer-checked:border-blue-500 peer-checked:bg-blue-50">
+                                <div class="text-2xl mb-1">🇹🇭</div>
+                                <div class="text-sm font-medium">{{ t('admin.announcements_management.filters.thai') }}</div>
+                            </div>
+                        </label>
+                        <label class="relative">
+                            <input type="radio" name="language" value="en" class="sr-only peer">
+                            <div class="border-2 border-gray-200 rounded-lg p-3 text-center cursor-pointer peer-checked:border-blue-500 peer-checked:bg-blue-50">
+                                <div class="text-2xl mb-1">🇺🇸</div>
+                                <div class="text-sm font-medium">{{ t('admin.announcements_management.filters.english') }}</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Title -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('admin.announcements_management.modal.title_label') }}</label>
+                    <input type="text" id="announcement-title" required 
+                           placeholder="{{ t('admin.announcements_management.modal.title_placeholder') }}"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                
+                <!-- Body -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('admin.announcements_management.modal.message_label') }}</label>
+                    <textarea id="announcement-body" rows="4" required 
+                              placeholder="{{ t('admin.announcements_management.modal.message_placeholder') }}"
+                              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                </div>
+                
+                <!-- Priority and Active Status -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('admin.announcements_management.modal.priority_label') }}</label>
+                        <select id="announcement-priority" 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="low">{{ t('admin.announcements_management.modal.priority_options.low') }}</option>
+                            <option value="normal" selected>{{ t('admin.announcements_management.modal.priority_options.normal') }}</option>
+                            <option value="high">{{ t('admin.announcements_management.modal.priority_options.high') }}</option>
+                            <option value="urgent">{{ t('admin.announcements_management.modal.priority_options.urgent') }}</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="flex items-center pt-6">
+                            <input type="checkbox" id="announcement-active" checked class="rounded">
+                            <span class="ml-2 text-sm text-gray-700">{{ t('admin.announcements_management.modal.publish_immediately') }}</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Date Range -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('admin.announcements_management.modal.publish_from') }}</label>
+                        <input type="date" id="announcement-start-date" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('admin.announcements_management.modal.publish_until') }}</label>
+                        <input type="date" id="announcement-end-date" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+                
+                <!-- Type/Category -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('admin.announcements_management.modal.category_label') }}</label>
+                    <select id="announcement-category" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="general">{{ t('admin.announcements_management.modal.category_options.general') }}</option>
+                        <option value="schedule">{{ t('admin.announcements_management.modal.category_options.schedule') }}</option>
+                        <option value="service">{{ t('admin.announcements_management.modal.category_options.service') }}</option>
+                        <option value="maintenance">{{ t('admin.announcements_management.modal.category_options.maintenance') }}</option>
+                        <option value="holiday">{{ t('admin.announcements_management.modal.category_options.holiday') }}</option>
+                        <option value="emergency">{{ t('admin.announcements_management.modal.category_options.emergency') }}</option>
+                    </select>
+                </div>
+                
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="hideAnnouncementModal()" 
+                            class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">
+                        Abbrechen
+                    </button>
+                    <button type="submit" id="save-announcement-btn" 
+                            class="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700">
+                        Speichern
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Preview Modal -->
+<div id="preview-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden" style="z-index: 1000;">
+    <div class="relative top-20 mx-auto p-5 border w-full max-w-lg shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-medium text-gray-900">{{ t('admin.announcements_management.preview_modal.title') }}</h3>
+                <button onclick="hidePreviewModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="preview-content" class="border border-gray-200 rounded-lg p-4">
+                <!-- Preview content will be populated by JavaScript -->
+            </div>
+            <div class="flex justify-end mt-4">
+                <button onclick="hidePreviewModal()" 
+                        class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">
+                    {{ t('admin.announcements_management.preview_modal.close') }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+let announcements = [];
+let currentEditId = null;
+
+// Initialize page
+document.addEventListener('DOMContentLoaded', function() {
+    loadAnnouncements();
+    
+    // Setup form handler
+    document.getElementById('announcement-form').addEventListener('submit', saveAnnouncement);
+    
+    // Setup search and filter handlers
+    document.getElementById('search-input').addEventListener('input', filterAnnouncements);
+    document.getElementById('language-filter').addEventListener('change', filterAnnouncements);
+    document.getElementById('status-filter').addEventListener('change', filterAnnouncements);
+});
+
+function loadAnnouncements() {
+    fetch('/admin/api/announcements')
+        .then(response => response.json())
+        .then(data => {
+            announcements = data.announcements || [];
+            renderAnnouncements();
+        })
+        .catch(error => {
+            console.error('Failed to load announcements:', error);
+            adminUtils.showNotification(t('admin.announcements_management.messages.load_error'), 'error');
+            renderAnnouncements();
+        });
+}
+
+function renderAnnouncements(filteredAnnouncements = null) {
+    const listDiv = document.getElementById('announcements-list');
+    const noAnnouncementsDiv = document.getElementById('no-announcements');
+    
+    const announcementsToRender = filteredAnnouncements || announcements;
+    
+    if (announcementsToRender.length === 0) {
+        listDiv.innerHTML = '';
+        noAnnouncementsDiv.classList.remove('hidden');
+        return;
+    }
+    
+    noAnnouncementsDiv.classList.add('hidden');
+    listDiv.innerHTML = '';
+    
+    announcementsToRender.forEach((announcement, index) => {
+        const announcementDiv = document.createElement('div');
+        announcementDiv.className = 'p-6 hover:bg-gray-50';
+        
+        const priorityColors = {
+            low: 'bg-gray-100 text-gray-800',
+            normal: 'bg-blue-100 text-blue-800',
+            high: 'bg-yellow-100 text-yellow-800',
+            urgent: 'bg-red-100 text-red-800'
+        };
+        
+        const priorityNames = {
+            low: t('admin.announcements_management.modal.priority_options.low'),
+            normal: t('admin.announcements_management.modal.priority_options.normal'),
+            high: t('admin.announcements_management.modal.priority_options.high'),
+            urgent: t('admin.announcements_management.modal.priority_options.urgent')
+        };
+        
+        const categoryNames = {
+            general: t('admin.announcements_management.modal.category_options.general'),
+            schedule: t('admin.announcements_management.modal.category_options.schedule'),
+            service: t('admin.announcements_management.modal.category_options.service'),
+            maintenance: t('admin.announcements_management.modal.category_options.maintenance'),
+            holiday: t('admin.announcements_management.modal.category_options.holiday'),
+            emergency: t('admin.announcements_management.modal.category_options.emergency')
+        };
+        
+        const languageFlags = {
+            de: '🇩🇪',
+            th: '🇹🇭',
+            en: '🇺🇸'
+        };
+        
+        const isActive = announcement.active && 
+                        (!announcement.start_date || new Date(announcement.start_date) <= new Date()) &&
+                        (!announcement.end_date || new Date(announcement.end_date) >= new Date());
+        
+        announcementDiv.innerHTML = `
+            <div class="flex items-start justify-between">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center space-x-2 mb-2">
+                        <span class="text-lg">${languageFlags[announcement.lang] || '🏳️'}</span>
+                        <h3 class="text-lg font-medium text-gray-900 truncate">${announcement.title}</h3>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${priorityColors[announcement.priority] || priorityColors.normal}">
+                            ${priorityNames[announcement.priority] || 'Normal'}
+                        </span>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                            ${categoryNames[announcement.category] || announcement.category}
+                        </span>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">
+                            ${isActive ? t('admin.announcements_management.list.active') : t('admin.announcements_management.list.inactive')}
+                        </span>
+                    </div>
+                    <p class="text-gray-600 line-clamp-2">${announcement.body}</p>
+                    <div class="flex items-center text-xs text-gray-500 mt-2 space-x-4">
+                        <span>${t('admin.announcements_management.list.created')} ${adminUtils.formatDateTime(announcement.created_at)}</span>
+                        ${announcement.start_date ? `<span>${t('admin.announcements_management.list.from')} ${adminUtils.formatDate(announcement.start_date)}</span>` : ''}
+                        ${announcement.end_date ? `<span>${t('admin.announcements_management.list.until')} ${adminUtils.formatDate(announcement.end_date)}</span>` : ''}
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2 ml-4">
+                    <button onclick="previewAnnouncement(${announcement.id})" 
+                            class="text-gray-400 hover:text-gray-600 p-2" title="${t('admin.announcements_management.actions.preview')}">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button onclick="editAnnouncement(${announcement.id})" 
+                            class="text-blue-600 hover:text-blue-800 p-2" title="${t('admin.announcements_management.actions.edit')}">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button onclick="toggleAnnouncementActive(${announcement.id})" 
+                            class="text-yellow-600 hover:text-yellow-800 p-2" title="${isActive ? t('admin.announcements_management.actions.deactivate') : t('admin.announcements_management.actions.activate')}">
+                        <i class="fas fa-${isActive ? 'pause' : 'play'}"></i>
+                    </button>
+                    <button onclick="deleteAnnouncement(${announcement.id})" 
+                            class="text-red-600 hover:text-red-800 p-2" title="${t('admin.announcements_management.actions.delete')}">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        listDiv.appendChild(announcementDiv);
+    });
+}
+
+function filterAnnouncements() {
+    const searchTerm = document.getElementById('search-input').value.toLowerCase();
+    const languageFilter = document.getElementById('language-filter').value;
+    const statusFilter = document.getElementById('status-filter').value;
+    
+    let filtered = announcements.filter(announcement => {
+        // Search filter
+        const matchesSearch = !searchTerm || 
+            announcement.title.toLowerCase().includes(searchTerm) ||
+            announcement.body.toLowerCase().includes(searchTerm);
+        
+        // Language filter
+        const matchesLanguage = !languageFilter || announcement.lang === languageFilter;
+        
+        // Status filter
+        const isActive = announcement.active && 
+                         (!announcement.start_date || new Date(announcement.start_date) <= new Date()) &&
+                         (!announcement.end_date || new Date(announcement.end_date) >= new Date());
+        const matchesStatus = !statusFilter || 
+            (statusFilter === 'active' && isActive) ||
+            (statusFilter === 'inactive' && !isActive);
+        
+        return matchesSearch && matchesLanguage && matchesStatus;
+    });
+    
+    renderAnnouncements(filtered);
+}
+
+function showAddAnnouncementModal() {
+    currentEditId = null;
+    document.getElementById('modal-title').textContent = t('admin.announcements_management.modal.title_add');
+    document.getElementById('save-announcement-btn').textContent = t('admin.announcements_management.modal.add');
+    
+    // Reset form
+    document.getElementById('announcement-form').reset();
+    document.getElementById('announcement-id').value = '';
+    document.querySelector('input[name="language"][value="de"]').checked = true;
+    document.getElementById('announcement-active').checked = true;
+    
+    document.getElementById('announcement-modal').classList.remove('hidden');
+}
+
+function hideAnnouncementModal() {
+    document.getElementById('announcement-modal').classList.add('hidden');
+    currentEditId = null;
+}
+
+function editAnnouncement(id) {
+    const announcement = announcements.find(a => a.id === id);
+    if (!announcement) return;
+    
+    currentEditId = id;
+    document.getElementById('modal-title').textContent = t('admin.announcements_management.modal.title_edit');
+    document.getElementById('save-announcement-btn').textContent = t('admin.announcements_management.modal.save');
+    
+    // Populate form
+    document.getElementById('announcement-id').value = announcement.id;
+    document.querySelector(`input[name="language"][value="${announcement.lang}"]`).checked = true;
+    document.getElementById('announcement-title').value = announcement.title;
+    document.getElementById('announcement-body').value = announcement.body;
+    document.getElementById('announcement-priority').value = announcement.priority || 'normal';
+    document.getElementById('announcement-active').checked = announcement.active;
+    document.getElementById('announcement-start-date').value = announcement.start_date || '';
+    document.getElementById('announcement-end-date').value = announcement.end_date || '';
+    document.getElementById('announcement-category').value = announcement.category || 'general';
+    
+    document.getElementById('announcement-modal').classList.remove('hidden');
+}
+
+function saveAnnouncement(event) {
+    event.preventDefault();
+    
+    const formData = {
+        id: document.getElementById('announcement-id').value || null,
+        lang: document.querySelector('input[name="language"]:checked').value,
+        title: document.getElementById('announcement-title').value,
+        body: document.getElementById('announcement-body').value,
+        priority: document.getElementById('announcement-priority').value,
+        active: document.getElementById('announcement-active').checked,
+        start_date: document.getElementById('announcement-start-date').value || null,
+        end_date: document.getElementById('announcement-end-date').value || null,
+        category: document.getElementById('announcement-category').value
+    };
+    
+    const url = formData.id ? `/admin/api/announcements/${formData.id}` : '/admin/api/announcements';
+    const method = formData.id ? 'PUT' : 'POST';
+    
+    // Add CSRF token to form data
+    formData.csrf_token = document.getElementById('csrf-token').value;
+    
+    fetch(url, {
+        method: method,
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': document.getElementById('csrf-token').value
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            adminUtils.showNotification(
+                formData.id ? t('admin.announcements_management.messages.save_success_update') : t('admin.announcements_management.messages.save_success_create'), 
+                'success'
+            );
+            loadAnnouncements();
+            hideAnnouncementModal();
+        } else {
+            adminUtils.showNotification(t('admin.announcements_management.messages.save_error') + ' ' + data.error, 'error');
+        }
+    })
+    .catch(error => {
+        adminUtils.showNotification(t('admin.announcements_management.messages.network_error'), 'error');
+        console.error('Save error:', error);
+    });
+}
+
+function deleteAnnouncement(id) {
+    const announcement = announcements.find(a => a.id === id);
+    if (!announcement) return;
+    
+    if (confirm(t('admin.announcements_management.messages.delete_confirm').replace('{title}', announcement.title))) {
+        fetch(`/admin/api/announcements/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': document.getElementById('csrf-token').value
+            },
+            body: JSON.stringify({ csrf_token: document.getElementById('csrf-token').value })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                adminUtils.showNotification(t('admin.announcements_management.messages.delete_success'), 'success');
+                loadAnnouncements();
+            } else {
+                adminUtils.showNotification(t('admin.announcements_management.messages.delete_error') + ' ' + data.error, 'error');
+            }
+        })
+        .catch(error => {
+            adminUtils.showNotification(t('admin.announcements_management.messages.delete_network_error'), 'error');
+            console.error('Delete error:', error);
+        });
+    }
+}
+
+function toggleAnnouncementActive(id) {
+    const announcement = announcements.find(a => a.id === id);
+    if (!announcement) return;
+    
+    fetch(`/admin/api/announcements/${id}/toggle`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': document.getElementById('csrf-token').value
+        },
+        body: JSON.stringify({ csrf_token: document.getElementById('csrf-token').value })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            adminUtils.showNotification(
+                t('admin.announcements_management.messages.toggle_success').replace('{status}', data.active ? t('admin.announcements_management.messages.toggle_activated') : t('admin.announcements_management.messages.toggle_deactivated')), 
+                'success'
+            );
+            loadAnnouncements();
+        } else {
+            adminUtils.showNotification(t('admin.announcements_management.messages.toggle_error') + ' ' + data.error, 'error');
+        }
+    })
+    .catch(error => {
+        adminUtils.showNotification(t('admin.announcements_management.messages.toggle_network_error'), 'error');
+        console.error('Toggle error:', error);
+    });
+}
+
+function previewAnnouncement(id) {
+    const announcement = announcements.find(a => a.id === id);
+    if (!announcement) return;
+    
+    const priorityColors = {
+        low: 'border-l-gray-400',
+        normal: 'border-l-blue-400',
+        high: 'border-l-yellow-400',
+        urgent: 'border-l-red-400'
+    };
+    
+    const previewContent = document.getElementById('preview-content');
+    previewContent.innerHTML = `
+        <div class="border-l-4 ${priorityColors[announcement.priority] || 'border-l-blue-400'} pl-4">
+            <div class="flex items-center space-x-2 mb-2">
+                <h4 class="font-semibold text-lg">${announcement.title}</h4>
+                <span class="text-sm text-gray-500">(${announcement.lang.toUpperCase()})</span>
+            </div>
+            <p class="text-gray-600 whitespace-pre-wrap">${announcement.body}</p>
+            <p class="text-xs text-gray-400 mt-2">
+                ${adminUtils.formatDateTime(announcement.created_at)}
+            </p>
+        </div>
+    `;
+    
+    document.getElementById('preview-modal').classList.remove('hidden');
+}
+
+function hidePreviewModal() {
+    document.getElementById('preview-modal').classList.add('hidden');
+}
+</script>
+{% endblock %}

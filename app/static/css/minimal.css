@@ -1,0 +1,146 @@
+/* QR Info Portal - Minimal Fast Loading CSS */
+
+/* Reset and Base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f8fafc;
+}
+
+/* Container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* Thai Colors */
+.thai-turquoise { color: #14B8A6; }
+.bg-thai-turquoise { background-color: #14B8A6; }
+.bg-thai-coral { background-color: #FF6B6B; }
+
+/* Layout */
+.flex { display: flex; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.space-x-4 > * + * { margin-left: 1rem; }
+
+/* Grid */
+.grid { display: grid; }
+.grid-cols-7 { grid-template-columns: repeat(7, 1fr); }
+.gap-2 { gap: 0.5rem; }
+.gap-4 { gap: 1rem; }
+
+/* Typography */
+.text-xl { font-size: 1.25rem; }
+.text-2xl { font-size: 1.5rem; }
+.text-sm { font-size: 0.875rem; }
+.font-bold { font-weight: 700; }
+.font-medium { font-weight: 500; }
+
+/* Colors */
+.text-white { color: white; }
+.text-gray-600 { color: #6b7280; }
+.text-gray-800 { color: #1f2937; }
+.bg-white { background-color: white; }
+.bg-gray-50 { background-color: #f9fafb; }
+.bg-gray-100 { background-color: #f3f4f6; }
+.bg-gray-200 { background-color: #e5e7eb; }
+
+/* Status colors */
+.bg-green-100 { background-color: #dcfce7; }
+.text-green-700 { color: #15803d; }
+.bg-red-100 { background-color: #fee2e2; }
+.text-red-700 { color: #b91c1c; }
+.bg-blue-100 { background-color: #dbeafe; }
+.text-blue-700 { color: #1d4ed8; }
+
+/* Spacing */
+.p-2 { padding: 0.5rem; }
+.p-4 { padding: 1rem; }
+.p-6 { padding: 1.5rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-4 { margin-bottom: 1rem; }
+.mb-6 { margin-bottom: 1.5rem; }
+.mt-4 { margin-top: 1rem; }
+.mt-8 { margin-top: 2rem; }
+
+/* Border */
+.border { border: 1px solid #e5e7eb; }
+.border-2 { border-width: 2px; }
+.rounded { border-radius: 0.25rem; }
+.rounded-lg { border-radius: 0.5rem; }
+.shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+
+/* Interactive */
+.hover\:underline:hover { text-decoration: underline; }
+.hover\:bg-gray-300:hover { background-color: #d1d5db; }
+
+/* Calendar specific */
+.calendar-day {
+    min-height: 120px;
+    padding: 0.5rem;
+    border: 1px solid #e5e7eb;
+    position: relative;
+}
+
+.calendar-day.today {
+    background-color: #f0fdfa;
+    border-color: #14B8A6;
+}
+
+.calendar-day.other-month {
+    color: #9ca3af;
+    background-color: #f9fafb;
+}
+
+/* Navigation */
+nav {
+    background-color: #14B8A6;
+    color: white;
+    padding: 1rem 0;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+}
+
+nav a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Footer */
+footer {
+    background-color: #e5e7eb;
+    padding: 2rem 0;
+    margin-top: 3rem;
+    text-align: center;
+    color: #6b7280;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 0.5rem;
+    }
+    
+    .grid-cols-7 {
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        font-size: 0.75rem;
+    }
+    
+    .calendar-day {
+        min-height: 80px;
+        padding: 0.25rem;
+    }
+}

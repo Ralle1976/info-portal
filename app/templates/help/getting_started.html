@@ -1,0 +1,535 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page_title }} - QR Info Portal{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/help-system.css') }}">
+<style>
+.getting-started-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.wizard-header {
+    background: linear-gradient(135deg, #40E0D0, #20B2AA);
+    color: white;
+    padding: 2rem;
+    border-radius: 12px 12px 0 0;
+    text-align: center;
+}
+
+.wizard-body {
+    background: white;
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.step-indicator {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.step-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #d1d5db;
+    margin: 0 8px;
+    transition: all 0.3s;
+}
+
+.step-dot.active {
+    background: #40E0D0;
+    transform: scale(1.2);
+}
+
+.step-dot.completed {
+    background: #10b981;
+}
+
+.step-content {
+    padding: 3rem;
+}
+
+.step-item {
+    display: none;
+    animation: fadeInUp 0.5s ease;
+}
+
+.step-item.active {
+    display: block;
+}
+
+.step-number {
+    background: #40E0D0;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+}
+
+.step-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 1rem;
+}
+
+.step-description {
+    color: #4b5563;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.step-items {
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0;
+}
+
+.step-items li {
+    display: flex;
+    align-items: flex-start;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.step-items li:last-child {
+    border-bottom: none;
+}
+
+.step-items li::before {
+    content: '✓';
+    background: #10b981;
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.8rem;
+    margin-right: 1rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.wizard-controls {
+    display: flex;
+    justify-content: between;
+    align-items: center;
+    padding: 2rem;
+    border-top: 1px solid #e5e7eb;
+    background: #f9fafb;
+}
+
+.wizard-controls .left {
+    flex: 1;
+}
+
+.wizard-controls .center {
+    flex: 1;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #6b7280;
+}
+
+.wizard-controls .right {
+    flex: 1;
+    text-align: right;
+}
+
+.demo-card {
+    background: #f0fdfa;
+    border: 2px solid #99f6e4;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    text-align: center;
+}
+
+.demo-preview {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 1rem;
+    margin: 1rem 0;
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6b7280;
+    font-style: italic;
+}
+
+.completion-celebration {
+    text-align: center;
+    padding: 2rem;
+}
+
+.celebration-icon {
+    font-size: 4rem;
+    color: #10b981;
+    margin-bottom: 1rem;
+}
+
+.user-type-selector {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+.user-type-card {
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.user-type-card:hover {
+    border-color: #40E0D0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(64, 224, 208, 0.2);
+}
+
+.user-type-card.selected {
+    border-color: #40E0D0;
+    background: #f0fdfa;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .step-content {
+        padding: 2rem 1.5rem;
+    }
+    
+    .wizard-header {
+        padding: 1.5rem;
+    }
+    
+    .wizard-controls {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .wizard-controls .left,
+    .wizard-controls .right {
+        width: 100%;
+        text-align: center;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-thai-turquoise/5 to-thai-coral/5">
+    <div class="container mx-auto px-4 py-8">
+        <div class="getting-started-container">
+            <!-- Wizard Header -->
+            <div class="wizard-header">
+                <h1 class="text-2xl font-bold mb-2">
+                    <i class="fas fa-rocket mr-3"></i>
+                    {{ guide.title or 'Erste Schritte' }}
+                </h1>
+                <p class="opacity-90">
+                    {{ t('getting_started_subtitle', 'Lassen Sie sich durch die wichtigsten Funktionen führen') }}
+                </p>
+            </div>
+
+            <div class="wizard-body">
+                <!-- Step Indicator -->
+                <div class="step-indicator">
+                    <div class="step-dot active" data-step="0"></div>
+                    {% for step in guide.steps %}
+                    <div class="step-dot" data-step="{{ loop.index }}"></div>
+                    {% endfor %}
+                </div>
+
+                <!-- Step Content -->
+                <div class="step-content">
+                    <!-- Welcome Step -->
+                    <div class="step-item active" data-step="0">
+                        <div class="step-number">🎯</div>
+                        <div class="step-title">{{ t('welcome_step', 'Willkommen!') }}</div>
+                        <div class="step-description">
+                            {{ t('welcome_step_desc', 'Dieser interaktive Assistent führt Sie durch die wichtigsten Funktionen des QR Info Portals.') }}
+                        </div>
+
+                        <!-- User Type Selection -->
+                        {% if not user_type or user_type == 'visitor' %}
+                        <div class="user-type-selector">
+                            <div class="user-type-card {{ 'selected' if user_type == 'visitor' }}" onclick="selectUserType('visitor')">
+                                <i class="fas fa-users text-3xl text-thai-coral mb-3"></i>
+                                <h3 class="font-semibold">{{ t('visitor_type', 'Besucher') }}</h3>
+                                <p class="text-sm text-gray-600 mt-2">{{ t('visitor_type_desc', 'Ich nutze das Portal als Besucher/Patient') }}</p>
+                            </div>
+                            
+                            <div class="user-type-card {{ 'selected' if user_type == 'admin' }}" onclick="selectUserType('admin')">
+                                <i class="fas fa-user-shield text-3xl text-thai-turquoise mb-3"></i>
+                                <h3 class="font-semibold">{{ t('admin_type', 'Administrator') }}</h3>
+                                <p class="text-sm text-gray-600 mt-2">{{ t('admin_type_desc', 'Ich verwalte das Portal (Praxis-Team)') }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <div class="demo-card">
+                            <i class="fas fa-lightbulb text-2xl text-thai-turquoise mb-3"></i>
+                            <h4 class="font-semibold">{{ t('tip', 'Tipp') }}</h4>
+                            <p class="text-sm mt-2">{{ t('getting_started_tip', 'Sie können diesen Assistenten jederzeit mit F1 erneut öffnen.') }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Steps from Guide -->
+                    {% for step in guide.steps %}
+                    <div class="step-item" data-step="{{ loop.index }}">
+                        <div class="step-number">{{ loop.index }}</div>
+                        <div class="step-title">{{ step.title }}</div>
+                        <div class="step-description">{{ step.description }}</div>
+
+                        {% if step.items %}
+                        <ul class="step-items">
+                            {% for item in step.items %}
+                            <li>{{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+
+                        {% if loop.index == 1 %}
+                        <!-- Show demo for first step -->
+                        <div class="demo-preview">
+                            <i class="fas fa-eye text-2xl mr-2"></i>
+                            {{ t('demo_placeholder', 'Demo-Vorschau wird hier angezeigt') }}
+                        </div>
+                        {% endif %}
+
+                        {% if loop.index == guide.steps|length %}
+                        <!-- Completion celebration on last step -->
+                        <div class="completion-celebration">
+                            <div class="celebration-icon">🎉</div>
+                            <h3 class="text-xl font-semibold text-green-600 mb-2">{{ guide.completed_message or 'Herzlichen Glückwunsch!' }}</h3>
+                            <p class="text-gray-600">{{ t('setup_complete', 'Sie können jetzt alle Funktionen des Portals nutzen.') }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Controls -->
+                <div class="wizard-controls">
+                    <div class="left">
+                        <button id="prevBtn" 
+                                class="btn-enhanced bg-gray-500 text-white" 
+                                onclick="previousStep()"
+                                style="display: none;">
+                            <i class="fas fa-arrow-left mr-2"></i>
+                            {{ t('previous', 'Zurück') }}
+                        </button>
+                    </div>
+
+                    <div class="center">
+                        <span id="stepCounter">1 / {{ (guide.steps|length) + 1 }}</span>
+                    </div>
+
+                    <div class="right">
+                        <button id="nextBtn" 
+                                class="btn-enhanced bg-thai-turquoise text-white" 
+                                onclick="nextStep()">
+                            {{ t('next', 'Weiter') }}
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                        
+                        <button id="finishBtn" 
+                                class="btn-enhanced bg-green-600 text-white" 
+                                onclick="finishWizard()"
+                                style="display: none;">
+                            {{ t('finish', 'Fertig') }}
+                            <i class="fas fa-check ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Skip Option -->
+            <div class="text-center mt-6">
+                <a href="{{ url_for('public.home') }}" class="text-gray-500 hover:text-gray-700">
+                    {{ t('skip_wizard', 'Assistent überspringen und zum Portal') }}
+                    <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentStep = 0;
+const totalSteps = {{ (guide.steps|length) + 1 }};
+let selectedUserType = '{{ user_type or "visitor" }}';
+
+function nextStep() {
+    if (currentStep < totalSteps - 1) {
+        currentStep++;
+        updateWizard();
+    }
+}
+
+function previousStep() {
+    if (currentStep > 0) {
+        currentStep--;
+        updateWizard();
+    }
+}
+
+function updateWizard() {
+    // Hide all steps
+    document.querySelectorAll('.step-item').forEach(step => {
+        step.classList.remove('active');
+    });
+    
+    // Show current step
+    const currentStepEl = document.querySelector(`[data-step="${currentStep}"]`);
+    if (currentStepEl && currentStepEl.classList.contains('step-item')) {
+        currentStepEl.classList.add('active');
+    }
+    
+    // Update step dots
+    document.querySelectorAll('.step-dot').forEach((dot, index) => {
+        dot.classList.remove('active', 'completed');
+        if (index < currentStep) {
+            dot.classList.add('completed');
+        } else if (index === currentStep) {
+            dot.classList.add('active');
+        }
+    });
+    
+    // Update controls
+    document.getElementById('prevBtn').style.display = currentStep > 0 ? 'inline-flex' : 'none';
+    document.getElementById('stepCounter').textContent = `${currentStep + 1} / ${totalSteps}`;
+    
+    if (currentStep === totalSteps - 1) {
+        document.getElementById('nextBtn').style.display = 'none';
+        document.getElementById('finishBtn').style.display = 'inline-flex';
+    } else {
+        document.getElementById('nextBtn').style.display = 'inline-flex';
+        document.getElementById('finishBtn').style.display = 'none';
+    }
+    
+    // Scroll to top of step content
+    document.querySelector('.step-content').scrollTop = 0;
+}
+
+function selectUserType(type) {
+    selectedUserType = type;
+    
+    // Update visual selection
+    document.querySelectorAll('.user-type-card').forEach(card => {
+        card.classList.remove('selected');
+    });
+    
+    event.target.closest('.user-type-card').classList.add('selected');
+    
+    // Maybe redirect to appropriate guide
+    if (type !== '{{ user_type }}') {
+        window.location.href = `{{ url_for('help.getting_started') }}?type=${type}`;
+    }
+}
+
+function finishWizard() {
+    // Mark wizard as completed
+    localStorage.setItem('qr_portal_wizard_completed', 'true');
+    localStorage.setItem('qr_portal_user_type', selectedUserType);
+    
+    // Show completion animation
+    showCompletionAnimation();
+    
+    // Redirect after animation
+    setTimeout(() => {
+        if (selectedUserType === 'admin') {
+            window.location.href = '{{ url_for("admin.dashboard") }}';
+        } else {
+            window.location.href = '{{ url_for("public.home") }}';
+        }
+    }, 2000);
+}
+
+function showCompletionAnimation() {
+    // Create overlay with celebration
+    const overlay = document.createElement('div');
+    overlay.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+    overlay.innerHTML = `
+        <div class="bg-white rounded-lg p-8 text-center max-w-md mx-4 animate-bounce">
+            <div class="text-6xl mb-4">🎉</div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">{{ t('congratulations', 'Herzlichen Glückwunsch!') }}</h2>
+            <p class="text-gray-600">{{ t('wizard_completed', 'Der Einrichtungsassistent wurde erfolgreich abgeschlossen.') }}</p>
+            <div class="mt-4">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-thai-turquoise mx-auto"></div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(overlay);
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowLeft' || e.key === 'Backspace') {
+        e.preventDefault();
+        previousStep();
+    }
+    
+    if (e.key === 'ArrowRight' || e.key === 'Enter') {
+        e.preventDefault();
+        if (currentStep === totalSteps - 1) {
+            finishWizard();
+        } else {
+            nextStep();
+        }
+    }
+    
+    if (e.key === 'Escape') {
+        if (confirm('{{ t("exit_wizard_confirm", "Möchten Sie den Assistenten wirklich verlassen?") }}')) {
+            window.location.href = '{{ url_for("public.home") }}';
+        }
+    }
+});
+
+// Initialize wizard
+document.addEventListener('DOMContentLoaded', function() {
+    updateWizard();
+    
+    // Auto-advance to step 1 after 3 seconds if on welcome step
+    if (currentStep === 0) {
+        setTimeout(() => {
+            if (currentStep === 0) {
+                nextStep();
+            }
+        }, 3000);
+    }
+});
+</script>
+{% endblock %}

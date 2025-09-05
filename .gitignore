@@ -1,0 +1,183 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+venv/
+ENV/
+env/
+.venv/
+testing_env/
+
+# Flask
+instance/
+.webassets-cache
+flask.log
+server.log
+
+# Database
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+app.db
+portal.db
+qr_portal.db
+data/*.db
+data/*.sqlite
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Test & Coverage
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+test_results*.json
+*_report.json
+*_report.html
+reports/
+
+# Security & Keys
+*.pem
+*.key
+*.crt
+*.csr
+
+# Backup files
+*.bak
+*.backup
+*.old
+*.orig
+config.yml.bak.*
+backup/
+
+# Generated files
+app/static/qr/qr_*.png
+app/static/qr/qr_*.svg
+!app/static/qr/portal.png
+!app/static/qr/portal.svg
+!app/static/qr/.gitkeep
+cookies.txt
+portal_test.png
+
+# Screenshots & Visual Tests
+screenshots/
+browser_screenshots/
+visual_tests/
+orchestrator_reports/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Debug & Test files
+debug_*.py
+test_*.py
+*_test.py
+fix_*.py
+reset_*.py
+simple_*.py
+quick_*.py
+emergency_*.py
+!tests/test_*.py
+
+# Analysis & Validation files
+analyze_*.py
+validate_*.py
+verify_*.py
+check_*.py
+generate_*.py
+detailed_*.py
+missing_*.txt
+missing_*.json
+*_inconsistencies_report.json
+translation_fix_report.md
+
+# Monitoring & Automation
+monitor.py
+automation/
+automated_*.py
+start_*.py
+manual_*.py
+
+# Documentation drafts
+*_COMPLETE.md
+*_GUIDE.md
+*_SUMMARY.md
+*_ASSESSMENT.md
+*_ANALYSIS.md
+*_SYSTEM.md
+*_STRATEGY.md
+*_IMPROVEMENTS.md
+*_PLAN.md
+CLAUDE.md
+Claude-Code.md
+API.md
+FEATURES.md
+SETUP.md
+
+# Port forwarding scripts
+port_forward.ps1
+
+# Admin translation files (keep only in app/translations)
+admin_translation*.txt
+admin_translation*.json
+
+# Test data
+test_data/

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="{{ i18n.get_current_language() }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ t('site_title') }} - Labor Pattaya{% endblock %}</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'thai-turquoise': '#40E0D0',
+                        'thai-coral': '#FF7F7F',
+                        'thai-gold': '#FFD700'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Enhanced UI CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/enhanced-ui.css') }}">
+    
+    <style>
+        body { 
+            font-family: 'Sarabun', sans-serif; 
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <nav class="bg-white shadow-sm border-b">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div>
+                    <a href="{{ url_for('public.home') }}" class="flex items-center space-x-2">
+                        <i class="fas fa-qrcode text-thai-turquoise text-2xl"></i>
+                        <span class="text-xl font-bold text-gray-800">Labor Pattaya</span>
+                    </a>
+                </div>
+                
+                <!-- Navigation -->
+                <div class="flex items-center space-x-6">
+                    <a href="{{ url_for('public.home') }}" 
+                       class="text-gray-700 hover:text-thai-turquoise transition font-medium">
+                        {{ t('home') }}
+                    </a>
+                    <a href="{{ url_for('public.week_view') }}" 
+                       class="text-gray-700 hover:text-thai-turquoise transition font-medium">
+                        {{ t('week') }}
+                    </a>
+                    <a href="{{ url_for('public.month_view') }}" 
+                       class="text-gray-700 hover:text-thai-turquoise transition font-medium">
+                        {{ t('month') }}
+                    </a>
+                    
+                    <!-- Status -->
+                    <div class="text-right">
+                        <span class="text-gray-600 text-sm">Portal aktiv!</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Simple Footer -->
+    <footer class="bg-gray-100 mt-12">
+        <div class="container mx-auto px-4 py-6 text-center text-gray-600">
+            <p>&copy; 2025 Labor Pattaya QR Portal</p>
+            <p class="mt-2 text-sm">
+                {{ t('contact') }}: <a href="mailto:info@laborpattaya.com" class="text-thai-turquoise hover:underline">info@laborpattaya.com</a>
+            </p>
+            <p class="mt-1 text-xs text-gray-500">Entwickelt von Ralle1976</p>
+        </div>
+    </footer>
+    
+    <!-- Enhanced UI JavaScript -->
+    <script src="{{ url_for('static', filename='js/enhanced-ui.js') }}"></script>
+</body>
+</html>

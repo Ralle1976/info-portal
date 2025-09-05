@@ -1,0 +1,464 @@
+{% extends "base_minimal.html" %}
+
+{% block content %}
+<!-- Language Switcher -->
+<div class="mb-6 flex justify-end">
+    {% include 'components/language_switcher.html' %}
+</div>
+
+<!-- Status Banner Enhanced -->
+{% if status %}
+<div class="card-enhanced 
+    {% if status.type == 'ANWESEND' %}card-status-open
+    {% elif status.type == 'URLAUB' %}card-status-vacation
+    {% elif status.type == 'BILDUNGSURLAUB' %}card-status-education
+    {% elif status.type == 'KONGRESS' %}card-status-congress
+    {% else %}card-status-closed{% endif %} mb-6 animate-slide-up status-banner"
+     data-help-tooltip="{{ get_tooltip_text('status_banner', 'home') }}">
+    <div class="card-body">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <div class="{% if status.type == 'ANWESEND' %}bg-green-500 shadow-green-200
+                    {% elif status.type == 'URLAUB' %}bg-blue-500 shadow-blue-200
+                    {% elif status.type == 'BILDUNGSURLAUB' %}bg-purple-500 shadow-purple-200
+                    {% elif status.type == 'KONGRESS' %}bg-indigo-500 shadow-indigo-200
+                    {% else %}bg-red-500 shadow-red-200{% endif %} rounded-full p-3 shadow-lg">
+                    <i class="fas {% if status.type == 'ANWESEND' %}fa-door-open
+                        {% elif status.type == 'URLAUB' %}fa-umbrella-beach
+                        {% elif status.type == 'BILDUNGSURLAUB' %}fa-graduation-cap
+                        {% elif status.type == 'KONGRESS' %}fa-users
+                        {% else %}fa-door-closed{% endif %} text-white text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-xl text-gray-800">
+                        {{ t('status') }}: 
+                        {% if status.type == 'ANWESEND' %}
+                            {{ t('open') }}
+                        {% elif status.type == 'URLAUB' %}
+                            {{ t('on_vacation') }}
+                        {% elif status.type == 'BILDUNGSURLAUB' %}
+                            {{ t('educational_leave') }}
+                        {% elif status.type == 'KONGRESS' %}
+                            {{ t('congress') }}
+                        {% else %}
+                            {{ t('other') }}
+                        {% endif %}
+                    </h3>
+                    {% if status.description %}
+                        <p class="text-gray-600 mt-1">{{ status.description }}</p>
+                    {% endif %}
+                    {% if status.next_return %}
+                        <div class="mt-2 flex items-center text-sm text-gray-500">
+                            <i class="fas fa-calendar-check mr-2"></i>
+                            {{ t('back_on') }}: {{ status.next_return.strftime('%d.%m.%Y') }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% if status.type == 'ANWESEND' %}
+                <div class="status-indicator status-open status-pulse">
+                    {{ t('ui_common.available_now') }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Today's Hours Enhanced -->
+<div class="card-enhanced card-medical mb-6 animate-slide-up">
+    <div class="card-header">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-thai-turquoise rounded-full p-2">
+                    <i class="fas fa-clock text-white text-lg"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-gradient-thai">
+                        {{ t('today') }}
+                    </h2>
+                    <p class="text-gray-600">{{ today.strftime('%d.%m.%Y') }}</p>
+                </div>
+            </div>
+            <!-- Live Clock Display -->
+            <div class="text-right">
+                <div class="text-2xl font-mono font-bold text-thai-turquoise" id="live-time">
+                    --:--:--
+                </div>
+                <div class="text-sm text-gray-500">{{ t('ui_common.bangkok_time') }}</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card-body">
+        {% if today_hours.closed %}
+            <div class="text-center py-8">
+                <div class="bg-red-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                    <i class="fas fa-door-closed text-red-600 text-2xl"></i>
+                </div>
+                <div class="text-red-600 font-semibold text-xl mb-2">
+                    {{ t('closed') }}
+                </div>
+                {% if today_hours.note %}
+                    <p class="text-gray-600 bg-gray-50 rounded-lg p-3">
+                        <i class="fas fa-info-circle mr-2"></i>{{ today_hours.note }}
+                    </p>
+                {% endif %}
+            </div>
+        {% else %}
+            <div class="space-y-4">
+                <h3 class="font-semibold text-lg text-gray-800 flex items-center">
+                    <i class="fas fa-calendar-day text-thai-turquoise mr-2"></i>
+                    {{ t('ui_common.todays_hours') }}
+                </h3>
+                <div class="grid gap-3">
+                    {% for time_range in today_hours.time_ranges %}
+                        <div class="flex items-center justify-between bg-gray-50 rounded-lg p-4">
+                            <div class="flex items-center">
+                                <div class="bg-green-100 rounded-full p-2 mr-3">
+                                    <i class="fas fa-clock text-green-600"></i>
+                                </div>
+                                <span class="text-lg font-medium text-gray-800">{{ time_range }}</span>
+                            </div>
+                            {% if is_open %}
+                                <div class="status-indicator status-open">
+                                    <i class="fas fa-check mr-1"></i>{{ t('ui_common.currently_open_status') }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+        
+        {% if next_open and not is_open %}
+            <div class="mt-6 bg-blue-50 rounded-lg p-4">
+                <div class="flex items-center">
+                    <i class="fas fa-calendar-alt text-blue-600 mr-3"></i>
+                    <div>
+                        <p class="font-medium text-blue-800">{{ t('next_available') }}:</p>
+                        <p class="text-blue-600">
+                            {{ next_open.date.strftime('%d.%m.%Y') }} um {{ next_open.time }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Announcements -->
+{% if announcements and announcements|length > 0 %}
+<div class="card-enhanced mb-6 animate-slide-up">
+    <div class="card-header">
+        <div class="flex items-center space-x-3">
+            <div class="bg-yellow-500 rounded-full p-2">
+                <i class="fas fa-bullhorn text-white text-lg"></i>
+            </div>
+            <div>
+                <h2 class="text-xl font-bold text-gray-800">{{ t('announcements') }}</h2>
+                <p class="text-gray-600 text-sm">{{ t('ui_common.current_news') }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card-body space-y-4">
+        {% for announcement in announcements %}
+        <div class="{% if announcement.priority == 'urgent' %}bg-red-50 border-l-4 border-red-400{% elif announcement.priority == 'high' %}bg-orange-50 border-l-4 border-orange-400{% else %}bg-blue-50 border-l-4 border-blue-400{% endif %} p-4 rounded-r">
+            <div class="flex items-start justify-between">
+                <div class="flex-1">
+                    <h3 class="font-semibold {% if announcement.priority == 'urgent' %}text-red-900{% elif announcement.priority == 'high' %}text-orange-900{% else %}text-blue-900{% endif %} mb-2">
+                        {{ announcement.title }}
+                    </h3>
+                    <p class="{% if announcement.priority == 'urgent' %}text-red-700{% elif announcement.priority == 'high' %}text-orange-700{% else %}text-blue-700{% endif %} mb-2">
+                        {{ announcement.body }}
+                    </p>
+                    {% if announcement.end_date %}
+                    <small class="{% if announcement.priority == 'urgent' %}text-red-600{% elif announcement.priority == 'high' %}text-orange-600{% else %}text-blue-600{% endif %}">
+                        <i class="fas fa-calendar-alt mr-1"></i>
+                        {{ t('valid_until') }}: {{ announcement.end_date.strftime('%d.%m.%Y') }}
+                    </small>
+                    {% endif %}
+                </div>
+                {% if announcement.priority == 'urgent' %}
+                <div class="ml-4">
+                    <div class="bg-red-500 text-white px-2 py-1 rounded text-xs font-medium">
+                        {{ t('urgent') }}
+                    </div>
+                </div>
+                {% elif announcement.priority == 'high' %}
+                <div class="ml-4">
+                    <div class="bg-orange-500 text-white px-2 py-1 rounded text-xs font-medium">
+                        {{ t('important') }}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Services Enhanced -->
+<div class="card-enhanced mb-6 animate-slide-up">
+    <div class="card-header">
+        <div class="flex items-center space-x-3">
+            <div class="bg-medical-green rounded-full p-2">
+                <i class="fas fa-stethoscope text-white text-lg"></i>
+            </div>
+            <div>
+                <h2 class="text-xl font-bold text-gray-800">{{ t('services') }}</h2>
+                <p class="text-gray-600 text-sm">{{ t('ui_common.our_services') }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card-body">
+        <div class="grid md:grid-cols-2 gap-4">
+            {% for service in services %}
+            <div class="flex items-center p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg border border-green-100 hover:border-green-300 transition">
+                <div class="bg-thai-turquoise rounded-full p-2 mr-4">
+                    <i class="fas fa-check text-white"></i>
+                </div>
+                <div class="flex-1">
+                    <span class="font-medium text-gray-800">{{ service }}</span>
+                </div>
+                <i class="fas fa-arrow-right text-gray-400 ml-2"></i>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="mt-6 bg-thai-turquoise/10 rounded-lg p-4 border border-thai-turquoise/20">
+            <div class="flex items-center">
+                <i class="fas fa-info-circle text-thai-turquoise mr-3"></i>
+                <p class="text-gray-700">
+                    <span class="font-medium">{{ t('ui_common.additional_services') }}</span> 
+                    {{ t('ui_common.individual_consultation') }}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Social Media Section -->
+{% if social_platforms and social_platforms|length > 0 %}
+<div class="bg-gradient-to-r from-thai-turquoise to-cyan-600 rounded-lg shadow-md p-6 mb-6 text-white">
+    <h2 class="text-2xl font-bold mb-4">{{ t('follow_us') }}</h2>
+    <p class="mb-4 opacity-90">{{ t('follow_for_updates') }}</p>
+    
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {% for platform in social_platforms %}
+        <a href="{{ platform.url }}" 
+           target="_blank"
+           class="bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-lg p-4 text-center transition duration-300 group">
+            <div class="flex justify-center mb-2">
+                <i class="{{ platform.icon }} text-2xl group-hover:scale-110 transition-transform"></i>
+            </div>
+            <div class="text-sm font-medium">{{ platform.display_name }}</div>
+            {% if platform.username %}
+                <div class="text-xs opacity-75 mt-1">{{ platform.username }}</div>
+            {% endif %}
+            {% if platform.qr_enabled %}
+                <div class="mt-2">
+                    <span class="inline-block bg-white/20 rounded px-2 py-1 text-xs">
+                        📱 {{ t('scan_to_follow') }}
+                    </span>
+                </div>
+            {% endif %}
+        </a>
+        {% endfor %}
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <a href="{{ url_for('public.social_media') }}" 
+           class="bg-white/20 hover:bg-white/30 rounded-lg p-3 text-center transition">
+            <div class="text-sm font-medium">🔗 {{ t('social_qr_codes') }}</div>
+        </a>
+        <a href="/social/qr-batch?size=medium" 
+           class="bg-white/20 hover:bg-white/30 rounded-lg p-3 text-center transition">
+            <div class="text-sm font-medium">📥 {{ t('download_qr') }}</div>
+        </a>
+        <a href="{{ url_for('public.social_share', content='Check out our laboratory!', url=request.url_root) }}" 
+           class="bg-white/20 hover:bg-white/30 rounded-lg p-3 text-center transition">
+            <div class="text-sm font-medium">📤 {{ t('share') }}</div>
+        </a>
+    </div>
+</div>
+{% endif %}
+
+<!-- Contact & Location Enhanced -->
+<div class="grid md:grid-cols-2 gap-6">
+    <!-- Contact Card -->
+    <div class="card-enhanced animate-slide-up">
+        <div class="card-header">
+            <div class="flex items-center space-x-3">
+                <div class="bg-thai-coral rounded-full p-2">
+                    <i class="fas fa-phone text-white text-lg"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-gray-800">{{ t('contact') }}</h2>
+                    <p class="text-gray-600 text-sm">{{ t('ui_common.contact_us') }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-body space-y-4">
+            <!-- Phone -->
+            {% if contact.phone %}
+            <a href="tel:{{ contact.phone }}" 
+               class="flex items-center p-4 bg-gradient-to-r from-thai-turquoise/10 to-thai-turquoise/5 rounded-lg hover:from-thai-turquoise/20 hover:to-thai-turquoise/10 transition group"
+               data-help-tooltip="{{ get_tooltip_text('phone_link', 'home') }}">
+                <div class="bg-thai-turquoise rounded-full p-3 mr-4 group-hover:scale-110 transition-transform">
+                    <i class="fas fa-phone text-white"></i>
+                </div>
+                <div class="flex-1">
+                    <div class="font-medium text-gray-800">{{ t('phone') }}</div>
+                    <div class="text-thai-turquoise font-semibold">{{ contact.phone }}</div>
+                </div>
+                <i class="fas fa-external-link-alt text-gray-400 group-hover:text-thai-turquoise transition"></i>
+            </a>
+            {% endif %}
+            
+            <!-- Email -->
+            {% if contact.email %}
+            <a href="mailto:{{ contact.email }}" 
+               class="flex items-center p-4 bg-gradient-to-r from-thai-coral/10 to-thai-coral/5 rounded-lg hover:from-thai-coral/20 hover:to-thai-coral/10 transition group"
+               data-help-tooltip="{{ get_tooltip_text('email_link', 'home') }}">
+                <div class="bg-thai-coral rounded-full p-3 mr-4 group-hover:scale-110 transition-transform">
+                    <i class="fas fa-envelope text-white"></i>
+                </div>
+                <div class="flex-1">
+                    <div class="font-medium text-gray-800">{{ t('email') }}</div>
+                    <div class="text-thai-coral font-semibold">{{ contact.email }}</div>
+                </div>
+                <i class="fas fa-external-link-alt text-gray-400 group-hover:text-thai-coral transition"></i>
+            </a>
+            {% endif %}
+            
+            <!-- Social Contact Quick Access -->
+            {% if social_platforms and social_platforms|length > 0 %}
+            <div class="border-t pt-4">
+                <div class="text-sm font-medium text-gray-700 mb-3 flex items-center">
+                    <i class="fas fa-share-alt text-gray-500 mr-2"></i>
+                    {{ t('ui_common.quick_social_contact') }}
+                </div>
+                <div class="flex space-x-3">
+                    {% for platform in social_platforms %}
+                    {% if platform.name in ['line', 'whatsapp', 'facebook'] and platform.url %}
+                    <a href="{{ platform.url }}" 
+                       target="_blank"
+                       class="inline-flex items-center justify-center w-12 h-12 rounded-full text-white shadow-lg transition-all hover:scale-110 hover:shadow-xl"
+                       style="background: linear-gradient(135deg, {{ platform.color }}, {{ platform.color }}dd);"
+                       title="{{ t('contact_via') }} {{ platform.display_name }}">
+                        <i class="{{ platform.icon }} text-lg"></i>
+                    </a>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Location Card -->
+    <div class="card-enhanced animate-slide-up">
+        <div class="card-header">
+            <div class="flex items-center space-x-3">
+                <div class="bg-green-500 rounded-full p-2">
+                    <i class="fas fa-map-marker-alt text-white text-lg"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-gray-800">{{ t('address') }}</h2>
+                    <p class="text-gray-600 text-sm">{{ t('ui_common.our_location') }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-body">
+            <div class="bg-gray-50 rounded-lg p-4 mb-4">
+                <div class="flex items-start">
+                    <i class="fas fa-map-marker-alt text-green-500 mt-1 mr-3"></i>
+                    <div class="flex-1">
+                        <p class="text-gray-800 font-medium mb-1">{{ t('ui_common.address_label') }}</p>
+                        <p class="text-gray-600">{{ location.address }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            {% if location.maps_link and location.latitude and location.longitude %}
+            <a href="{{ location.maps_link }}" 
+               target="_blank"
+               class="btn-enhanced btn-thai-primary w-full justify-center group">
+                <i class="fas fa-directions mr-2 group-hover:animate-bounce"></i>
+                {{ t('navigate') }}
+                <i class="fas fa-external-link-alt ml-2 text-sm opacity-75"></i>
+            </a>
+            {% endif %}
+            
+            {% if location.parking_available or location.barrier_free or location.public_transport %}
+            <div class="mt-4 grid 
+                {% if location.parking_available and location.barrier_free %}grid-cols-2
+                {% elif location.parking_available or location.barrier_free %}grid-cols-1
+                {% else %}grid-cols-1{% endif %} 
+                gap-3 text-sm">
+                {% if location.parking_available %}
+                <div class="bg-blue-50 rounded-lg p-3 text-center">
+                    <i class="fas fa-car text-blue-600 mb-1"></i>
+                    <div class="font-medium text-blue-800">{{ t('ui_common.parking') }}</div>
+                    <div class="text-blue-600">{{ t('ui_common.parking_available') }}</div>
+                </div>
+                {% endif %}
+                {% if location.barrier_free %}
+                <div class="bg-green-50 rounded-lg p-3 text-center">
+                    <i class="fas fa-wheelchair text-green-600 mb-1"></i>
+                    <div class="font-medium text-green-800">{{ t('ui_common.access') }}</div>
+                    <div class="text-green-600">{{ t('ui_common.barrier_free') }}</div>
+                </div>
+                {% endif %}
+                {% if location.public_transport %}
+                <div class="bg-purple-50 rounded-lg p-3 text-center col-span-full">
+                    <i class="fas fa-bus text-purple-600 mb-1"></i>
+                    <div class="font-medium text-purple-800">{{ t('ui_common.public_transport') }}</div>
+                    <div class="text-purple-600">{{ location.public_transport }}</div>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Booking Widget (only show if feature is enabled) -->
+{% if booking_feature_enabled %}
+<div class="mt-8 card-enhanced animate-slide-up">
+    {% include 'components/booking_widget.html' %}
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Update live time display
+    function updateLiveTime() {
+        const now = new Date();
+        const bangkokTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Bangkok"}));
+        const timeString = bangkokTime.toLocaleTimeString('th-TH', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+        });
+        
+        const liveTimeElement = document.getElementById('live-time');
+        if (liveTimeElement) {
+            liveTimeElement.textContent = timeString;
+        }
+    }
+    
+    // Update every second
+    setInterval(updateLiveTime, 1000);
+    updateLiveTime(); // Initial call
+</script>
+{% endblock %}

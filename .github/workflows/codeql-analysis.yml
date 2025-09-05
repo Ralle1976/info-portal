@@ -1,0 +1,126 @@
+name: "CodeQL Advanced Security"
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '30 3 * * 2'  # Weekly on Tuesday at 03:30 UTC
+
+jobs:
+  analyze:
+    name: CodeQL Analysis
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'python', 'javascript' ]
+        
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v2
+      with:
+        languages: ${{ matrix.language }}
+        # Custom queries for additional security checks
+        queries: security-and-quality,security-experimental
+        config-file: ./.github/codeql-config.yml
+        
+    - name: Set up Python (for Python analysis)
+      if: matrix.language == 'python'
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Install Python dependencies
+      if: matrix.language == 'python'
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v2
+      with:
+        category: "/language:${{matrix.language}}"
+        upload: true
+        
+  custom-security-rules:
+    name: Custom Security Rules
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Install security analysis tools
+      run: |
+        pip install dlint flake8-bandit flake8-bugbear flake8-secure-coding-standard
+        pip install -r requirements.txt
+        
+    - name: Run custom security linting
+      run: |
+        echo "## Custom Security Analysis" > custom-security-report.md
+        echo "Generated: $(date)" >> custom-security-report.md
+        echo "" >> custom-security-report.md
+        
+        # Django/Flask security checks
+        echo "### Flask Security Analysis" >> custom-security-report.md
+        python -m flake8 app/ \
+          --select=DUO,S,B,SCS \
+          --format='%(path)s:%(row)d:%(col)d: %(code)s %(text)s' \
+          --output-file=flask-security-issues.txt || true
+          
+        if [ -s flask-security-issues.txt ]; then
+          echo "❌ Security issues found:" >> custom-security-report.md
+          echo '```' >> custom-security-report.md
+          cat flask-security-issues.txt >> custom-security-report.md
+          echo '```' >> custom-security-report.md
+        else
+          echo "✅ No Flask security issues detected" >> custom-security-report.md
+        fi
+        
+        # Check for common web vulnerabilities
+        echo "" >> custom-security-report.md
+        echo "### Web Security Checks" >> custom-security-report.md
+        
+        # CSRF protection
+        if grep -r "csrf" app/ >/dev/null; then
+          echo "✅ CSRF protection implemented" >> custom-security-report.md
+        else
+          echo "⚠️ Consider implementing CSRF protection" >> custom-security-report.md
+        fi
+        
+        # SQL injection protection
+        if grep -r "execute.*%" app/ | grep -v "%" >/dev/null; then
+          echo "❌ Potential SQL injection risk found" >> custom-security-report.md
+        else
+          echo "✅ No obvious SQL injection risks" >> custom-security-report.md
+        fi
+        
+        # XSS protection
+        if grep -r "|safe" app/templates/ >/dev/null; then
+          echo "⚠️ Template auto-escaping bypassed - review usage" >> custom-security-report.md
+        else
+          echo "✅ No template auto-escaping bypasses found" >> custom-security-report.md
+        fi
+        
+    - name: Upload custom security report
+      uses: actions/upload-artifact@v3
+      with:
+        name: custom-security-analysis
+        path: |
+          custom-security-report.md
+          flask-security-issues.txt

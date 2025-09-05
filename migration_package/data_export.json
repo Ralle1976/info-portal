@@ -1,0 +1,400 @@
+{
+  "export_info": {
+    "timestamp": "2025-08-27T20:47:22.853574",
+    "source_database": "data/portal.db",
+    "sqlite_version": "3.45.1",
+    "table_count": 20,
+    "total_rows_exported": 43
+  },
+  "tables": {
+    "status": {
+      "row_count": 2,
+      "data": [
+        {
+          "id": 1,
+          "type": "BILDUNGSURLAUB",
+          "date_from": "2025-08-25",
+          "date_to": "2025-09-12",
+          "description": "Fortbildung - wir sind ab 13.09. wieder f\u00fcr Sie da",
+          "next_return": "2025-09-13",
+          "created_at": "2025-08-24 09:04:06.213387",
+          "updated_at": "2025-08-24 09:04:06.213396"
+        },
+        {
+          "id": 2,
+          "type": "SONSTIGES",
+          "date_from": "2025-09-15",
+          "date_to": "2025-09-21",
+          "description": null,
+          "next_return": null,
+          "created_at": "2025-08-24 08:23:47.049845",
+          "updated_at": "2025-08-24 08:23:47.044284"
+        }
+      ]
+    },
+    "standardhours": {
+      "row_count": 7,
+      "data": [
+        {
+          "id": 1,
+          "day_of_week": 0,
+          "time_ranges": "[\"16:00-21:00\"]",
+          "updated_at": "2025-08-27 19:20:06.314131"
+        },
+        {
+          "id": 2,
+          "day_of_week": 1,
+          "time_ranges": "[\"16:00-21:00\"]",
+          "updated_at": "2025-08-27 19:20:06.324950"
+        },
+        {
+          "id": 3,
+          "day_of_week": 2,
+          "time_ranges": "[\"16:00-21:00\"]",
+          "updated_at": "2025-08-27 19:20:06.325514"
+        },
+        {
+          "id": 4,
+          "day_of_week": 3,
+          "time_ranges": "[\"16:00-21:00\"]",
+          "updated_at": "2025-08-27 19:20:06.325891"
+        },
+        {
+          "id": 5,
+          "day_of_week": 4,
+          "time_ranges": "[\"16:00-21:00\"]",
+          "updated_at": "2025-08-27 19:20:06.326238"
+        },
+        {
+          "id": 6,
+          "day_of_week": 5,
+          "time_ranges": "[\"15:30-20:30\"]",
+          "updated_at": "2025-08-27 19:20:06.326578"
+        },
+        {
+          "id": 7,
+          "day_of_week": 6,
+          "time_ranges": "[\"15:30-20:30\"]",
+          "updated_at": "2025-08-27 19:20:06.326962"
+        }
+      ]
+    },
+    "hourexception": {
+      "row_count": 0,
+      "data": []
+    },
+    "availability": {
+      "row_count": 0,
+      "data": []
+    },
+    "announcement": {
+      "row_count": 1,
+      "data": [
+        {
+          "id": 1,
+          "lang": "de",
+          "title": "TesT2025",
+          "body": "Ich will mal sehen, wie es sich darstellt!",
+          "priority": "high",
+          "category": "general",
+          "active": 1,
+          "start_date": "2025-08-24",
+          "end_date": "2025-08-31",
+          "created_at": "2025-08-24 10:00:51.174869",
+          "updated_at": "2025-08-24 03:00:51.175627"
+        }
+      ]
+    },
+    "settings": {
+      "row_count": 3,
+      "data": [
+        {
+          "key": "initialized",
+          "value": "{\"date\": \"2025-08-22T16:25:17.815791\"}",
+          "updated_at": "2025-08-22 16:25:17.815847"
+        },
+        {
+          "key": "site_config",
+          "value": "\"{\\\"site_name\\\": \\\"Test Lab Update\\\", \\\"site_description\\\": \\\"\\\", \\\"contact_phone\\\": \\\"+66 38 999 888\\\", \\\"contact_email\\\": \\\"updated@lab.th\\\", \\\"contact_address\\\": \\\"\\\"}\"",
+          "updated_at": "2025-08-24 12:48:36.800574"
+        },
+        {
+          "key": "social_media_migrated",
+          "value": "{\"date\": \"2025-08-23T15:16:00.871928\"}",
+          "updated_at": "2025-08-23 15:16:00.872140"
+        }
+      ]
+    },
+    "socialmediapost": {
+      "row_count": 0,
+      "data": []
+    },
+    "socialmediaconfig": {
+      "row_count": 7,
+      "data": [
+        {
+          "platform": "line",
+          "enabled": 1,
+          "config": "{\"enabled\": true, \"official_account\": \"@laborpattaya\", \"url\": \"https://line.me/R/ti/p/@laborpattaya\", \"qr_enabled\": true}",
+          "credentials": "{}",
+          "qr_enabled": 1,
+          "last_sync": null,
+          "updated_at": "2025-08-22 16:25:17.814879"
+        },
+        {
+          "platform": "facebook",
+          "enabled": 1,
+          "config": "{\"enabled\": true, \"page_url\": \"https://facebook.com/laborpattaya\", \"page_id\": \"laborpattaya\", \"qr_enabled\": true}",
+          "credentials": "{}",
+          "qr_enabled": 1,
+          "last_sync": null,
+          "updated_at": "2025-08-22 16:25:17.815054"
+        },
+        {
+          "platform": "instagram",
+          "enabled": 1,
+          "config": "{\"enabled\": true, \"username\": \"laborpattaya\", \"url\": \"https://instagram.com/laborpattaya\", \"qr_enabled\": true}",
+          "credentials": "{}",
+          "qr_enabled": 1,
+          "last_sync": null,
+          "updated_at": "2025-08-22 16:25:17.815171"
+        },
+        {
+          "platform": "tiktok",
+          "enabled": 1,
+          "config": "{\"enabled\": true, \"username\": \"@laborpattaya\", \"url\": \"https://tiktok.com/@laborpattaya\", \"qr_enabled\": true}",
+          "credentials": "{}",
+          "qr_enabled": 1,
+          "last_sync": null,
+          "updated_at": "2025-08-22 16:25:17.815284"
+        },
+        {
+          "platform": "whatsapp",
+          "enabled": 1,
+          "config": "{\"enabled\": true, \"business_number\": \"+66381234567\", \"url\": \"https://wa.me/66381234567\", \"qr_enabled\": true}",
+          "credentials": "{}",
+          "qr_enabled": 1,
+          "last_sync": null,
+          "updated_at": "2025-08-22 16:25:17.815399"
+        },
+        {
+          "platform": "youtube",
+          "enabled": 1,
+          "config": "{\"enabled\": true, \"channel_id\": \"UCxxxxxxxxxxxxxx\", \"url\": \"https://youtube.com/@laborpattaya\", \"qr_enabled\": false}",
+          "credentials": "{}",
+          "qr_enabled": 0,
+          "last_sync": null,
+          "updated_at": "2025-08-22 16:25:17.815598"
+        },
+        {
+          "platform": "google_business",
+          "enabled": 1,
+          "config": "{\"enabled\": true, \"place_id\": \"ChIJxxxxxxxxxxxxx\", \"url\": \"https://g.page/laborpattaya\", \"qr_enabled\": true}",
+          "credentials": "{}",
+          "qr_enabled": 1,
+          "last_sync": null,
+          "updated_at": "2025-08-22 16:25:17.815728"
+        }
+      ]
+    },
+    "shareablecontent": {
+      "row_count": 0,
+      "data": []
+    },
+    "changelog": {
+      "row_count": 1,
+      "data": [
+        {
+          "id": 1,
+          "table_name": "Status",
+          "record_id": 2,
+          "action": "update",
+          "old_data": "{\"type\": \"BILDUNGSURLAUB\", \"date_from\": \"2025-08-25\", \"date_to\": \"2025-09-12\", \"description\": \"Fortbildung - wir sind ab 13.09. wieder f\\u00fcr Sie da\", \"next_return\": \"2025-09-13\"}",
+          "new_data": "{\"type\": \"SONSTIGES\", \"date_from\": \"2025-09-15\", \"date_to\": \"2025-09-21\", \"description\": null, \"next_return\": null}",
+          "admin_user": "admin",
+          "admin_ip": "172.17.32.1",
+          "rollback_data": "{\"type\": \"BILDUNGSURLAUB\", \"date_from\": \"2025-08-25\", \"date_to\": \"2025-09-12\", \"description\": \"Fortbildung - wir sind ab 13.09. wieder f\\u00fcr Sie da\", \"next_return\": \"2025-09-13\"}",
+          "is_rolled_back": 0,
+          "created_at": "2025-08-24 08:23:47.082703"
+        }
+      ]
+    },
+    "cookieconsent": {
+      "row_count": 0,
+      "data": []
+    },
+    "legaldocument": {
+      "row_count": 0,
+      "data": []
+    },
+    "dataprocessingpurpose": {
+      "row_count": 0,
+      "data": []
+    },
+    "datasubjectrequest": {
+      "row_count": 0,
+      "data": []
+    },
+    "compliancelog": {
+      "row_count": 2,
+      "data": [
+        {
+          "id": 1,
+          "log_type": "consent",
+          "session_id_hash": null,
+          "ip_address_hash": null,
+          "user_agent_hash": null,
+          "action": "consent_error",
+          "details": "{\"error\": \"'Request' object has no attribute 'session'\"}",
+          "severity": "critical",
+          "requires_retention": 1,
+          "retention_until": "2032-08-21 08:29:41.346837",
+          "compliance_framework": "[\"PDPA\", \"GDPR\"]",
+          "created_at": "2025-08-23 08:29:41.346980"
+        },
+        {
+          "id": 2,
+          "log_type": "consent",
+          "session_id_hash": null,
+          "ip_address_hash": null,
+          "user_agent_hash": null,
+          "action": "consent_retrieval_error",
+          "details": "{\"error\": \"'Request' object has no attribute 'session'\"}",
+          "severity": "warning",
+          "requires_retention": 1,
+          "retention_until": "2032-08-21 11:23:35.641954",
+          "compliance_framework": "[]",
+          "created_at": "2025-08-23 11:23:35.642062"
+        }
+      ]
+    },
+    "dataretentionpolicy": {
+      "row_count": 0,
+      "data": []
+    },
+    "adminuser": {
+      "row_count": 1,
+      "data": [
+        {
+          "id": 1,
+          "username": "admin",
+          "password_hash": "scrypt:32768:8:1$X9OG8CLW7p1rSkz7$4afcd7593f0216aff52aa5de05d32b7e6ae554dd99e3a21002e442b4a3fc2bdfce01fff2e0cd5a7e4a41771664a1a3ba70e9d0b5161982944989e54159016185",
+          "email": null,
+          "last_login": "2025-08-27 13:47:07.829369",
+          "login_attempts": 0,
+          "locked_until": null,
+          "created_at": "2025-08-24 09:44:12.343567",
+          "updated_at": "2025-08-27 13:47:07.829384"
+        }
+      ]
+    },
+    "visitoranalytics": {
+      "row_count": 0,
+      "data": []
+    },
+    "dailystatistics": {
+      "row_count": 0,
+      "data": []
+    },
+    "sqlite_stat1": {
+      "row_count": 19,
+      "data": [
+        {
+          "tbl": "changelog",
+          "idx": "idx_changelog_recent_activity",
+          "stat": "1 1 1"
+        },
+        {
+          "tbl": "changelog",
+          "idx": "idx_changelog_rollback_status",
+          "stat": "1 1 1"
+        },
+        {
+          "tbl": "changelog",
+          "idx": "idx_changelog_table_action_created",
+          "stat": "1 1 1 1"
+        },
+        {
+          "tbl": "changelog",
+          "idx": "ix_changelog_table_name",
+          "stat": "1 1"
+        },
+        {
+          "tbl": "changelog",
+          "idx": "ix_changelog_record_id",
+          "stat": "1 1"
+        },
+        {
+          "tbl": "adminuser",
+          "idx": "idx_adminuser_username_locked",
+          "stat": "1 1 1"
+        },
+        {
+          "tbl": "adminuser",
+          "idx": "ix_adminuser_username",
+          "stat": "1 1"
+        },
+        {
+          "tbl": "status",
+          "idx": null,
+          "stat": "2"
+        },
+        {
+          "tbl": "standardhours",
+          "idx": "idx_standardhours_day_updated",
+          "stat": "7 1 1"
+        },
+        {
+          "tbl": "announcement",
+          "idx": "idx_announcement_active_range",
+          "stat": "1 1 1 1 1"
+        },
+        {
+          "tbl": "announcement",
+          "idx": "idx_announcement_active_lang_priority",
+          "stat": "1 1 1 1"
+        },
+        {
+          "tbl": "announcement",
+          "idx": "ix_announcement_lang",
+          "stat": "1 1"
+        },
+        {
+          "tbl": "settings",
+          "idx": "sqlite_autoindex_settings_1",
+          "stat": "3 1"
+        },
+        {
+          "tbl": "compliancelog",
+          "idx": "idx_compliancelog_retention",
+          "stat": "2 1 1"
+        },
+        {
+          "tbl": "compliancelog",
+          "idx": "idx_compliancelog_type_severity_created",
+          "stat": "2 2 1 1"
+        },
+        {
+          "tbl": "compliancelog",
+          "idx": "ix_compliancelog_session_id_hash",
+          "stat": "2 2"
+        },
+        {
+          "tbl": "compliancelog",
+          "idx": "ix_compliancelog_log_type",
+          "stat": "2 2"
+        },
+        {
+          "tbl": "compliancelog",
+          "idx": "ix_compliancelog_ip_address_hash",
+          "stat": "2 2"
+        },
+        {
+          "tbl": "socialmediaconfig",
+          "idx": "sqlite_autoindex_socialmediaconfig_1",
+          "stat": "7 1"
+        }
+      ]
+    }
+  }
+}

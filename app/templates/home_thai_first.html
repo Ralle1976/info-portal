@@ -1,0 +1,332 @@
+{% extends "base_thai_first.html" %}
+
+{% block content %}
+<!-- Status Banner Thai-First -->
+{% if status %}
+<div class="thai-card mb-8 {% if status.type == 'ANWESEND' %}border-thai-turquoise{% else %}border-thai-coral{% endif %} border-2">
+    <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+            <div class="{% if status.type == 'ANWESEND' %}bg-thai-turquoise{% else %}bg-thai-coral{% endif %} rounded-full p-4">
+                <i class="fas {% if status.type == 'ANWESEND' %}fa-door-open{% else %}fa-calendar-times{% endif %} text-white text-2xl"></i>
+            </div>
+            <div>
+                <div class="thai-primary">
+                    {% if status.type == 'ANWESEND' %}
+                        เปิดให้บริการ
+                    {% elif status.type == 'URLAUB' %}
+                        ปิดทำการ (วันหยุด)
+                    {% elif status.type == 'BILDUNGSURLAUB' %}
+                        ปิดทำการ (อบรม)
+                    {% elif status.type == 'KONGRESS' %}
+                        ปิดทำการ (ประชุมวิชาการ)
+                    {% else %}
+                        ปิดทำการ
+                    {% endif %}
+                </div>
+                <div class="en-subtitle">
+                    {% if status.type == 'ANWESEND' %}
+                        Open for Service
+                    {% elif status.type == 'URLAUB' %}
+                        Closed (Vacation)
+                    {% elif status.type == 'BILDUNGSURLAUB' %}
+                        Closed (Training)
+                    {% elif status.type == 'KONGRESS' %}
+                        Closed (Conference)
+                    {% else %}
+                        Closed
+                    {% endif %}
+                </div>
+                
+                {% if status.description %}
+                    <p class="mt-2 text-gray-700 text-thai-base">{{ status.description }}</p>
+                {% endif %}
+                
+                {% if status.next_return %}
+                    <div class="mt-3 flex items-center text-gray-600">
+                        <i class="fas fa-calendar-check mr-2 text-thai-turquoise"></i>
+                        <span class="font-medium">กลับมาให้บริการ: {{ status.next_return.strftime('%d/%m/%Y') }}</span>
+                        <span class="en-subtitle ml-2">(Back on {{ status.next_return.strftime('%d/%m/%Y') }})</span>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        {% if status.type == 'ANWESEND' %}
+            <div class="status-open-thai px-6 py-3 rounded-full animate-pulse">
+                พร้อมให้บริการ
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Today's Information Thai-First -->
+<div class="thai-card mb-8">
+    <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center space-x-4">
+            <div class="bg-thai-turquoise rounded-full p-3">
+                <i class="fas fa-clock text-white text-xl"></i>
+            </div>
+            <div>
+                <h2 class="thai-primary">วันนี้</h2>
+                <p class="en-subtitle">Today</p>
+                <p class="text-gray-600 mt-1">{{ today.strftime('%d/%m/%Y') }}</p>
+            </div>
+        </div>
+        
+        <!-- Live Clock -->
+        <div class="text-right">
+            <div class="text-3xl font-mono font-bold text-thai-turquoise live-clock">--:--:--</div>
+            <div class="text-sm text-gray-500">เวลากรุงเทพฯ (Bangkok Time)</div>
+        </div>
+    </div>
+    
+    <!-- Opening Hours -->
+    <div class="border-t pt-6">
+        {% if today_hours.closed %}
+            <div class="text-center py-8">
+                <div class="bg-red-100 rounded-full p-4 w-20 h-20 mx-auto mb-4 flex items-center justify-center">
+                    <i class="fas fa-door-closed text-red-600 text-3xl"></i>
+                </div>
+                <div class="thai-primary text-red-600">ปิดทำการ</div>
+                <div class="en-subtitle">Closed</div>
+                
+                {% if today_hours.note %}
+                    <div class="mt-4 bg-gray-50 rounded-lg p-4">
+                        <p class="text-thai-base text-gray-700">{{ today_hours.note }}</p>
+                    </div>
+                {% endif %}
+            </div>
+        {% else %}
+            <h3 class="font-semibold text-thai-lg mb-4">
+                <i class="fas fa-business-time text-thai-turquoise mr-2"></i>
+                เวลาทำการวันนี้ <span class="en-subtitle">(Today's Hours)</span>
+            </h3>
+            
+            <div class="space-y-3">
+                {% for time_range in today_hours.time_ranges %}
+                    <div class="flex items-center bg-green-50 rounded-lg p-4">
+                        <div class="bg-green-500 rounded-full p-2 mr-4">
+                            <i class="fas fa-check text-white"></i>
+                        </div>
+                        <div class="text-thai-lg font-semibold text-green-700">
+                            {{ time_range }}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Available Time Slots Thai-First -->
+{% if availability_today %}
+<div class="thai-card mb-8">
+    <h3 class="thai-primary mb-4">
+        <i class="fas fa-calendar-check text-thai-turquoise mr-2"></i>
+        เวลาว่างสำหรับนัดหมาย
+    </h3>
+    <p class="en-subtitle -mt-2 mb-4">Available Appointment Slots</p>
+    
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+        {% for slot in availability_today %}
+            <button class="bg-thai-sand hover:bg-thai-turquoise hover:text-white transition-colors rounded-lg p-3 text-center font-medium">
+                {{ slot }}
+            </button>
+        {% endfor %}
+    </div>
+    
+    <div class="mt-4 text-sm text-gray-600">
+        <i class="fas fa-info-circle mr-1"></i>
+        กรุณาโทรศัพท์เพื่อยืนยันการนัดหมาย
+        <span class="en-subtitle">(Please call to confirm appointment)</span>
+    </div>
+</div>
+{% endif %}
+
+<!-- Services Thai-First -->
+<div class="thai-card mb-8">
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <h3 class="thai-primary">บริการของเรา</h3>
+            <p class="en-subtitle">Our Services</p>
+        </div>
+    </div>
+    
+    <div class="grid md:grid-cols-2 gap-4">
+        {% for service in services %}
+        <div class="flex items-center p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg border border-green-100 hover:border-green-300 transition">
+            <div class="bg-thai-turquoise rounded-full p-2 mr-4">
+                <i class="fas fa-check text-white"></i>
+            </div>
+            <div class="flex-1">
+                <span class="font-medium text-gray-800">{{ service }}</span>
+            </div>
+            <i class="fas fa-arrow-right text-gray-400 ml-2"></i>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <div class="mt-6 bg-thai-turquoise/10 rounded-lg p-4 border border-thai-turquoise/20">
+        <div class="flex items-center">
+            <i class="fas fa-info-circle text-thai-turquoise mr-3"></i>
+            <p class="text-gray-700">
+                <span class="font-medium">บริการเพิ่มเติม</span>
+                <span class="en-subtitle ml-1">(Additional Services)</span>
+                ปรึกษาเฉพาะรายได้ตามต้องการ
+                <span class="en-subtitle ml-1">(Available on individual consultation)</span>
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Week Overview Thai-First -->
+<div class="thai-card mb-8">
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <h3 class="thai-primary">ตารางเวลาสัปดาห์นี้</h3>
+            <p class="en-subtitle">This Week's Schedule</p>
+        </div>
+        <a href="{{ url_for('public.week_view') }}" 
+           class="text-thai-turquoise hover:text-thai-turquoise/80 font-medium">
+            ดูรายละเอียด <i class="fas fa-arrow-right ml-1"></i>
+        </a>
+    </div>
+    
+    <div class="grid gap-2">
+        {% set thai_days = {
+            'monday': 'จันทร์', 'tuesday': 'อังคาร', 'wednesday': 'พุธ',
+            'thursday': 'พฤหัสบดี', 'friday': 'ศุกร์', 
+            'saturday': 'เสาร์', 'sunday': 'อาทิตย์'
+        } %}
+        {% set en_days = {
+            'monday': 'Mon', 'tuesday': 'Tue', 'wednesday': 'Wed',
+            'thursday': 'Thu', 'friday': 'Fri', 
+            'saturday': 'Sat', 'sunday': 'Sun'
+        } %}
+        
+        {% for day in ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] %}
+            {% set hours = week_hours.get(day, []) %}
+            <div class="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                <div class="font-medium">
+                    <span class="text-thai-base">{{ thai_days[day] }}</span>
+                    <span class="en-subtitle text-xs ml-1">({{ en_days[day] }})</span>
+                </div>
+                <div class="text-right">
+                    {% if hours %}
+                        {% for time_range in hours %}
+                            <span class="text-green-600 font-medium">{{ time_range }}</span>
+                            {% if not loop.last %}<br>{% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <span class="text-red-500">ปิด (Closed)</span>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Contact Information Thai-First -->
+<div class="thai-card">
+    <h3 class="thai-primary mb-6">
+        <i class="fas fa-map-marker-alt text-thai-turquoise mr-2"></i>
+        ติดต่อเรา
+    </h3>
+    <p class="en-subtitle -mt-4 mb-4">Contact Us</p>
+    
+    <div class="grid md:grid-cols-2 gap-6">
+        <div class="space-y-4">
+            <div class="flex items-start space-x-3">
+                <i class="fas fa-phone text-thai-turquoise mt-1"></i>
+                <div>
+                    <p class="font-medium">โทรศัพท์ (Phone)</p>
+                    <a href="tel:{{ contact.phone }}" class="text-thai-turquoise hover:underline text-lg">
+                        {{ contact.phone }}
+                    </a>
+                </div>
+            </div>
+            
+            <div class="flex items-start space-x-3">
+                <i class="fas fa-envelope text-thai-turquoise mt-1"></i>
+                <div>
+                    <p class="font-medium">อีเมล (Email)</p>
+                    <a href="mailto:{{ contact.email }}" class="text-thai-turquoise hover:underline">
+                        {{ contact.email }}
+                    </a>
+                </div>
+            </div>
+            
+            <div class="flex items-start space-x-3">
+                <i class="fas fa-location-dot text-thai-turquoise mt-1"></i>
+                <div>
+                    <p class="font-medium">ที่อยู่ (Address)</p>
+                    <p class="text-gray-700">{{ location.address }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="flex items-center justify-center">
+            <a href="{{ location.maps_link }}" 
+               target="_blank"
+               class="bg-thai-turquoise text-white px-6 py-3 rounded-lg hover:bg-thai-turquoise/90 transition-colors font-medium text-center">
+                <i class="fas fa-map mr-2"></i>
+                ดูแผนที่ Google Maps<br>
+                <span class="text-sm font-normal">(View on Google Maps)</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Announcements Thai-First -->
+{% if announcements and announcements|length > 0 %}
+<div class="mt-8">
+    <h3 class="thai-primary mb-4">
+        <i class="fas fa-bullhorn text-thai-coral mr-2"></i>
+        ประกาศ
+    </h3>
+    <p class="en-subtitle -mt-2 mb-4">Announcements</p>
+    
+    <div class="space-y-4">
+        {% for announcement in announcements %}
+            <div class="bg-thai-sand border-l-4 border-thai-coral p-4 rounded-r-lg">
+                <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                        <h4 class="font-semibold text-thai-base mb-2">{{ announcement.title }}</h4>
+                        <p class="text-gray-700 mb-2">{{ announcement.body }}</p>
+                        
+                        <div class="flex items-center text-sm text-gray-600 space-x-4">
+                            <!-- Language indicator -->
+                            <span class="inline-flex items-center px-2 py-1 bg-gray-100 rounded text-xs">
+                                {% if announcement.lang == 'th' %}🇹🇭 ไทย
+                                {% elif announcement.lang == 'en' %}🇬🇧 English  
+                                {% elif announcement.lang == 'de' %}🇩🇪 Deutsch
+                                {% else %}{{ announcement.lang|upper }}{% endif %}
+                            </span>
+                            
+                            <!-- Date info if available -->
+                            {% if announcement.end_date %}
+                            <span class="inline-flex items-center text-xs text-gray-500">
+                                <i class="fas fa-calendar-alt mr-1"></i>
+                                ถึง {{ announcement.end_date.strftime('%d/%m/%Y') }}
+                                <span class="en-subtitle ml-1">(Until {{ announcement.end_date.strftime('%d/%m/%Y') }})</span>
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    {% if announcement.priority == 'urgent' or announcement.priority == 'high' %}
+                    <div class="ml-4 flex-shrink-0">
+                        <div class="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+                            {% if announcement.priority == 'urgent' %}ด่วน{% else %}สำคัญ{% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

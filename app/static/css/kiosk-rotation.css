@@ -1,0 +1,536 @@
+/*
+Kiosk Rotation CSS - Thailand Edition
+===================================
+Optimiert für große Monitore mit hohem Kontrast
+Thai-First Typography mit English-Untertiteln
+Monitor Burn-in Prevention
+*/
+
+/* Root Variables für Konsistenz */
+:root {
+    /* Thailand Color Palette */
+    --thai-red: #B5002D;
+    --thai-white: #FFFFFF;
+    --thai-blue: #002D62;
+    --thai-gold: #FFD700;
+    --thai-coral: #FF7F50;
+    
+    /* Medical Colors */
+    --medical-green: #00A86B;
+    --medical-blue: #0056B3;
+    --thai-turquoise: #40E0D0;
+    
+    /* High Contrast Colors */
+    --kiosk-bg: #0A0A0A;
+    --kiosk-text: #FFFFFF;
+    --kiosk-accent: #00FF88;
+    --kiosk-warning: #FFD700;
+    --kiosk-danger: #FF4444;
+    
+    /* Typography Scale - Monitor Optimized */
+    --font-display: clamp(48px, 8vw, 96px);
+    --font-heading: clamp(36px, 6vw, 72px);
+    --font-body: clamp(24px, 4vw, 48px);
+    --font-subtitle: clamp(18px, 3vw, 32px);
+    --font-clock: clamp(72px, 12vw, 144px);
+    
+    /* Spacing Scale */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 2rem;
+    --spacing-lg: 4rem;
+    --spacing-xl: 6rem;
+    
+    /* Animation Durations */
+    --duration-fast: 0.3s;
+    --duration-medium: 0.8s;
+    --duration-slow: 1.2s;
+    
+    /* Shadow Levels */
+    --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.1);
+    --shadow-medium: 0 8px 32px rgba(0, 0, 0, 0.2);
+    --shadow-strong: 0 20px 40px rgba(0, 0, 0, 0.3);
+    
+    /* Backdrop Blur */
+    --blur-light: blur(10px);
+    --blur-medium: blur(20px);
+    --blur-heavy: blur(30px);
+}
+
+/* Thai-First Font System */
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&family=Noto+Sans+Thai:wght@300;400;500;600;700;800&display=swap');
+
+/* Base Reset & Setup */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+}
+
+body {
+    font-family: 'Sarabun', 'Noto Sans Thai', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--kiosk-bg);
+    color: var(--kiosk-text);
+    line-height: 1.4;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow: hidden; /* Prevent scrolling */
+    cursor: none; /* Hide cursor for kiosk mode */
+}
+
+/* Typography Classes */
+.thai-display {
+    font-family: 'Noto Sans Thai', 'Sarabun', sans-serif;
+    font-size: var(--font-display);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+}
+
+.thai-heading {
+    font-family: 'Sarabun', 'Noto Sans Thai', sans-serif;
+    font-size: var(--font-heading);
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.thai-body {
+    font-family: 'Sarabun', sans-serif;
+    font-size: var(--font-body);
+    font-weight: 400;
+    line-height: 1.4;
+}
+
+.en-subtitle {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: var(--font-subtitle);
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: var(--spacing-xs);
+}
+
+/* Digital Clock Special Styling */
+.digital-clock {
+    font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Roboto Mono', monospace;
+    font-size: var(--font-clock);
+    font-weight: 800;
+    color: var(--kiosk-accent);
+    text-shadow: 0 0 30px rgba(0, 255, 136, 0.5);
+    letter-spacing: 0.1em;
+    text-align: center;
+    margin-bottom: var(--spacing-md);
+}
+
+/* Rotation Container */
+.rotation-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.rotation-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-lg);
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all var(--duration-medium) cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 1;
+}
+
+.rotation-slide.active {
+    opacity: 1;
+    transform: translateX(0);
+    z-index: 2;
+}
+
+.rotation-slide.prev {
+    transform: translateX(-100%);
+    z-index: 0;
+}
+
+/* Status Cards */
+.status-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: var(--blur-medium);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 2rem;
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-strong);
+    text-align: center;
+    max-width: 1200px;
+    width: 100%;
+    margin: var(--spacing-md) 0;
+}
+
+.status-open {
+    background: linear-gradient(135deg, rgba(0, 255, 136, 0.15) 0%, rgba(0, 168, 107, 0.1) 100%);
+    border-color: var(--kiosk-accent);
+    box-shadow: 0 0 50px rgba(0, 255, 136, 0.3);
+}
+
+.status-closed {
+    background: linear-gradient(135deg, rgba(255, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.1) 100%);
+    border-color: var(--kiosk-danger);
+    box-shadow: 0 0 50px rgba(255, 68, 68, 0.3);
+}
+
+.status-warning {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(245, 158, 11, 0.1) 100%);
+    border-color: var(--kiosk-warning);
+    box-shadow: 0 0 50px rgba(255, 215, 0, 0.3);
+}
+
+/* Service Grid */
+.service-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-md);
+    width: 100%;
+    max-width: 1400px;
+    margin-top: var(--spacing-lg);
+}
+
+.service-item {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 1.5rem;
+    padding: var(--spacing-md);
+    text-align: center;
+    transition: all var(--duration-fast) ease;
+    backdrop-filter: var(--blur-light);
+}
+
+.service-item:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 168, 107, 0.3);
+    border-color: var(--kiosk-accent);
+    background: rgba(0, 255, 136, 0.1);
+}
+
+.service-item i {
+    font-size: 4rem;
+    color: var(--medical-green);
+    margin-bottom: var(--spacing-md);
+    text-shadow: 0 0 20px rgba(0, 168, 107, 0.5);
+}
+
+/* Week Schedule Grid */
+.week-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: var(--spacing-sm);
+    width: 100%;
+    max-width: 1600px;
+    margin: var(--spacing-lg) 0;
+}
+
+.day-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1.5rem;
+    padding: var(--spacing-md);
+    text-align: center;
+    transition: all var(--duration-fast) ease;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.day-card.today {
+    background: linear-gradient(135deg, rgba(0, 255, 136, 0.2) 0%, rgba(0, 168, 107, 0.1) 100%);
+    border-color: var(--kiosk-accent);
+    transform: scale(1.1);
+    box-shadow: 0 0 40px rgba(0, 255, 136, 0.4);
+}
+
+.day-card.open {
+    border-color: rgba(0, 168, 107, 0.5);
+}
+
+.day-card.closed {
+    border-color: rgba(255, 68, 68, 0.3);
+    opacity: 0.7;
+}
+
+/* Progress Indicators */
+.progress-dots {
+    position: fixed;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 1.5rem;
+    z-index: 100;
+}
+
+.progress-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transition: all var(--duration-fast) ease;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.progress-dot:hover {
+    background: rgba(255, 255, 255, 0.5);
+    transform: scale(1.2);
+}
+
+.progress-dot.active {
+    background: var(--kiosk-accent);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: scale(1.4);
+    box-shadow: 0 0 30px rgba(0, 255, 136, 0.6);
+}
+
+/* Timer Display */
+.rotation-timer {
+    position: fixed;
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 2rem;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    z-index: 100;
+    backdrop-filter: var(--blur-medium);
+}
+
+.timer-bar {
+    width: 200px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.timer-progress {
+    height: 100%;
+    background: linear-gradient(90deg, var(--kiosk-accent), var(--thai-turquoise));
+    transition: width 100ms linear;
+    border-radius: 4px;
+}
+
+/* Animations */
+@keyframes slideIn {
+    0% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    0% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes pulse-glow {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.05);
+    }
+}
+
+@keyframes burn-in-prevention {
+    0%, 100% { transform: translate(0, 0); }
+    25% { transform: translate(2px, -2px); }
+    50% { transform: translate(-2px, 2px); }
+    75% { transform: translate(-2px, -2px); }
+}
+
+/* Utility Classes */
+.animate-slide-in { animation: slideIn var(--duration-medium) cubic-bezier(0.34, 1.56, 0.64, 1); }
+.animate-slide-out { animation: slideOut var(--duration-medium) cubic-bezier(0.34, 1.56, 0.64, 1); }
+.animate-fade-in { animation: fadeIn var(--duration-slow) ease-out; }
+.animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+.animate-burn-prevention { animation: burn-in-prevention 300s linear infinite; }
+
+/* Responsive Adjustments for Different Monitor Sizes */
+
+/* Standard HD (1920x1080) */
+@media (min-width: 1920px) and (min-height: 1080px) {
+    :root {
+        --font-display: clamp(56px, 8vw, 108px);
+        --font-clock: clamp(84px, 12vw, 156px);
+    }
+}
+
+/* 2K (2560x1440) */
+@media (min-width: 2560px) and (min-height: 1440px) {
+    :root {
+        --font-display: clamp(68px, 8vw, 120px);
+        --font-clock: clamp(96px, 12vw, 168px);
+        --spacing-lg: 5rem;
+        --spacing-xl: 8rem;
+    }
+}
+
+/* 4K (3840x2160) */
+@media (min-width: 3840px) and (min-height: 2160px) {
+    :root {
+        --font-display: clamp(80px, 8vw, 140px);
+        --font-clock: clamp(120px, 12vw, 200px);
+        --spacing-lg: 6rem;
+        --spacing-xl: 10rem;
+    }
+    
+    .service-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .week-grid {
+        gap: var(--spacing-md);
+    }
+}
+
+/* Portrait Orientation Adjustments */
+@media (orientation: portrait) {
+    .week-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(4, 1fr);
+    }
+    
+    .service-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    :root {
+        --font-display: clamp(40px, 10vh, 80px);
+        --font-clock: clamp(60px, 12vh, 120px);
+    }
+}
+
+/* High DPI Displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 2dppx) {
+    .digital-clock {
+        text-rendering: optimizeLegibility;
+    }
+    
+    .thai-display, .thai-heading {
+        font-feature-settings: "liga" 1, "kern" 1;
+    }
+}
+
+/* Offline Mode Styling */
+body.offline .rotation-timer {
+    border-color: var(--kiosk-danger);
+    background: rgba(255, 68, 68, 0.1);
+}
+
+body.offline .timer-progress {
+    background: var(--kiosk-danger);
+}
+
+.offline-banner {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, rgba(255, 68, 68, 0.95) 0%, rgba(239, 68, 68, 0.9) 100%);
+    color: white;
+    padding: 3rem 5rem;
+    border-radius: 2rem;
+    font-size: 2rem;
+    font-weight: bold;
+    z-index: 10000;
+    backdrop-filter: var(--blur-heavy);
+    box-shadow: var(--shadow-strong);
+    text-align: center;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    display: none;
+}
+
+body.offline .offline-banner {
+    display: block;
+    animation: fadeIn var(--duration-medium) ease-out;
+}
+
+/* Accessibility Improvements */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .animate-burn-prevention {
+        animation: none;
+    }
+}
+
+/* Print Styles (für QR Code Ausdrucke) */
+@media print {
+    body {
+        background: white;
+        color: black;
+    }
+    
+    .rotation-timer, .progress-dots, .offline-banner {
+        display: none;
+    }
+}
+
+/* Focus States für Accessibility (falls Keyboard Navigation benötigt) */
+.progress-dot:focus-visible {
+    outline: 3px solid var(--kiosk-accent);
+    outline-offset: 2px;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+    :root {
+        --kiosk-bg: #000000;
+        --kiosk-text: #FFFFFF;
+        --kiosk-accent: #00FF00;
+    }
+    
+    .status-card {
+        border-width: 3px;
+    }
+}

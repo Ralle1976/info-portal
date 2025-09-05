@@ -1,0 +1,516 @@
+/* ================================================
+   ADVANCED THEME SYSTEM
+   Multiple Professional Themes for QR Info Portal
+   ================================================ */
+
+/* ========================================
+   THEME: MEDICAL PROFESSIONAL
+   Clean, trustworthy medical facility design
+   ======================================== */
+
+[data-theme="medical-professional"] {
+  /* Colors */
+  --color-primary-50: #E6F7FF;
+  --color-primary-100: #BAE7FF;
+  --color-primary-200: #91D5FF;
+  --color-primary-300: #69C0FF;
+  --color-primary-400: #40A9FF;
+  --color-primary-500: #1890FF; /* Medical Blue */
+  --color-primary-600: #096DD9;
+  --color-primary-700: #0050B3;
+  --color-primary-800: #003A8C;
+  --color-primary-900: #002766;
+  
+  --color-secondary-500: #52C41A; /* Medical Green */
+  --color-accent: #13C2C2; /* Teal */
+  
+  /* Status Colors */
+  --color-status-open: #52C41A;
+  --color-status-open-bg: #F6FFED;
+  --color-status-closed: #F5222D;
+  --color-status-closed-bg: #FFF1F0;
+  
+  /* UI Elements */
+  --header-gradient: linear-gradient(135deg, #1890FF 0%, #096DD9 50%, #13C2C2 100%);
+  --card-border-width: 1px;
+  --button-medical-bg: linear-gradient(135deg, #52C41A, #389E0D);
+}
+
+/* ========================================
+   THEME: THAI CULTURAL HERITAGE
+   Traditional Thai design elements
+   ======================================== */
+
+[data-theme="thai-cultural"] {
+  /* Colors - Thai Traditional Palette */
+  --color-primary-50: #FFF8E1;
+  --color-primary-100: #FFECB3;
+  --color-primary-200: #FFE082;
+  --color-primary-300: #FFD54F;
+  --color-primary-400: #FFCA28;
+  --color-primary-500: #FFC107; /* Thai Gold */
+  --color-primary-600: #FFB300;
+  --color-primary-700: #FFA000;
+  --color-primary-800: #FF8F00;
+  --color-primary-900: #FF6F00;
+  
+  --color-secondary-500: #D32F2F; /* Thai Red */
+  --color-accent: #1976D2; /* Thai Blue */
+  
+  /* Traditional Pattern Background */
+  --pattern-overlay: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23FFC107' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  
+  /* UI Elements */
+  --header-gradient: linear-gradient(135deg, #FFC107 0%, #D32F2F 50%, #1976D2 100%);
+  --card-decoration: 3px solid var(--color-primary-500);
+  --text-shadow-gold: 1px 1px 2px rgba(255, 193, 7, 0.3);
+}
+
+/* Thai Cultural Specific Styles */
+[data-theme="thai-cultural"] .card {
+  position: relative;
+  overflow: visible;
+}
+
+[data-theme="thai-cultural"] .card::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  background: var(--pattern-overlay);
+  border-radius: var(--radius-xl);
+  z-index: -1;
+}
+
+[data-theme="thai-cultural"] .heading-1,
+[data-theme="thai-cultural"] .heading-2 {
+  text-shadow: var(--text-shadow-gold);
+}
+
+/* ========================================
+   THEME: MODERN MINIMAL
+   Clean, modern design with subtle animations
+   ======================================== */
+
+[data-theme="modern-minimal"] {
+  /* Colors - Monochromatic with accent */
+  --color-primary-50: #F5F3FF;
+  --color-primary-100: #EDE9FE;
+  --color-primary-200: #DDD6FE;
+  --color-primary-300: #C4B5FD;
+  --color-primary-400: #A78BFA;
+  --color-primary-500: #8B5CF6; /* Purple */
+  --color-primary-600: #7C3AED;
+  --color-primary-700: #6D28D9;
+  --color-primary-800: #5B21B6;
+  --color-primary-900: #4C1D95;
+  
+  --color-secondary-500: #EC4899; /* Pink */
+  --color-accent: #10B981; /* Emerald */
+  
+  /* Minimalist Elements */
+  --color-gray-50: #FAFAFA;
+  --color-gray-100: #F4F4F5;
+  --color-gray-200: #E4E4E7;
+  --shadow-base: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  --border-width-1: 1px;
+  
+  /* Typography */
+  --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --letter-spacing-wide: 0.025em;
+}
+
+/* Modern Minimal Specific Styles */
+[data-theme="modern-minimal"] .card {
+  border: none;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="modern-minimal"] .btn {
+  font-weight: 500;
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: none;
+}
+
+[data-theme="modern-minimal"] .status-indicator {
+  border-radius: var(--radius-md);
+  font-weight: 400;
+}
+
+/* ========================================
+   THEME: HIGH CONTRAST ACCESSIBILITY
+   WCAG AAA compliant high contrast
+   ======================================== */
+
+[data-theme="high-contrast"] {
+  /* Maximum Contrast Colors */
+  --color-primary-500: #000000;
+  --color-primary-600: #1A1A1A;
+  --color-secondary-500: #0000FF;
+  --color-accent: #FF0000;
+  
+  --color-white: #FFFFFF;
+  --color-gray-50: #FFFFFF;
+  --color-gray-100: #FAFAFA;
+  --color-gray-200: #F5F5F5;
+  --color-gray-300: #E0E0E0;
+  --color-gray-400: #BDBDBD;
+  --color-gray-500: #9E9E9E;
+  --color-gray-600: #757575;
+  --color-gray-700: #424242;
+  --color-gray-800: #212121;
+  --color-gray-900: #000000;
+  
+  /* High Contrast Elements */
+  --border-width-1: 2px;
+  --border-width-2: 3px;
+  --focus-outline-width: 4px;
+  --focus-outline-offset: 2px;
+  
+  /* Typography */
+  --font-weight-regular: 500;
+  --font-weight-medium: 600;
+  --font-weight-bold: 800;
+}
+
+/* High Contrast Specific Styles */
+[data-theme="high-contrast"] * {
+  border-color: var(--color-gray-900) !important;
+}
+
+[data-theme="high-contrast"] .btn {
+  border: 2px solid currentColor;
+  font-weight: var(--font-weight-bold);
+}
+
+[data-theme="high-contrast"] .form-input,
+[data-theme="high-contrast"] .form-textarea,
+[data-theme="high-contrast"] .form-select {
+  border-width: 2px;
+  border-color: var(--color-gray-900);
+}
+
+[data-theme="high-contrast"] *:focus {
+  outline: var(--focus-outline-width) solid var(--color-primary-500);
+  outline-offset: var(--focus-outline-offset);
+}
+
+/* ========================================
+   THEME: DARK MODE
+   Professional dark theme with good contrast
+   ======================================== */
+
+[data-theme="dark-mode"] {
+  /* Dark Color Palette */
+  --color-primary-50: #E1F5FE;
+  --color-primary-100: #B3E5FC;
+  --color-primary-200: #81D4FA;
+  --color-primary-300: #4FC3F7;
+  --color-primary-400: #29B6F6;
+  --color-primary-500: #03A9F4; /* Light Blue */
+  --color-primary-600: #039BE5;
+  --color-primary-700: #0288D1;
+  --color-primary-800: #0277BD;
+  --color-primary-900: #01579B;
+  
+  --color-secondary-500: #FF6B6B; /* Light Coral */
+  --color-accent: #4ECDC4; /* Mint */
+  
+  /* Dark Backgrounds */
+  --color-white: #0F172A;
+  --color-gray-50: #1E293B;
+  --color-gray-100: #334155;
+  --color-gray-200: #475569;
+  --color-gray-300: #64748B;
+  --color-gray-400: #94A3B8;
+  --color-gray-500: #CBD5E1;
+  --color-gray-600: #E2E8F0;
+  --color-gray-700: #F1F5F9;
+  --color-gray-800: #F8FAFC;
+  --color-gray-900: #FFFFFF;
+  
+  /* Dark Mode Shadows */
+  --shadow-base: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -2px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+}
+
+/* Dark Mode Specific Styles */
+[data-theme="dark-mode"] .card {
+  background-color: var(--color-gray-50);
+  border-color: var(--color-gray-100);
+}
+
+[data-theme="dark-mode"] .btn-primary {
+  background-color: var(--color-primary-500);
+  color: var(--color-gray-900);
+}
+
+[data-theme="dark-mode"] .status-indicator {
+  filter: brightness(1.2);
+}
+
+/* ========================================
+   THEME: WARM SUNSET
+   Warm, welcoming colors for comfort
+   ======================================== */
+
+[data-theme="warm-sunset"] {
+  /* Warm Color Palette */
+  --color-primary-50: #FFF5E6;
+  --color-primary-100: #FFE4B5;
+  --color-primary-200: #FFD39B;
+  --color-primary-300: #FFC270;
+  --color-primary-400: #FFB347;
+  --color-primary-500: #FFA500; /* Orange */
+  --color-primary-600: #FF8C00;
+  --color-primary-700: #FF7F00;
+  --color-primary-800: #FF6600;
+  --color-primary-900: #CC5200;
+  
+  --color-secondary-500: #DC143C; /* Crimson */
+  --color-accent: #FFD700; /* Gold */
+  
+  /* Warm Gradients */
+  --header-gradient: linear-gradient(135deg, #FFA500 0%, #FF6347 50%, #FFD700 100%);
+  --card-glow: 0 0 20px rgba(255, 165, 0, 0.1);
+}
+
+/* Warm Sunset Specific Styles */
+[data-theme="warm-sunset"] .card {
+  box-shadow: var(--shadow-base), var(--card-glow);
+}
+
+[data-theme="warm-sunset"] .btn-primary {
+  background: linear-gradient(135deg, var(--color-primary-500), var(--color-primary-600));
+}
+
+/* ========================================
+   THEME: OCEAN BREEZE
+   Calming blues and greens
+   ======================================== */
+
+[data-theme="ocean-breeze"] {
+  /* Ocean Color Palette */
+  --color-primary-50: #E0F2FE;
+  --color-primary-100: #BAE6FD;
+  --color-primary-200: #7DD3FC;
+  --color-primary-300: #38BDF8;
+  --color-primary-400: #0EA5E9;
+  --color-primary-500: #0284C7; /* Ocean Blue */
+  --color-primary-600: #0369A1;
+  --color-primary-700: #075985;
+  --color-primary-800: #0C4A6E;
+  --color-primary-900: #0A3554;
+  
+  --color-secondary-500: #10B981; /* Emerald */
+  --color-accent: #06B6D4; /* Cyan */
+  
+  /* Ocean Elements */
+  --wave-pattern: url("data:image/svg+xml,%3Csvg width='100' height='20' viewBox='0 0 100 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 10c5-5 15-5 20 0s15 5 20 0 15-5 20 0 15 5 20 0 15-5 20 0' stroke='%230284C7' stroke-opacity='0.1' fill='none'/%3E%3C/svg%3E");
+  --header-gradient: linear-gradient(180deg, #0EA5E9 0%, #0284C7 50%, #075985 100%);
+}
+
+/* Ocean Breeze Specific Styles */
+[data-theme="ocean-breeze"] .header {
+  position: relative;
+}
+
+[data-theme="ocean-breeze"] .header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: var(--wave-pattern) repeat-x;
+  animation: wave 10s linear infinite;
+}
+
+@keyframes wave {
+  0% {
+    background-position-x: 0;
+  }
+  100% {
+    background-position-x: 100px;
+  }
+}
+
+/* ========================================
+   THEME TRANSITION EFFECTS
+   ======================================== */
+
+/* Smooth theme transitions */
+* {
+  transition: background-color 0.3s ease,
+              color 0.3s ease,
+              border-color 0.3s ease,
+              box-shadow 0.3s ease;
+}
+
+/* ========================================
+   THEME SWITCHER COMPONENT
+   ======================================== */
+
+.theme-switcher {
+  position: fixed;
+  bottom: var(--space-6);
+  right: var(--space-6);
+  z-index: var(--z-dropdown);
+}
+
+.theme-switcher-toggle {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-primary-500);
+  color: var(--color-white);
+  border: none;
+  box-shadow: var(--shadow-lg);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-all);
+}
+
+.theme-switcher-toggle:hover {
+  transform: scale(1.1);
+  box-shadow: var(--shadow-xl);
+}
+
+.theme-switcher-menu {
+  position: absolute;
+  bottom: calc(100% + var(--space-3));
+  right: 0;
+  background-color: var(--color-white);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
+  padding: var(--space-2);
+  min-width: 200px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: var(--transition-all);
+}
+
+.theme-switcher-menu.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.theme-option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: var(--transition-colors);
+}
+
+.theme-option:hover {
+  background-color: var(--color-gray-100);
+}
+
+.theme-option.active {
+  background-color: var(--color-primary-100);
+  color: var(--color-primary-700);
+}
+
+.theme-preview {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  display: flex;
+  overflow: hidden;
+  border: 2px solid var(--color-gray-300);
+}
+
+.theme-preview-primary {
+  width: 50%;
+  background-color: var(--preview-primary);
+}
+
+.theme-preview-secondary {
+  width: 50%;
+  background-color: var(--preview-secondary);
+}
+
+/* Theme Preview Colors */
+.theme-option[data-theme-value="medical-professional"] {
+  --preview-primary: #1890FF;
+  --preview-secondary: #52C41A;
+}
+
+.theme-option[data-theme-value="thai-cultural"] {
+  --preview-primary: #FFC107;
+  --preview-secondary: #D32F2F;
+}
+
+.theme-option[data-theme-value="modern-minimal"] {
+  --preview-primary: #8B5CF6;
+  --preview-secondary: #EC4899;
+}
+
+.theme-option[data-theme-value="high-contrast"] {
+  --preview-primary: #000000;
+  --preview-secondary: #0000FF;
+}
+
+.theme-option[data-theme-value="dark-mode"] {
+  --preview-primary: #03A9F4;
+  --preview-secondary: #FF6B6B;
+}
+
+.theme-option[data-theme-value="warm-sunset"] {
+  --preview-primary: #FFA500;
+  --preview-secondary: #DC143C;
+}
+
+.theme-option[data-theme-value="ocean-breeze"] {
+  --preview-primary: #0284C7;
+  --preview-secondary: #10B981;
+}
+
+/* ========================================
+   RESPONSIVE THEME ADJUSTMENTS
+   ======================================== */
+
+@media (max-width: 768px) {
+  .theme-switcher {
+    bottom: var(--space-4);
+    right: var(--space-4);
+  }
+  
+  .theme-switcher-toggle {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .theme-switcher-menu {
+    right: 0;
+    left: auto;
+    min-width: 180px;
+  }
+}
+
+/* ========================================
+   PRINT THEME OVERRIDES
+   ======================================== */
+
+@media print {
+  /* Force light theme for printing */
+  :root {
+    --color-primary-500: #1890FF !important;
+    --color-gray-900: #000000 !important;
+    --color-white: #FFFFFF !important;
+    --color-gray-50: #FAFAFA !important;
+  }
+  
+  .theme-switcher {
+    display: none !important;
+  }
+}

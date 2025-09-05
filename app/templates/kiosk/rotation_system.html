@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="{{ i18n.get_current_language() }}" data-kiosk-mode="rotation">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="robots" content="noindex, nofollow">
+    <title>{{ config.site.name }} - Kiosk Rotation System</title>
+    
+    <!-- Performance optimized loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    
+    <!-- Thai-First Font Loading -->
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700;800&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <!-- TailwindCSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'medical-green': '#00A86B',
+                        'medical-blue': '#0056B3',
+                        'thai-gold': '#FFD700',
+                        'thai-coral': '#FF7F50',
+                        'thai-turquoise': '#40E0D0'
+                    },
+                    fontFamily: {
+                        'thai': ['Sarabun', 'Noto Sans Thai', 'sans-serif'],
+                        'display': ['Noto Sans Thai', 'Sarabun', 'sans-serif']
+                    },
+                    animation: {
+                        'slide-in': 'slideIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                        'slide-out': 'slideOut 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                        'fade-in': 'fadeIn 1s ease-out',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+                    },
+                    keyframes: {
+                        slideIn: {
+                            '0%': { transform: 'translateX(100%)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' }
+                        },
+                        slideOut: {
+                            '0%': { transform: 'translateX(0)', opacity: '1' },
+                            '100%': { transform: 'translateX(-100%)', opacity: '0' }
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'scale(0.95)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Thai-First Typography System */
+        .thai-display {
+            font-family: 'Noto Sans Thai', 'Sarabun', sans-serif;
+            font-weight: 700;
+            font-size: clamp(32px, 6vw, 72px);
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+        
+        .thai-heading {
+            font-family: 'Sarabun', 'Noto Sans Thai', sans-serif;
+            font-weight: 600;
+            font-size: clamp(28px, 4vw, 48px);
+            line-height: 1.3;
+        }
+        
+        .thai-body {
+            font-family: 'Sarabun', 'Noto Sans Thai', sans-serif;
+            font-weight: 400;
+            font-size: clamp(24px, 3vw, 36px);
+            line-height: 1.4;
+        }
+        
+        .en-subtitle {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-weight: 400;
+            font-size: clamp(18px, 2vw, 24px);
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 0.5rem;
+        }
+        
+        /* Monitor Optimized High Contrast */
+        body {
+            background: #0A0A0A;
+            color: #FFFFFF;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow: hidden;
+        }
+        
+        .rotation-container {
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .rotation-slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .rotation-slide.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .rotation-slide.prev {
+            transform: translateX(-100%);
+        }
+        
+        /* Enhanced Clock Display */
+        .digital-clock {
+            font-family: 'SF Mono', 'Monaco', 'Cascadia Code', monospace;
+            font-size: clamp(72px, 10vw, 144px);
+            font-weight: 700;
+            color: #00FF88;
+            text-shadow: 0 0 30px rgba(0, 255, 136, 0.5);
+            letter-spacing: 0.1em;
+            margin-bottom: 2rem;
+        }
+        
+        .digital-date {
+            font-family: 'Sarabun', sans-serif;
+            font-size: clamp(24px, 3vw, 36px);
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 3rem;
+        }
+        
+        /* Status Cards with High Contrast */
+        .status-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 2rem;
+            padding: 3rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            max-width: 1200px;
+            width: 100%;
+        }
+        
+        .status-open {
+            background: linear-gradient(135deg, rgba(0, 168, 107, 0.2) 0%, rgba(0, 255, 136, 0.1) 100%);
+            border-color: #00FF88;
+        }
+        
+        .status-closed {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(255, 0, 0, 0.1) 100%);
+            border-color: #FF4444;
+        }
+        
+        .status-warning {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(255, 193, 7, 0.1) 100%);
+            border-color: #FFD700;
+        }
+        
+        /* Service Grid */
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            width: 100%;
+            max-width: 1400px;
+        }
+        
+        .service-item {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .service-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 168, 107, 0.3);
+            border-color: #00FF88;
+        }
+        
+        /* Progress Indicator */
+        .progress-dots {
+            position: fixed;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+        
+        .progress-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .progress-dot.active {
+            background: #00FF88;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+            transform: scale(1.3);
+        }
+        
+        /* Rotation Timer */
+        .rotation-timer {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 2rem;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            z-index: 100;
+        }
+        
+        .timer-bar {
+            width: 200px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .timer-progress {
+            height: 100%;
+            background: #00FF88;
+            transition: width 100ms linear;
+        }
+        
+        /* Offline Indicator */
+        .offline-banner {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(239, 68, 68, 0.95);
+            color: white;
+            padding: 3rem 5rem;
+            border-radius: 2rem;
+            font-size: 2rem;
+            font-weight: bold;
+            z-index: 10000;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            display: none;
+        }
+        
+        body.offline .offline-banner {
+            display: block;
+        }
+        
+        /* Monitor Burn-in Prevention */
+        @keyframes subtle-shift {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(2px, -2px); }
+            50% { transform: translate(-2px, 2px); }
+            75% { transform: translate(-2px, -2px); }
+        }
+        
+        .burn-in-prevention {
+            animation: subtle-shift 300s linear infinite;
+        }
+    </style>
+</head>
+<body class="rotation-mode">
+    
+    <!-- Rotation Timer -->
+    <div class="rotation-timer">
+        <i class="fas fa-sync-alt text-green-400"></i>
+        <div class="timer-bar">
+            <div class="timer-progress" id="timerProgress"></div>
+        </div>
+        <span class="text-sm text-gray-400" id="timerText">8s</span>
+    </div>
+    
+    <!-- Main Container -->
+    <div class="rotation-container burn-in-prevention">
+        
+        <!-- Slide 1: NOW Status -->
+        <div class="rotation-slide active" data-slide="now">
+            <div class="digital-clock" id="mainClock">--:--:--</div>
+            <div class="digital-date">{{ now.strftime('%A, %d %B %Y') }} • Bangkok Time</div>
+            
+            <div class="status-card {% if status.status_type == 'ANWESEND' %}status-open{% elif status.status_type in ['URLAUB', 'BILDUNGSURLAUB'] %}status-warning{% else %}status-closed{% endif %}">
+                <div class="text-center">
+                    <div class="thai-display mb-4">
+                        {% if status.status_type == 'ANWESEND' %}
+                            เปิดให้บริการ
+                        {% elif status.status_type == 'URLAUB' %}
+                            ลาพักผ่อน
+                        {% elif status.status_type == 'BILDUNGSURLAUB' %}
+                            ลาศึกษา
+                        {% else %}
+                            ปิดทำการ
+                        {% endif %}
+                    </div>
+                    <div class="en-subtitle">
+                        {% if status.status_type == 'ANWESEND' %}
+                            We are open and ready to serve you
+                        {% elif status.status_type == 'URLAUB' %}
+                            On vacation
+                        {% elif status.status_type == 'BILDUNGSURLAUB' %}
+                            Educational leave
+                        {% else %}
+                            Currently closed
+                        {% endif %}
+                    </div>
+                    
+                    {% if status.to_date %}
+                    <div class="mt-8 p-6 bg-white bg-opacity-10 rounded-xl">
+                        <div class="thai-heading">กลับมาให้บริการ</div>
+                        <div class="thai-display text-thai-gold mt-2">
+                            {{ status.to_date.strftime('%d/%m/%Y') }}
+                        </div>
+                        <div class="en-subtitle">Returning on {{ status.to_date.strftime('%B %d, %Y') }}</div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 2: TODAY Schedule -->
+        <div class="rotation-slide" data-slide="today">
+            <div class="text-center mb-12">
+                <div class="thai-display mb-4">เวลาทำการวันนี้</div>
+                <div class="en-subtitle">Today's Opening Hours</div>
+            </div>
+            
+            {% if today_hours and not today_hours.closed %}
+                <div class="grid grid-cols-{{ today_hours.time_ranges|length }} gap-8 max-w-5xl mx-auto">
+                    {% for time_range in today_hours.time_ranges %}
+                    <div class="status-card status-open text-center">
+                        <i class="fas fa-clock text-6xl text-green-400 mb-6"></i>
+                        <div class="thai-heading">{{ time_range }}</div>
+                        <div class="en-subtitle">Open</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="status-card status-closed text-center">
+                    <i class="fas fa-door-closed text-6xl text-red-400 mb-6"></i>
+                    <div class="thai-display">ปิดทำการวันนี้</div>
+                    <div class="en-subtitle">Closed Today</div>
+                    
+                    <!-- Next opening calculation -->
+                    <div class="mt-8 p-6 bg-white bg-opacity-10 rounded-xl">
+                        <div class="thai-heading">เปิดให้บริการอีกครั้ง</div>
+                        <div class="thai-body text-thai-gold mt-2">{{ next_opening_thai }}</div>
+                        <div class="en-subtitle">Next opening: {{ next_opening_en }}</div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Slide 3: THIS WEEK -->
+        <div class="rotation-slide" data-slide="week">
+            <div class="text-center mb-12">
+                <div class="thai-display mb-4">ตารางสัปดาห์นี้</div>
+                <div class="en-subtitle">This Week's Schedule</div>
+            </div>
+            
+            <div class="grid grid-cols-7 gap-4 max-w-6xl mx-auto">
+                {% set days = [
+                    ('จันทร์', 'Mon', 'monday'),
+                    ('อังคาร', 'Tue', 'tuesday'),
+                    ('พุธ', 'Wed', 'wednesday'),
+                    ('พฤหัสบดี', 'Thu', 'thursday'),
+                    ('ศุกร์', 'Fri', 'friday'),
+                    ('เสาร์', 'Sat', 'saturday'),
+                    ('อาทิตย์', 'Sun', 'sunday')
+                ] %}
+                
+                {% for thai, eng, key in days %}
+                {% set is_today = loop.index == now.isoweekday() %}
+                {% set hours = week_schedule.get(key, []) %}
+                
+                <div class="
+                    {% if is_today %}status-card status-open transform scale-110{% 
+                    elif hours %}bg-gray-800 border-2 border-gray-600{% 
+                    else %}bg-gray-900 border-2 border-gray-700{% endif %}
+                    rounded-xl p-6 text-center transition-all
+                ">
+                    <div class="thai-heading {% if is_today %}text-green-400{% endif %}">{{ thai }}</div>
+                    <div class="text-gray-400 text-sm mb-4">{{ eng }}</div>
+                    
+                    {% if hours %}
+                        {% for hour in hours %}
+                        <div class="text-white font-mono text-lg">{{ hour }}</div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-red-400">ปิด</div>
+                        <div class="text-gray-500 text-sm">Closed</div>
+                    {% endif %}
+                    
+                    {% if is_today %}
+                    <div class="mt-4 text-green-400 animate-pulse-slow">
+                        <i class="fas fa-circle text-xs"></i> วันนี้
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- Slide 4: SERVICES -->
+        <div class="rotation-slide" data-slide="services">
+            <div class="text-center mb-12">
+                <div class="thai-display mb-4">บริการของเรา</div>
+                <div class="en-subtitle">Our Services</div>
+            </div>
+            
+            <div class="service-grid">
+                {% set services = [
+                    ('เจาะเลือด', 'Blood Test', 'fas fa-vial', 'เจาะเลือดเพื่อตรวจวิเคราะห์'),
+                    ('ตรวจสุขภาพ', 'Health Checkup', 'fas fa-stethoscope', 'ตรวจสุขภาพประจำปี'),
+                    ('ปรึกษาแพทย์', 'Consultation', 'fas fa-user-md', 'ปรึกษาเรื่องสุขภาพ'),
+                    ('ติดตามผล', 'Follow-up', 'fas fa-clipboard-check', 'ติดตามผลการรักษา')
+                ] %}
+                
+                {% for thai_name, eng_name, icon, desc in services %}
+                <div class="service-item">
+                    <i class="{{ icon }} text-5xl text-medical-green mb-4"></i>
+                    <div class="thai-heading">{{ thai_name }}</div>
+                    <div class="en-subtitle">{{ eng_name }}</div>
+                    <div class="thai-body text-gray-400 mt-4">{{ desc }}</div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="mt-12 text-center">
+                <div class="status-card" style="background: rgba(0, 168, 107, 0.1); border-color: #00A86B;">
+                    <div class="flex items-center justify-center gap-8">
+                        <div>
+                            <i class="fas fa-phone text-4xl text-green-400"></i>
+                            <div class="thai-body mt-2">{{ config.contact.phone }}</div>
+                        </div>
+                        <div class="mx-8 h-20 w-px bg-gray-600"></div>
+                        <div>
+                            <img src="/qr?size=120" alt="QR Code" class="bg-white rounded-lg p-2">
+                            <div class="thai-body mt-2">สแกนเพื่อข้อมูลเพิ่มเติม</div>
+                            <div class="en-subtitle text-xs">Scan for more info</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+    <!-- Progress Indicators -->
+    <div class="progress-dots">
+        <div class="progress-dot active" data-slide="0"></div>
+        <div class="progress-dot" data-slide="1"></div>
+        <div class="progress-dot" data-slide="2"></div>
+        <div class="progress-dot" data-slide="3"></div>
+    </div>
+    
+    <!-- Offline Banner -->
+    <div class="offline-banner">
+        <i class="fas fa-wifi-slash mr-4"></i>
+        OFFLINE MODE
+        <div class="text-lg mt-2 opacity-80">Last update: <span id="lastUpdate">--:--</span></div>
+    </div>
+    
+    <script>
+        // Configuration
+        const ROTATION_INTERVAL = 8000; // 8 seconds
+        const CLOCK_UPDATE_INTERVAL = 1000; // 1 second
+        const REFRESH_INTERVAL = 300000; // 5 minutes
+        
+        // State
+        let currentSlide = 0;
+        let rotationTimer = null;
+        let timerInterval = null;
+        let timeLeft = ROTATION_INTERVAL / 1000;
+        
+        // Elements
+        const slides = document.querySelectorAll('.rotation-slide');
+        const dots = document.querySelectorAll('.progress-dot');
+        const timerProgress = document.getElementById('timerProgress');
+        const timerText = document.getElementById('timerText');
+        const mainClock = document.getElementById('mainClock');
+        
+        // Initialize rotation system
+        function initRotation() {
+            console.log('🎭 Kiosk Rotation System v2.0 - Thailand Edition');
+            console.log('📺 Display:', window.innerWidth + 'x' + window.innerHeight);
+            console.log('🌏 Timezone: Asia/Bangkok');
+            
+            startRotation();
+            updateClock();
+            setInterval(updateClock, CLOCK_UPDATE_INTERVAL);
+            
+            // Auto refresh
+            setTimeout(() => {
+                console.log('🔄 Auto-refreshing...');
+                location.reload();
+            }, REFRESH_INTERVAL);
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', handleKeyboard);
+            
+            // Network monitoring
+            window.addEventListener('online', () => {
+                document.body.classList.remove('offline');
+                console.log('🌐 Back online');
+            });
+            
+            window.addEventListener('offline', () => {
+                document.body.classList.add('offline');
+                document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString('th-TH');
+                console.log('📵 Offline mode');
+            });
+            
+            // Click dots to navigate
+            dots.forEach((dot, index) => {
+                dot.addEventListener('click', () => {
+                    goToSlide(index);
+                });
+            });
+            
+            // Prevent screen burn-in
+            preventBurnIn();
+            
+            // Try fullscreen on first interaction
+            ['click', 'touchstart'].forEach(event => {
+                document.addEventListener(event, tryFullscreen, { once: true });
+            });
+        }
+        
+        // Rotation control
+        function startRotation() {
+            clearInterval(rotationTimer);
+            clearInterval(timerInterval);
+            
+            timeLeft = ROTATION_INTERVAL / 1000;
+            updateTimerDisplay();
+            
+            rotationTimer = setInterval(() => {
+                nextSlide();
+            }, ROTATION_INTERVAL);
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                
+                if (timeLeft <= 0) {
+                    timeLeft = ROTATION_INTERVAL / 1000;
+                }
+            }, 1000);
+        }
+        
+        function updateTimerDisplay() {
+            const progress = (timeLeft / (ROTATION_INTERVAL / 1000)) * 100;
+            timerProgress.style.width = progress + '%';
+            timerText.textContent = timeLeft + 's';
+        }
+        
+        function nextSlide() {
+            goToSlide((currentSlide + 1) % slides.length);
+        }
+        
+        function prevSlide() {
+            goToSlide((currentSlide - 1 + slides.length) % slides.length);
+        }
+        
+        function goToSlide(index) {
+            // Remove active classes
+            slides[currentSlide].classList.remove('active');
+            slides[currentSlide].classList.add('prev');
+            dots[currentSlide].classList.remove('active');
+            
+            // Update current slide
+            currentSlide = index;
+            
+            // Add active classes
+            slides[currentSlide].classList.add('active');
+            slides[currentSlide].classList.remove('prev');
+            dots[currentSlide].classList.add('active');
+            
+            // Clean up prev class after animation
+            setTimeout(() => {
+                slides.forEach((slide, i) => {
+                    if (i !== currentSlide) {
+                        slide.classList.remove('prev');
+                    }
+                });
+            }, 800);
+            
+            // Restart timer
+            startRotation();
+            
+            console.log(`📍 Slide ${currentSlide + 1}: ${slides[currentSlide].dataset.slide}`);
+        }
+        
+        // Clock update
+        function updateClock() {
+            const now = new Date();
+            const bangkokTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Bangkok"}));
+            
+            const hours = String(bangkokTime.getHours()).padStart(2, '0');
+            const minutes = String(bangkokTime.getMinutes()).padStart(2, '0');
+            const seconds = String(bangkokTime.getSeconds()).padStart(2, '0');
+            
+            if (mainClock) {
+                mainClock.textContent = `${hours}:${minutes}:${seconds}`;
+            }
+            
+            // Update all clocks
+            document.querySelectorAll('.clock-display').forEach(clock => {
+                clock.textContent = `${hours}:${minutes}:${seconds}`;
+            });
+        }
+        
+        // Keyboard controls
+        function handleKeyboard(e) {
+            // Admin controls with Ctrl+Alt
+            if (e.ctrlKey && e.altKey) {
+                switch(e.key) {
+                    case 'ArrowRight':
+                        nextSlide();
+                        break;
+                    case 'ArrowLeft':
+                        prevSlide();
+                        break;
+                    case 'p':
+                        // Pause/resume
+                        if (rotationTimer) {
+                            clearInterval(rotationTimer);
+                            clearInterval(timerInterval);
+                            rotationTimer = null;
+                            console.log('⏸️ Rotation paused');
+                        } else {
+                            startRotation();
+                            console.log('▶️ Rotation resumed');
+                        }
+                        break;
+                    case 'r':
+                        location.reload();
+                        break;
+                    case 'f':
+                        tryFullscreen();
+                        break;
+                    case 'i':
+                        showSystemInfo();
+                        break;
+                }
+            }
+            
+            // Prevent F5, F11 unless admin
+            if ((e.key === 'F5' || e.key === 'F11') && !e.ctrlKey) {
+                e.preventDefault();
+            }
+        }
+        
+        // Fullscreen handling
+        function tryFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen()
+                    .then(() => console.log('📺 Fullscreen activated'))
+                    .catch(err => console.log('📺 Fullscreen not available'));
+            }
+        }
+        
+        // System info display
+        function showSystemInfo() {
+            console.log(`
+🖥️ KIOSK ROTATION SYSTEM - THAILAND
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📺 Display: ${window.innerWidth}x${window.innerHeight}
+🎯 Current Slide: ${currentSlide + 1}/${slides.length}
+⏱️ Rotation: ${ROTATION_INTERVAL/1000}s intervals
+🌐 Network: ${navigator.onLine ? 'Online' : 'Offline'}
+🌏 Timezone: Asia/Bangkok
+💾 Memory: ${navigator.deviceMemory || 'Unknown'}GB
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            `);
+        }
+        
+        // Burn-in prevention
+        function preventBurnIn() {
+            // Subtle pixel shift every 5 minutes
+            setInterval(() => {
+                const container = document.querySelector('.burn-in-prevention');
+                const x = Math.random() * 4 - 2; // -2 to 2 pixels
+                const y = Math.random() * 4 - 2;
+                container.style.transform = `translate(${x}px, ${y}px)`;
+            }, 300000);
+        }
+        
+        // Prevent text selection and context menu
+        document.addEventListener('selectstart', e => e.preventDefault());
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initRotation);
+        } else {
+            initRotation();
+        }
+    </script>
+    
+</body>
+</html>

@@ -1,0 +1,1102 @@
+/* ================================================
+   KIOSK MODE ENHANCED CSS - OPTIMIZED FOR LARGE DISPLAYS
+   Version: 3.0
+   Purpose: Professional medical facility kiosk interface
+   ================================================ */
+
+:root {
+  /* =================================
+     KIOSK-SPECIFIC COLOR PALETTE
+     ================================= */
+  
+  /* Medical Professional Colors */
+  --kiosk-primary: #00A86B;          /* Medical Green */
+  --kiosk-primary-light: #20C997;    
+  --kiosk-primary-dark: #007A4F;     
+  --kiosk-secondary: #0056B3;        /* Medical Blue */
+  --kiosk-secondary-light: #007BFF;  
+  --kiosk-accent: #FFD700;           /* Thai Gold */
+  --kiosk-coral: #FF7F50;            /* Thai Coral */
+  
+  /* Status Colors - High Contrast */
+  --kiosk-open: #10B981;
+  --kiosk-open-bg: #D1FAE5;
+  --kiosk-closed: #EF4444;
+  --kiosk-closed-bg: #FEE2E2;
+  --kiosk-warning: #F59E0B;
+  --kiosk-warning-bg: #FEF3C7;
+  --kiosk-info: #3B82F6;
+  --kiosk-info-bg: #DBEAFE;
+  
+  /* Neutral Colors for High Contrast */
+  --kiosk-white: #FFFFFF;
+  --kiosk-black: #000000;
+  --kiosk-gray-50: #F9FAFB;
+  --kiosk-gray-100: #F3F4F6;
+  --kiosk-gray-200: #E5E7EB;
+  --kiosk-gray-300: #D1D5DB;
+  --kiosk-gray-600: #4B5563;
+  --kiosk-gray-700: #374151;
+  --kiosk-gray-800: #1F2937;
+  --kiosk-gray-900: #111827;
+  
+  /* =================================
+     KIOSK TYPOGRAPHY SCALE
+     ================================= */
+  
+  /* Large Display Optimized Font Sizes */
+  --kiosk-text-xs: 0.875rem;    /* 14px */
+  --kiosk-text-sm: 1rem;        /* 16px */
+  --kiosk-text-base: 1.125rem;  /* 18px */
+  --kiosk-text-lg: 1.25rem;     /* 20px */
+  --kiosk-text-xl: 1.5rem;      /* 24px */
+  --kiosk-text-2xl: 1.875rem;   /* 30px */
+  --kiosk-text-3xl: 2.25rem;    /* 36px */
+  --kiosk-text-4xl: 3rem;       /* 48px */
+  --kiosk-text-5xl: 3.75rem;    /* 60px */
+  --kiosk-text-6xl: 4.5rem;     /* 72px */
+  --kiosk-text-7xl: 6rem;       /* 96px */
+  --kiosk-text-8xl: 8rem;       /* 128px */
+  
+  /* =================================
+     KIOSK SPACING SYSTEM
+     ================================= */
+  
+  --kiosk-space-1: 0.25rem;   /* 4px */
+  --kiosk-space-2: 0.5rem;    /* 8px */
+  --kiosk-space-3: 0.75rem;   /* 12px */
+  --kiosk-space-4: 1rem;      /* 16px */
+  --kiosk-space-5: 1.25rem;   /* 20px */
+  --kiosk-space-6: 1.5rem;    /* 24px */
+  --kiosk-space-8: 2rem;      /* 32px */
+  --kiosk-space-10: 2.5rem;   /* 40px */
+  --kiosk-space-12: 3rem;     /* 48px */
+  --kiosk-space-16: 4rem;     /* 64px */
+  --kiosk-space-20: 5rem;     /* 80px */
+  --kiosk-space-24: 6rem;     /* 96px */
+  --kiosk-space-32: 8rem;     /* 128px */
+  
+  /* =================================
+     KIOSK SHADOWS & EFFECTS
+     ================================= */
+  
+  --kiosk-shadow-sm: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+  --kiosk-shadow-base: 0 4px 8px 0 rgba(0, 0, 0, 0.12);
+  --kiosk-shadow-lg: 0 8px 16px 0 rgba(0, 0, 0, 0.15);
+  --kiosk-shadow-xl: 0 16px 32px 0 rgba(0, 0, 0, 0.2);
+  --kiosk-shadow-2xl: 0 24px 48px 0 rgba(0, 0, 0, 0.25);
+  
+  /* Colored shadows for status */
+  --kiosk-shadow-open: 0 8px 16px 0 rgba(16, 185, 129, 0.3);
+  --kiosk-shadow-closed: 0 8px 16px 0 rgba(239, 68, 68, 0.3);
+  --kiosk-shadow-warning: 0 8px 16px 0 rgba(245, 158, 11, 0.3);
+  
+  /* =================================
+     BORDER RADIUS FOR KIOSK
+     ================================= */
+  
+  --kiosk-radius-sm: 0.5rem;    /* 8px */
+  --kiosk-radius-base: 0.75rem; /* 12px */
+  --kiosk-radius-lg: 1rem;      /* 16px */
+  --kiosk-radius-xl: 1.5rem;    /* 24px */
+  --kiosk-radius-2xl: 2rem;     /* 32px */
+  --kiosk-radius-3xl: 3rem;     /* 48px */
+  --kiosk-radius-full: 9999px;
+  
+  /* =================================
+     TRANSITIONS
+     ================================= */
+  
+  --kiosk-transition-fast: 200ms ease-out;
+  --kiosk-transition-base: 300ms ease-out;
+  --kiosk-transition-slow: 500ms ease-out;
+}
+
+/* ========================================
+   KIOSK BASE STYLES
+   ======================================== */
+
+.kiosk-mode {
+  font-family: 'Sarabun', 'Noto Sans Thai', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  cursor: default;
+}
+
+.kiosk-container {
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: linear-gradient(135deg, 
+    var(--kiosk-gray-50) 0%, 
+    var(--kiosk-white) 30%, 
+    var(--kiosk-gray-50) 70%, 
+    var(--kiosk-gray-100) 100%);
+  background-size: 400% 400%;
+  animation: kiosk-gradient-shift 30s ease infinite;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: var(--kiosk-space-8);
+  box-sizing: border-box;
+}
+
+@keyframes kiosk-gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* ========================================
+   KIOSK HEADER SYSTEM
+   ======================================== */
+
+.kiosk-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--kiosk-space-6) 0;
+  border-bottom: 3px solid var(--kiosk-primary);
+  margin-bottom: var(--kiosk-space-8);
+  background: linear-gradient(90deg, 
+    rgba(255, 255, 255, 0.8) 0%, 
+    rgba(255, 255, 255, 0.9) 50%, 
+    rgba(255, 255, 255, 0.8) 100%);
+  border-radius: var(--kiosk-radius-xl);
+  box-shadow: var(--kiosk-shadow-lg);
+  backdrop-filter: blur(10px);
+}
+
+.kiosk-logo-section {
+  display: flex;
+  align-items: center;
+  gap: var(--kiosk-space-6);
+}
+
+.kiosk-logo-icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, var(--kiosk-primary), var(--kiosk-primary-light));
+  border-radius: var(--kiosk-radius-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--kiosk-shadow-lg);
+}
+
+.kiosk-logo-icon i {
+  font-size: 2.5rem;
+  color: var(--kiosk-white);
+}
+
+.kiosk-title-group h1 {
+  font-size: var(--kiosk-text-4xl);
+  font-weight: 700;
+  color: var(--kiosk-gray-900);
+  margin: 0;
+  line-height: 1.1;
+}
+
+.kiosk-subtitle {
+  font-size: var(--kiosk-text-lg);
+  color: var(--kiosk-gray-600);
+  margin: var(--kiosk-space-2) 0 0 0;
+  font-weight: 500;
+}
+
+.kiosk-live-info {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: var(--kiosk-space-2);
+}
+
+/* ========================================
+   KIOSK CLOCK SYSTEM
+   ======================================== */
+
+.kiosk-clock {
+  font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Roboto Mono', monospace;
+  font-size: var(--kiosk-text-5xl);
+  font-weight: 700;
+  color: var(--kiosk-primary);
+  text-shadow: 0 2px 4px rgba(0, 168, 107, 0.3);
+  letter-spacing: -0.02em;
+}
+
+.kiosk-date {
+  font-size: var(--kiosk-text-xl);
+  color: var(--kiosk-gray-700);
+  font-weight: 600;
+}
+
+.kiosk-timezone {
+  font-size: var(--kiosk-text-sm);
+  color: var(--kiosk-gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* ========================================
+   KIOSK STATUS SYSTEM WITH ENHANCED ICONS
+   ======================================== */
+
+.kiosk-status-banner {
+  width: 100%;
+  padding: var(--kiosk-space-8);
+  border-radius: var(--kiosk-radius-2xl);
+  margin-bottom: var(--kiosk-space-8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--kiosk-space-6);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.kiosk-status-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: inherit;
+  opacity: 0.1;
+  z-index: -1;
+}
+
+.kiosk-status-open {
+  background: linear-gradient(135deg, var(--kiosk-open), var(--kiosk-primary));
+  color: var(--kiosk-white);
+  box-shadow: var(--kiosk-shadow-open);
+}
+
+.kiosk-status-closed {
+  background: linear-gradient(135deg, var(--kiosk-closed), #DC2626);
+  color: var(--kiosk-white);
+  box-shadow: var(--kiosk-shadow-closed);
+}
+
+.kiosk-status-warning {
+  background: linear-gradient(135deg, var(--kiosk-warning), #D97706);
+  color: var(--kiosk-white);
+  box-shadow: var(--kiosk-shadow-warning);
+}
+
+.kiosk-status-info {
+  background: linear-gradient(135deg, var(--kiosk-info), #1D4ED8);
+  color: var(--kiosk-white);
+  box-shadow: 0 8px 16px 0 rgba(59, 130, 246, 0.3);
+}
+
+.kiosk-status-icon {
+  width: 100px;
+  height: 100px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: var(--kiosk-radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: kiosk-status-pulse 3s ease-in-out infinite;
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.1);
+}
+
+.kiosk-status-icon i {
+  font-size: 3rem;
+  color: var(--kiosk-white);
+}
+
+@keyframes kiosk-status-pulse {
+  0%, 100% { 
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% { 
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+.kiosk-status-content {
+  flex: 1;
+  text-align: center;
+}
+
+.kiosk-status-title {
+  font-size: var(--kiosk-text-4xl);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: var(--kiosk-space-3);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.kiosk-status-description {
+  font-size: var(--kiosk-text-xl);
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+/* ========================================
+   OPENING HOURS DISPLAY SYSTEM
+   ======================================== */
+
+.kiosk-hours-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.kiosk-section-header {
+  display: flex;
+  align-items: center;
+  gap: var(--kiosk-space-4);
+  margin-bottom: var(--kiosk-space-6);
+  padding-bottom: var(--kiosk-space-4);
+  border-bottom: 2px solid var(--kiosk-gray-200);
+}
+
+.kiosk-section-icon {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, var(--kiosk-secondary), var(--kiosk-secondary-light));
+  border-radius: var(--kiosk-radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--kiosk-shadow-base);
+}
+
+.kiosk-section-icon i {
+  font-size: 1.75rem;
+  color: var(--kiosk-white);
+}
+
+.kiosk-section-title {
+  font-size: var(--kiosk-text-3xl);
+  font-weight: 700;
+  color: var(--kiosk-gray-800);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.kiosk-hours-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--kiosk-space-6);
+  flex: 1;
+}
+
+.kiosk-time-card {
+  background: var(--kiosk-white);
+  border-radius: var(--kiosk-radius-xl);
+  padding: var(--kiosk-space-8);
+  box-shadow: var(--kiosk-shadow-lg);
+  border: 3px solid transparent;
+  transition: var(--kiosk-transition-base);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--kiosk-space-4);
+  position: relative;
+  overflow: hidden;
+}
+
+.kiosk-time-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--kiosk-primary), var(--kiosk-accent));
+}
+
+.kiosk-time-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--kiosk-shadow-xl);
+}
+
+.kiosk-time-icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, var(--kiosk-primary), var(--kiosk-primary-light));
+  border-radius: var(--kiosk-radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--kiosk-shadow-base);
+}
+
+.kiosk-time-icon i {
+  font-size: 2rem;
+  color: var(--kiosk-white);
+}
+
+/* Time-specific icons */
+.kiosk-time-morning {
+  background: linear-gradient(135deg, #F59E0B, #FBBF24); /* Morning - yellow/orange */
+}
+
+.kiosk-time-afternoon {
+  background: linear-gradient(135deg, #3B82F6, #60A5FA); /* Afternoon - blue */
+}
+
+.kiosk-time-evening {
+  background: linear-gradient(135deg, #8B5CF6, #A78BFA); /* Evening - purple */
+}
+
+.kiosk-time-closed {
+  background: linear-gradient(135deg, var(--kiosk-closed), #DC2626);
+}
+
+.kiosk-time-text {
+  font-size: var(--kiosk-text-3xl);
+  font-weight: 700;
+  color: var(--kiosk-gray-800);
+  font-family: var(--font-mono);
+  letter-spacing: -0.02em;
+}
+
+.kiosk-time-label {
+  font-size: var(--kiosk-text-lg);
+  color: var(--kiosk-gray-600);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* Closed state styling */
+.kiosk-time-card.closed {
+  background: var(--kiosk-closed-bg);
+  border-color: var(--kiosk-closed);
+}
+
+.kiosk-time-card.closed .kiosk-time-text {
+  color: var(--kiosk-closed);
+}
+
+.kiosk-time-card.closed .kiosk-time-label {
+  color: var(--kiosk-closed);
+}
+
+/* ========================================
+   TRIPLE LAYOUT GRID SYSTEM
+   ======================================== */
+
+.kiosk-triple-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: auto 1fr auto;
+  height: calc(100vh - var(--kiosk-space-16));
+  gap: var(--kiosk-space-6);
+}
+
+.kiosk-triple-header {
+  grid-column: 1 / -1;
+}
+
+.kiosk-triple-footer {
+  grid-column: 1 / -1;
+}
+
+.kiosk-column {
+  background: var(--kiosk-white);
+  border-radius: var(--kiosk-radius-2xl);
+  padding: var(--kiosk-space-8);
+  box-shadow: var(--kiosk-shadow-lg);
+  display: flex;
+  flex-direction: column;
+  border: 3px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.kiosk-column::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  z-index: 1;
+}
+
+.kiosk-column-today::before {
+  background: linear-gradient(90deg, var(--kiosk-primary), var(--kiosk-primary-light));
+}
+
+.kiosk-column-week::before {
+  background: linear-gradient(90deg, var(--kiosk-secondary), var(--kiosk-secondary-light));
+}
+
+.kiosk-column-preview::before {
+  background: linear-gradient(90deg, var(--kiosk-accent), var(--kiosk-coral));
+}
+
+/* ========================================
+   WEEK VIEW ENHANCED
+   ======================================== */
+
+.kiosk-week-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--kiosk-space-4);
+  flex: 1;
+  overflow-y: auto;
+  padding-right: var(--kiosk-space-2);
+}
+
+.kiosk-day-card {
+  background: var(--kiosk-gray-50);
+  border-radius: var(--kiosk-radius-lg);
+  padding: var(--kiosk-space-6);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 2px solid transparent;
+  transition: var(--kiosk-transition-base);
+}
+
+.kiosk-day-card:hover {
+  background: var(--kiosk-gray-100);
+  transform: translateX(4px);
+}
+
+.kiosk-day-card.today {
+  background: linear-gradient(135deg, var(--kiosk-primary), var(--kiosk-primary-light));
+  color: var(--kiosk-white);
+  border-color: var(--kiosk-primary-dark);
+  box-shadow: var(--kiosk-shadow-open);
+  transform: scale(1.02);
+}
+
+.kiosk-day-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kiosk-space-2);
+}
+
+.kiosk-day-name {
+  font-size: var(--kiosk-text-xl);
+  font-weight: 700;
+  color: var(--kiosk-gray-800);
+}
+
+.kiosk-day-card.today .kiosk-day-name {
+  color: var(--kiosk-white);
+}
+
+.kiosk-day-date {
+  font-size: var(--kiosk-text-sm);
+  color: var(--kiosk-gray-600);
+  font-weight: 500;
+}
+
+.kiosk-day-card.today .kiosk-day-date {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.kiosk-day-hours {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: var(--kiosk-space-1);
+}
+
+.kiosk-hours-time {
+  font-size: var(--kiosk-text-lg);
+  font-weight: 600;
+  color: var(--kiosk-gray-800);
+  font-family: var(--font-mono);
+}
+
+.kiosk-day-card.today .kiosk-hours-time {
+  color: var(--kiosk-white);
+}
+
+.kiosk-hours-status {
+  font-size: var(--kiosk-text-xs);
+  color: var(--kiosk-gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* ========================================
+   PREVIEW SECTION ENHANCED
+   ======================================== */
+
+.kiosk-preview-list {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: var(--kiosk-space-2);
+}
+
+.kiosk-preview-item {
+  background: var(--kiosk-gray-50);
+  border-radius: var(--kiosk-radius-lg);
+  padding: var(--kiosk-space-6);
+  margin-bottom: var(--kiosk-space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--kiosk-space-6);
+  transition: var(--kiosk-transition-base);
+  border: 2px solid transparent;
+}
+
+.kiosk-preview-item:hover {
+  background: var(--kiosk-gray-100);
+  transform: translateY(-2px);
+  box-shadow: var(--kiosk-shadow-base);
+}
+
+.kiosk-preview-date {
+  font-size: var(--kiosk-text-4xl);
+  font-weight: 700;
+  color: var(--kiosk-primary);
+  min-width: 80px;
+  text-align: center;
+  font-family: var(--font-mono);
+}
+
+.kiosk-preview-content {
+  flex: 1;
+}
+
+.kiosk-preview-day {
+  font-size: var(--kiosk-text-xl);
+  font-weight: 600;
+  color: var(--kiosk-gray-800);
+  margin-bottom: var(--kiosk-space-1);
+}
+
+.kiosk-preview-hours {
+  font-size: var(--kiosk-text-lg);
+  color: var(--kiosk-gray-600);
+  font-family: var(--font-mono);
+}
+
+.kiosk-preview-status {
+  width: 20px;
+  height: 20px;
+  border-radius: var(--kiosk-radius-full);
+  flex-shrink: 0;
+}
+
+.kiosk-preview-status.open {
+  background: var(--kiosk-open);
+  box-shadow: 0 0 0 3px var(--kiosk-open-bg);
+}
+
+.kiosk-preview-status.closed {
+  background: var(--kiosk-closed);
+  box-shadow: 0 0 0 3px var(--kiosk-closed-bg);
+}
+
+.kiosk-preview-status.partial {
+  background: var(--kiosk-warning);
+  box-shadow: 0 0 0 3px var(--kiosk-warning-bg);
+}
+
+/* ========================================
+   FOOTER AND CONTACT SECTION
+   ======================================== */
+
+.kiosk-footer {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: var(--kiosk-radius-xl);
+  padding: var(--kiosk-space-6);
+  backdrop-filter: blur(10px);
+  border: 2px solid var(--kiosk-gray-200);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.kiosk-contact-info {
+  display: flex;
+  gap: var(--kiosk-space-8);
+  align-items: center;
+}
+
+.kiosk-contact-item {
+  display: flex;
+  align-items: center;
+  gap: var(--kiosk-space-3);
+}
+
+.kiosk-contact-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, var(--kiosk-primary), var(--kiosk-primary-light));
+  border-radius: var(--kiosk-radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kiosk-contact-icon i {
+  font-size: 1.25rem;
+  color: var(--kiosk-white);
+}
+
+.kiosk-contact-text {
+  font-size: var(--kiosk-text-lg);
+  font-weight: 600;
+  color: var(--kiosk-gray-800);
+}
+
+.kiosk-system-status {
+  display: flex;
+  align-items: center;
+  gap: var(--kiosk-space-3);
+  color: var(--kiosk-gray-600);
+  font-size: var(--kiosk-text-base);
+}
+
+.kiosk-status-dot {
+  width: 12px;
+  height: 12px;
+  background: var(--kiosk-open);
+  border-radius: var(--kiosk-radius-full);
+  animation: kiosk-status-pulse 2s ease-in-out infinite;
+}
+
+/* ========================================
+   QR CODE SECTION ENHANCED
+   ======================================== */
+
+.kiosk-qr-overlay {
+  position: fixed;
+  bottom: var(--kiosk-space-8);
+  right: var(--kiosk-space-8);
+  background: var(--kiosk-white);
+  border-radius: var(--kiosk-radius-2xl);
+  padding: var(--kiosk-space-6);
+  box-shadow: var(--kiosk-shadow-2xl);
+  border: 3px solid var(--kiosk-primary);
+  text-align: center;
+  animation: kiosk-qr-pulse 5s ease-in-out infinite;
+  z-index: 1000;
+}
+
+@keyframes kiosk-qr-pulse {
+  0%, 90%, 100% { 
+    transform: scale(1);
+  }
+  95% { 
+    transform: scale(1.05);
+  }
+}
+
+.kiosk-qr-image {
+  width: 150px;
+  height: 150px;
+  border-radius: var(--kiosk-radius-lg);
+  margin-bottom: var(--kiosk-space-3);
+  box-shadow: var(--kiosk-shadow-base);
+}
+
+.kiosk-qr-label {
+  font-size: var(--kiosk-text-lg);
+  font-weight: 700;
+  color: var(--kiosk-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.kiosk-qr-instruction {
+  font-size: var(--kiosk-text-sm);
+  color: var(--kiosk-gray-600);
+  margin-top: var(--kiosk-space-2);
+}
+
+/* ========================================
+   REFRESH AND SYSTEM INDICATORS
+   ======================================== */
+
+.kiosk-refresh-indicator {
+  position: fixed;
+  top: var(--kiosk-space-6);
+  right: var(--kiosk-space-6);
+  background: rgba(0, 0, 0, 0.8);
+  color: var(--kiosk-white);
+  padding: var(--kiosk-space-4) var(--kiosk-space-6);
+  border-radius: var(--kiosk-radius-full);
+  display: flex;
+  align-items: center;
+  gap: var(--kiosk-space-3);
+  font-size: var(--kiosk-text-base);
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+}
+
+.kiosk-refresh-timer {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--kiosk-accent);
+}
+
+.kiosk-refresh-icon {
+  font-size: 1.25rem;
+}
+
+.kiosk-refresh-icon.spinning {
+  animation: kiosk-spin 1s linear infinite;
+}
+
+@keyframes kiosk-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ========================================
+   PERFORMANCE OPTIMIZATIONS FOR LARGE DISPLAYS
+   ======================================== */
+
+/* GPU Acceleration for all animated elements */
+.enhanced-card,
+.kiosk-column,
+.kiosk-time-card,
+.kiosk-status-banner,
+.enhanced-fade-in {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Optimize font rendering for large displays */
+@media (min-width: 1200px) {
+  body {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: "kern" 1, "liga" 1;
+  }
+}
+
+/* Optimize animation performance */
+@media (prefers-reduced-motion: no-preference) {
+  .status-icon-animate,
+  .kiosk-status-pulse {
+    animation-fill-mode: both;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+/* Container queries for ultra-responsive design */
+.kiosk-container {
+  container-type: inline-size;
+}
+
+@container (min-width: 1920px) {
+  .kiosk-clock {
+    font-size: clamp(4rem, 8vw, 8rem);
+  }
+  
+  .kiosk-status-title {
+    font-size: clamp(3rem, 6vw, 6rem);
+  }
+}
+
+@container (min-width: 2560px) {
+  .kiosk-clock {
+    font-size: clamp(6rem, 10vw, 12rem);
+  }
+}
+
+/* Optimize gradients for better performance */
+.kiosk-status-open,
+.kiosk-status-closed,
+.kiosk-status-warning,
+.kiosk-status-info {
+  background-attachment: fixed;
+  background-size: 200% 200%;
+  animation: kiosk-gradient-shift 10s ease infinite;
+}
+
+/* Reduce layout shifts with explicit dimensions */
+.kiosk-time-icon,
+.kiosk-status-icon,
+.kiosk-contact-icon {
+  flex-shrink: 0;
+  min-width: var(--icon-size, 80px);
+  min-height: var(--icon-size, 80px);
+}
+
+/* ========================================
+   RESPONSIVE BREAKPOINTS FOR KIOSK
+   ======================================== */
+
+/* Large Displays (32" and above) */
+@media (min-width: 1920px) {
+  :root {
+    --kiosk-text-4xl: 4rem;     /* 64px */
+    --kiosk-text-5xl: 5rem;     /* 80px */
+    --kiosk-text-6xl: 6rem;     /* 96px */
+    --kiosk-text-7xl: 8rem;     /* 128px */
+  }
+  
+  .kiosk-logo-icon {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .kiosk-logo-icon i {
+    font-size: 4rem;
+  }
+  
+  .kiosk-status-icon {
+    width: 140px;
+    height: 140px;
+  }
+  
+  .kiosk-status-icon i {
+    font-size: 4rem;
+  }
+  
+  .kiosk-time-icon {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .kiosk-time-icon i {
+    font-size: 2.5rem;
+  }
+}
+
+/* Ultra-Large Displays (4K - 55" and above) */
+@media (min-width: 2560px) {
+  :root {
+    --kiosk-text-4xl: 5rem;     /* 80px */
+    --kiosk-text-5xl: 6rem;     /* 96px */
+    --kiosk-text-6xl: 7rem;     /* 112px */
+    --kiosk-text-7xl: 10rem;    /* 160px */
+    --kiosk-space-8: 3rem;      /* 48px */
+    --kiosk-space-12: 4rem;     /* 64px */
+    --kiosk-space-16: 6rem;     /* 96px */
+  }
+  
+  .kiosk-container {
+    padding: var(--kiosk-space-12);
+  }
+  
+  .kiosk-qr-image {
+    width: 200px;
+    height: 200px;
+  }
+  
+  .kiosk-qr-overlay {
+    padding: var(--kiosk-space-10);
+  }
+}
+
+/* Portrait Displays */
+@media (orientation: portrait) {
+  .kiosk-triple-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto repeat(3, 1fr) auto;
+  }
+  
+  .kiosk-hours-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ========================================
+   ACCESSIBILITY ENHANCEMENTS
+   ======================================== */
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  :root {
+    --kiosk-gray-200: var(--kiosk-gray-900);
+    --kiosk-gray-300: var(--kiosk-gray-800);
+  }
+  
+  .kiosk-time-card,
+  .kiosk-day-card,
+  .kiosk-preview-item {
+    border-width: 3px;
+  }
+  
+  .kiosk-status-banner {
+    border: 3px solid var(--kiosk-white);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ========================================
+   PRINT STYLES (for QR codes and schedules)
+   ======================================== */
+
+@media print {
+  .kiosk-refresh-indicator,
+  .kiosk-qr-overlay {
+    display: none !important;
+  }
+  
+  .kiosk-container {
+    background: var(--kiosk-white);
+    color: var(--kiosk-black);
+    height: auto;
+    padding: 1rem;
+  }
+  
+  .kiosk-time-card,
+  .kiosk-day-card {
+    border: 2px solid var(--kiosk-black);
+    box-shadow: none;
+  }
+}
+
+/* ========================================
+   UTILITY CLASSES
+   ======================================== */
+
+.kiosk-hidden { display: none !important; }
+.kiosk-visible { display: block !important; }
+
+.kiosk-text-shadow {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.kiosk-no-select {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.kiosk-prevent-interaction {
+  pointer-events: none;
+  cursor: default;
+}
+
+.kiosk-full-width { width: 100%; }
+.kiosk-full-height { height: 100%; }
+
+/* Focus trap for kiosk mode */
+.kiosk-mode *:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}

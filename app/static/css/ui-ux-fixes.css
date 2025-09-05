@@ -1,0 +1,420 @@
+/* ==============================================
+   UI/UX FIXES FOR QR INFO PORTAL
+   Version: 1.0
+   Purpose: Systematic fix for zoom, scrolling, and responsive issues
+   ============================================== */
+
+/* ==============================================
+   CRITICAL VIEWPORT FIXES
+   ============================================== */
+
+/* Force consistent viewport behavior across all kiosk modes */
+html {
+    /* Prevent horizontal overflow that causes horizontal scrolling */
+    overflow-x: hidden;
+    /* Smooth scrolling for better UX */
+    scroll-behavior: smooth;
+    /* Prevent text size adjustment on mobile */
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    /* Better font rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Fix body scrolling behavior for all kiosk modes */
+body.kiosk-mode,
+body.kiosk-triple-mode,
+body.kiosk-single-mode {
+    /* CRITICAL: Always allow vertical scrolling */
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    /* Enable momentum scrolling on iOS */
+    -webkit-overflow-scrolling: touch;
+    /* Ensure full height but allow content to expand */
+    min-height: 100vh;
+    height: auto !important;
+    /* Prevent horizontal scrolling */
+    max-width: 100vw;
+    /* Ensure content doesn't break container */
+    box-sizing: border-box;
+}
+
+/* Fix for containers that enforce fixed height */
+.kiosk-container {
+    /* Remove fixed height constraints */
+    height: auto !important;
+    min-height: 100vh;
+    /* Ensure scrollable content */
+    overflow-y: auto;
+    overflow-x: hidden;
+    /* Better container behavior */
+    display: flex;
+    flex-direction: column;
+    position: relative; /* Remove fixed positioning */
+}
+
+/* ==============================================
+   RESPONSIVE BREAKPOINT FIXES
+   ============================================== */
+
+/* Improved breakpoints for better device coverage */
+.kiosk-grid {
+    display: grid;
+    min-height: 100vh;
+    gap: 1rem;
+    padding: 1rem;
+    /* Default: single column for safety */
+    grid-template-columns: 1fr;
+}
+
+/* Mobile First - Single Column (default above) */
+@media (max-width: 767px) {
+    .kiosk-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+        padding: 0.75rem;
+    }
+}
+
+/* Tablet Portrait: 2 columns (lowered threshold) */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .kiosk-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        padding: 1rem;
+    }
+}
+
+/* Tablet Landscape + Small Desktop: 3 columns (lowered from 1200px) */
+@media (min-width: 1024px) {
+    .kiosk-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 1.5rem;
+        padding: 1.5rem;
+    }
+}
+
+/* Large Desktop: Enhanced 3 columns */
+@media (min-width: 1440px) {
+    .kiosk-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 2rem;
+        padding: 2rem;
+    }
+}
+
+/* Ultra-wide: Maintain 3 columns but increase spacing */
+@media (min-width: 1920px) {
+    .kiosk-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 2.5rem;
+        padding: 2.5rem;
+        max-width: 2000px; /* Prevent excessive width */
+        margin: 0 auto;
+    }
+}
+
+/* ==============================================
+   IMPROVED THAI FONT SCALING
+   ============================================== */
+
+/* Better base font scaling for Thai text */
+.thai-primary {
+    font-family: 'Sarabun', 'Noto Sans Thai', sans-serif !important;
+    /* Improved scaling: larger minimum for readability */
+    font-size: clamp(1.5rem, 4vw, 3rem) !important;
+    font-weight: 600 !important; /* Heavier weight for Thai */
+    line-height: 1.4 !important; /* Better line spacing for Thai */
+    letter-spacing: 0.025em;
+}
+
+.en-subtitle {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+    /* Better scaling for English subtitles */
+    font-size: clamp(1rem, 2.5vw, 1.5rem) !important;
+    font-weight: 500;
+    line-height: 1.3;
+    color: #718096;
+}
+
+/* Improved kiosk text scaling */
+.kiosk-text,
+.kiosk-subtitle {
+    /* Larger minimum size for better readability */
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem) !important;
+    line-height: 1.6 !important;
+    font-weight: 500;
+}
+
+/* Better title scaling */
+.kiosk-title {
+    font-size: clamp(2rem, 5vw, 4rem) !important;
+    font-weight: 700 !important;
+    line-height: 1.2 !important;
+}
+
+/* Enhanced time display scaling */
+.kiosk-time,
+.enhanced-clock {
+    font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Roboto Mono', monospace !important;
+    font-size: clamp(3rem, 8vw, 6rem) !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.02em;
+}
+
+/* ==============================================
+   TOUCH TARGET IMPROVEMENTS
+   ============================================== */
+
+/* Ensure all interactive elements meet touch target requirements */
+.lang-option,
+.nav-item-medical,
+.nav-item-enhanced,
+.kiosk-interactive,
+.kiosk-button,
+button,
+a {
+    /* Minimum touch target size */
+    min-height: 44px !important;
+    min-width: 44px !important;
+    /* Better touch padding */
+    padding: 0.75rem 1rem !important;
+    /* Touch-friendly interaction */
+    touch-action: manipulation;
+    /* Better visual feedback */
+    transition: all 0.2s ease-in-out;
+}
+
+/* Language switcher improvements */
+.lang-switcher {
+    gap: 0.5rem; /* More space between options */
+}
+
+.lang-option {
+    /* Better touch targets */
+    padding: 0.75rem 1rem !important;
+    min-width: 60px !important;
+    min-height: 44px !important;
+    /* Better visual feedback */
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.lang-option:hover,
+.lang-option:focus {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Navigation improvements */
+.nav-item-medical,
+.nav-item-enhanced {
+    padding: 0.875rem 1.25rem !important;
+    margin: 0 0.25rem;
+    border-radius: 0.5rem;
+    min-height: 48px !important;
+}
+
+/* Footer touch targets */
+footer a {
+    padding: 0.75rem !important;
+    min-height: 44px !important;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* ==============================================
+   ZOOM-SPECIFIC FIXES
+   ============================================== */
+
+/* Fix issues at different zoom levels */
+@media screen and (min-resolution: 1.25dppx) {
+    /* 125% zoom fixes */
+    body {
+        font-size: 16px !important;
+    }
+    
+    .kiosk-grid {
+        gap: 1.2rem;
+    }
+}
+
+@media screen and (min-resolution: 1.5dppx) {
+    /* 150% zoom fixes */
+    .kiosk-grid {
+        gap: 1rem;
+        padding: 1rem;
+    }
+    
+    .thai-primary {
+        font-weight: 700 !important;
+    }
+}
+
+@media screen and (min-resolution: 2dppx) {
+    /* High DPI displays */
+    .kiosk-text,
+    .thai-primary,
+    .en-subtitle {
+        font-weight: 600 !important;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+}
+
+/* ==============================================
+   BROWSER-SPECIFIC ZOOM FIXES
+   ============================================== */
+
+/* Chrome zoom detection and fixes */
+@supports (-webkit-appearance: none) {
+    body.kiosk-mode,
+    body.kiosk-triple-mode,
+    body.kiosk-single-mode {
+        /* Ensure Chrome doesn't break layout on zoom */
+        zoom: 1 !important;
+        transform-origin: top left;
+    }
+}
+
+/* Firefox zoom fixes */
+@-moz-document url-prefix() {
+    .kiosk-grid {
+        /* Firefox-specific grid adjustments */
+        display: -moz-grid;
+        -moz-grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+}
+
+/* Safari zoom fixes */
+@supports (-webkit-backdrop-filter: blur(1px)) {
+    body.kiosk-mode {
+        /* Safari-specific adjustments */
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+    }
+}
+
+/* ==============================================
+   ACCESSIBILITY IMPROVEMENTS
+   ============================================== */
+
+/* High contrast mode improvements */
+@media (prefers-contrast: high) {
+    .kiosk-text,
+    .thai-primary,
+    .en-subtitle {
+        font-weight: 700 !important;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    }
+    
+    .lang-option,
+    .nav-item-medical,
+    button {
+        border: 2px solid currentColor !important;
+    }
+}
+
+/* Motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Focus improvements */
+*:focus {
+    outline: 3px solid #40E0D0 !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 6px rgba(64, 224, 208, 0.3) !important;
+}
+
+/* Remove focus outline for mouse users, keep for keyboard users */
+*:focus:not(:focus-visible) {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* ==============================================
+   LAYOUT STABILITY FIXES
+   ============================================== */
+
+/* Prevent layout shifts */
+.kiosk-card,
+.enhanced-card {
+    contain: layout style paint;
+    will-change: transform;
+}
+
+/* Image loading stability */
+img {
+    max-width: 100%;
+    height: auto;
+    /* Prevent layout shift during image load */
+    aspect-ratio: attr(width) / attr(height);
+}
+
+/* QR Code stability */
+.qr-kiosk img,
+.qr-code {
+    width: 120px !important;
+    height: 120px !important;
+    object-fit: contain;
+}
+
+/* ==============================================
+   PERFORMANCE OPTIMIZATIONS
+   ============================================== */
+
+/* Reduce repaints and reflows */
+.kiosk-mode * {
+    /* Enable GPU acceleration for smoother animations */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    /* Reduce repaints */
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+/* ==============================================
+   DEBUGGING AIDS (DEVELOPMENT ONLY)
+   ============================================== */
+
+/* Uncomment for debugging layout issues */
+/*
+.kiosk-grid {
+    border: 2px solid red !important;
+}
+
+.kiosk-grid > * {
+    border: 1px solid blue !important;
+}
+*/
+
+/* ==============================================
+   CRITICAL OVERRIDES
+   ============================================== */
+
+/* These rules have the highest priority to ensure fixes work */
+html[data-kiosk-mode="true"] body {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    height: auto !important;
+    min-height: 100vh !important;
+}
+
+/* Force proper container behavior */
+.kiosk-container[style*="height: 100vh"] {
+    height: auto !important;
+}
+
+/* Fix any remaining fixed positioning issues */
+.kiosk-mode [style*="position: fixed"] {
+    position: absolute !important;
+}

@@ -1,0 +1,837 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ t('admin.availability_management.title') }}{% endblock %}
+
+{% block content %}
+<!-- CSRF Token for AJAX requests -->
+<input type="hidden" id="csrf-token" value="{{ csrf_token }}">
+<div class="max-w-6xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+    <div class="mb-6">
+        <div class="flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">{{ t('admin.availability_management.title') }}</h1>
+                <p class="mt-2 text-gray-600">{{ t('admin.availability_management.subtitle') }}</p>
+            </div>
+            <button onclick="showAddSlotModal()" 
+                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700">
+                <i class="fas fa-plus mr-2"></i>
+                {{ t('admin.availability_management.add_slot') }}
+            </button>
+        </div>
+    </div>
+    
+    <!-- Calendar Navigation -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
+        <div class="p-4 border-b border-gray-200">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
+                <div class="flex items-center space-x-4">
+                    <button onclick="previousMonth()" class="p-2 text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <h2 class="text-lg font-medium text-gray-900" id="current-month">
+                        <!-- Will be populated by JavaScript -->
+                    </h2>
+                    <button onclick="nextMonth()" class="p-2 text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-sm text-gray-500">{{ t('admin.availability_management.view_mode') }}</span>
+                    <select id="view-mode" onchange="changeViewMode()" 
+                            class="px-3 py-1.5 border border-gray-300 rounded-md text-sm">
+                        <option value="calendar">{{ t('admin.availability_management.calendar') }}</option>
+                        <option value="list">{{ t('admin.availability_management.list') }}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Calendar View -->
+        <div id="calendar-view" class="p-4">
+            <div class="grid grid-cols-7 gap-px bg-gray-200 rounded-lg overflow-hidden">
+                <!-- Calendar headers -->
+                <div class="bg-gray-50 p-3 text-center text-sm font-medium text-gray-900">{{ t('admin.availability_management.day_headers.monday') }}</div>
+                <div class="bg-gray-50 p-3 text-center text-sm font-medium text-gray-900">{{ t('admin.availability_management.day_headers.tuesday') }}</div>
+                <div class="bg-gray-50 p-3 text-center text-sm font-medium text-gray-900">{{ t('admin.availability_management.day_headers.wednesday') }}</div>
+                <div class="bg-gray-50 p-3 text-center text-sm font-medium text-gray-900">{{ t('admin.availability_management.day_headers.thursday') }}</div>
+                <div class="bg-gray-50 p-3 text-center text-sm font-medium text-gray-900">{{ t('admin.availability_management.day_headers.friday') }}</div>
+                <div class="bg-gray-50 p-3 text-center text-sm font-medium text-gray-900">{{ t('admin.availability_management.day_headers.saturday') }}</div>
+                <div class="bg-gray-50 p-3 text-center text-sm font-medium text-gray-900">{{ t('admin.availability_management.day_headers.sunday') }}</div>
+                
+                <!-- Calendar days will be populated by JavaScript -->
+                <div id="calendar-days"></div>
+            </div>
+        </div>
+        
+        <!-- List View -->
+        <div id="list-view" class="hidden">
+            <div id="availability-list" class="divide-y divide-gray-200">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bulk Operations -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-800">{{ t('admin.availability_management.bulk_operations') }}</h3>
+        </div>
+        <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="space-y-3">
+                    <h4 class="font-medium text-gray-900">{{ t('admin.availability_management.weekly_template.title') }}</h4>
+                    <select id="template-week" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                        <option value="">{{ t('admin.availability_management.weekly_template.select_placeholder') }}</option>
+                        <option value="standard">{{ t('admin.availability_management.weekly_template.standard') }}</option>
+                        <option value="compact">{{ t('admin.availability_management.weekly_template.compact') }}</option>
+                        <option value="extended">{{ t('admin.availability_management.weekly_template.extended') }}</option>
+                    </select>
+                    <button onclick="applyWeeklyTemplate()" 
+                            class="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm">
+{{ t('admin.availability_management.weekly_template.apply') }}
+                    </button>
+                </div>
+                
+                <div class="space-y-3">
+                    <h4 class="font-medium text-gray-900">{{ t('admin.availability_management.copy_timerange.title') }}</h4>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="date" id="copy-from" class="px-3 py-2 border border-gray-300 rounded-md text-sm">
+                        <input type="date" id="copy-to" class="px-3 py-2 border border-gray-300 rounded-md text-sm">
+                    </div>
+                    <button onclick="copyTimeRange()" 
+                            class="w-full px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 text-sm">
+{{ t('admin.availability_management.copy_timerange.copy') }}
+                    </button>
+                </div>
+                
+                <div class="space-y-3">
+                    <h4 class="font-medium text-gray-900">{{ t('admin.availability_management.clear_data.title') }}</h4>
+                    <div class="space-y-2">
+                        <button onclick="clearPastSlots()" 
+                                class="w-full px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 text-sm">
+{{ t('admin.availability_management.clear_data.clear_past') }}
+                        </button>
+                        <button onclick="clearAllSlots()" 
+                                class="w-full px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 text-sm">
+{{ t('admin.availability_management.clear_data.clear_all') }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add/Edit Slot Modal -->
+<div id="slot-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden" style="z-index: 1000;">
+    <div class="relative top-20 mx-auto p-5 border w-full max-w-md shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <div class="flex items-center justify-between mb-4">
+                <h3 id="slot-modal-title" class="text-lg font-medium text-gray-900">{{ t('admin.availability_management.slot_modal.title_add') }}</h3>
+                <button onclick="hideSlotModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="slot-form" class="space-y-4">
+                <input type="hidden" id="slot-id">
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('admin.availability_management.slot_modal.date_label') }}</label>
+                    <input type="date" id="slot-date" required 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('admin.availability_management.slot_modal.start_label') }}</label>
+                        <input type="time" id="slot-start" required 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('admin.availability_management.slot_modal.end_label') }}</label>
+                        <input type="time" id="slot-end" required 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('admin.availability_management.slot_modal.type_label') }}</label>
+                    <select id="slot-type" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="consultation">{{ t('admin.availability_management.slot_modal.type_options.consultation') }}</option>
+                        <option value="blood_draw">{{ t('admin.availability_management.slot_modal.type_options.blood_draw') }}</option>
+                        <option value="follow_up">{{ t('admin.availability_management.slot_modal.type_options.follow_up') }}</option>
+                        <option value="general">{{ t('admin.availability_management.slot_modal.type_options.general') }}</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('admin.availability_management.slot_modal.capacity_label') }}</label>
+                    <input type="number" id="slot-capacity" min="1" max="10" value="1" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <p class="text-xs text-gray-500 mt-1">{{ t('admin.availability_management.slot_modal.capacity_help') }}</p>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('admin.availability_management.slot_modal.note_label') }}</label>
+                    <input type="text" id="slot-note" placeholder="{{ t('admin.availability_management.slot_modal.note_placeholder') }}" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                
+                <div>
+                    <label class="flex items-center">
+                        <input type="checkbox" id="slot-active" checked class="rounded">
+                        <span class="ml-2 text-sm text-gray-700">{{ t('admin.availability_management.slot_modal.active_label') }}</span>
+                    </label>
+                </div>
+                
+                <!-- Recurring Options -->
+                <div class="border-t pt-4">
+                    <label class="flex items-center mb-3">
+                        <input type="checkbox" id="slot-recurring" class="rounded">
+                        <span class="ml-2 text-sm text-gray-700">{{ t('admin.availability_management.slot_modal.recurring_label') }}</span>
+                    </label>
+                    
+                    <div id="recurring-options" class="space-y-3 ml-6 hidden">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('admin.availability_management.slot_modal.recurring_options.type_label') }}</label>
+                            <select id="recurring-type" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                                <option value="weekly">{{ t('admin.availability_management.slot_modal.recurring_options.weekly') }}</option>
+                                <option value="biweekly">{{ t('admin.availability_management.slot_modal.recurring_options.biweekly') }}</option>
+                                <option value="monthly">{{ t('admin.availability_management.slot_modal.recurring_options.monthly') }}</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('admin.availability_management.slot_modal.recurring_options.until_label') }}</label>
+                            <input type="date" id="recurring-until" 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="hideSlotModal()" 
+                            class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">
+                        {{ t('admin.availability_management.slot_modal.cancel') }}
+                    </button>
+                    <button type="submit" 
+                            class="px-4 py-2 text-white bg-green-600 rounded-md hover:bg-green-700">
+{{ t('admin.availability_management.slot_modal.save') }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Day Detail Modal -->
+<div id="day-detail-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden" style="z-index: 1000;">
+    <div class="relative top-20 mx-auto p-5 border w-full max-w-lg shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <div class="flex items-center justify-between mb-4">
+                <h3 id="day-detail-title" class="text-lg font-medium text-gray-900">{{ t('admin.availability_management.day_detail_modal.title') }}</h3>
+                <button onclick="hideDayDetailModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="day-detail-content" class="space-y-3">
+                <!-- Will be populated by JavaScript -->
+            </div>
+            <div class="flex justify-end mt-4 space-x-2">
+                <button onclick="addSlotForDay()" 
+                        class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 text-sm">
+                    <i class="fas fa-plus mr-2"></i>{{ t('admin.availability_management.day_detail_modal.add_slot') }}
+                </button>
+                <button onclick="hideDayDetailModal()" 
+                        class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">
+                    {{ t('admin.availability_management.day_detail_modal.close') }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+let currentDate = new Date();
+let availabilitySlots = [];
+let selectedDate = null;
+
+// Initialize page
+document.addEventListener('DOMContentLoaded', function() {
+    loadAvailabilitySlots();
+    renderCalendar();
+    updateCurrentMonthDisplay();
+    
+    // Setup form handlers
+    document.getElementById('slot-form').addEventListener('submit', saveSlot);
+    
+    // Setup recurring checkbox
+    document.getElementById('slot-recurring').addEventListener('change', function() {
+        const options = document.getElementById('recurring-options');
+        if (this.checked) {
+            options.classList.remove('hidden');
+        } else {
+            options.classList.add('hidden');
+        }
+    });
+    
+    // Setup time validation
+    document.getElementById('slot-start').addEventListener('change', validateTimeRange);
+    document.getElementById('slot-end').addEventListener('change', validateTimeRange);
+});
+
+function loadAvailabilitySlots() {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth() + 1;
+    
+    fetch(`/admin/api/availability?year=${year}&month=${month}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                availabilitySlots = data.slots || [];
+                renderCalendar();
+                if (document.getElementById('view-mode').value === 'list') {
+                    renderListView();
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Failed to load availability slots:', error);
+            adminUtils.showNotification('Fehler beim Laden der Verfügbarkeitsdaten', 'error');
+        });
+}
+
+function renderCalendar() {
+    const calendarDays = document.getElementById('calendar-days');
+    calendarDays.innerHTML = '';
+    
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    
+    // Get first day of month and last day
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    
+    // Get starting Monday (may be from previous month)
+    const startDate = new Date(firstDay);
+    startDate.setDate(startDate.getDate() - ((startDate.getDay() + 6) % 7));
+    
+    // Generate 6 weeks
+    for (let week = 0; week < 6; week++) {
+        for (let day = 0; day < 7; day++) {
+            const cellDate = new Date(startDate);
+            cellDate.setDate(startDate.getDate() + (week * 7) + day);
+            
+            const dayDiv = document.createElement('div');
+            dayDiv.className = 'min-h-[100px] bg-white p-2 relative cursor-pointer hover:bg-gray-50';
+            
+            const isCurrentMonth = cellDate.getMonth() === month;
+            const isToday = cellDate.toDateString() === new Date().toDateString();
+            const dateStr = cellDate.toISOString().split('T')[0];
+            
+            // Get slots for this day
+            const daySlots = availabilitySlots.filter(slot => slot.date === dateStr);
+            
+            dayDiv.innerHTML = `
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm font-medium ${isCurrentMonth ? (isToday ? 'text-blue-600' : 'text-gray-900') : 'text-gray-400'}">
+                        ${cellDate.getDate()}
+                    </span>
+                    ${daySlots.length > 0 ? `<span class="text-xs bg-green-100 text-green-800 px-1.5 py-0.5 rounded-full">${daySlots.length}</span>` : ''}
+                </div>
+                <div class="space-y-1">
+                    ${daySlots.slice(0, 3).map(slot => `
+                        <div class="text-xs p-1 rounded ${getSlotColor(slot.type)} cursor-pointer" 
+                             onclick="event.stopPropagation(); editSlot(${slot.id})">
+                            ${slot.start_time}-${slot.end_time}
+                            ${slot.note ? `<br><span class="opacity-75">${slot.note}</span>` : ''}
+                        </div>
+                    `).join('')}
+                    ${daySlots.length > 3 ? `<div class="text-xs text-gray-500">+${daySlots.length - 3} weitere</div>` : ''}
+                </div>
+            `;
+            
+            if (isToday) {
+                dayDiv.classList.add('ring-2', 'ring-blue-500');
+            }
+            
+            dayDiv.addEventListener('click', () => showDayDetail(dateStr, cellDate));
+            calendarDays.appendChild(dayDiv);
+        }
+    }
+}
+
+function renderListView() {
+    const listDiv = document.getElementById('availability-list');
+    listDiv.innerHTML = '';
+    
+    if (availabilitySlots.length === 0) {
+        listDiv.innerHTML = `
+            <div class="p-8 text-center text-gray-500">
+                <i class="fas fa-calendar-alt text-4xl mb-4"></i>
+                <h3 class="text-lg font-medium mb-2">Keine Verfügbarkeit</h3>
+                <p class="mb-4">${t('admin.availability_management.list_view.create_message')}</p>
+                <button onclick="showAddSlotModal()" 
+                        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200">
+                    <i class="fas fa-plus mr-2"></i>${t('admin.availability_management.list_view.create_first')}
+                </button>
+            </div>
+        `;
+        return;
+    }
+    
+    // Group slots by date
+    const groupedSlots = {};
+    availabilitySlots.forEach(slot => {
+        if (!groupedSlots[slot.date]) {
+            groupedSlots[slot.date] = [];
+        }
+        groupedSlots[slot.date].push(slot);
+    });
+    
+    // Sort dates
+    const sortedDates = Object.keys(groupedSlots).sort();
+    
+    sortedDates.forEach(dateStr => {
+        const slots = groupedSlots[dateStr];
+        const date = new Date(dateStr + 'T00:00:00');
+        const formattedDate = date.toLocaleDateString('de-DE', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        
+        const dayDiv = document.createElement('div');
+        dayDiv.className = 'p-6';
+        
+        dayDiv.innerHTML = `
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-medium text-gray-900">${formattedDate}</h3>
+                <button onclick="addSlotForSpecificDate('${dateStr}')" 
+                        class="text-sm text-blue-600 hover:text-blue-800">
+                    <i class="fas fa-plus mr-1"></i>${t('admin.availability_management.list_view.add')}
+                </button>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                ${slots.map(slot => `
+                    <div class="border border-gray-200 rounded-lg p-3 ${slot.active ? '' : 'opacity-50'}">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-medium text-gray-900">${slot.start_time}-${slot.end_time}</span>
+                            <div class="flex items-center space-x-1">
+                                <button onclick="editSlot(${slot.id})" 
+                                        class="text-blue-600 hover:text-blue-800 p-1" title="${t('admin.common.edit')}">
+                                    <i class="fas fa-edit text-xs"></i>
+                                </button>
+                                <button onclick="deleteSlot(${slot.id})" 
+                                        class="text-red-600 hover:text-red-800 p-1" title="${t('admin.common.delete')}">
+                                    <i class="fas fa-trash text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="text-sm text-gray-600">
+                            <div class="flex items-center space-x-2">
+                                <span class="px-2 py-1 text-xs rounded-full ${getSlotColor(slot.type)}">${getSlotTypeName(slot.type)}</span>
+                                <span>${t('admin.availability_management.day_detail_modal.capacity_text')} ${slot.capacity}</span>
+                            </div>
+                            ${slot.note ? `<p class="mt-1 text-gray-500">${slot.note}</p>` : ''}
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+        
+        listDiv.appendChild(dayDiv);
+    });
+}
+
+function getSlotColor(type) {
+    const colors = {
+        'consultation': 'bg-blue-100 text-blue-800',
+        'blood_draw': 'bg-red-100 text-red-800',
+        'follow_up': 'bg-green-100 text-green-800',
+        'general': 'bg-gray-100 text-gray-800'
+    };
+    return colors[type] || colors.general;
+}
+
+function getSlotTypeName(type) {
+    const names = {
+        'consultation': t('admin.availability_management.slot_modal.type_options.consultation'),
+        'blood_draw': t('admin.availability_management.slot_modal.type_options.blood_draw'),
+        'follow_up': t('admin.availability_management.slot_modal.type_options.follow_up'),
+        'general': t('admin.availability_management.slot_modal.type_options.general')
+    };
+    return names[type] || t('admin.availability_management.slot_modal.type_options.general');
+}
+
+function updateCurrentMonthDisplay() {
+    const monthNames = t('admin.availability_management.month_names');
+    
+    document.getElementById('current-month').textContent = 
+        `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+}
+
+function previousMonth() {
+    currentDate.setMonth(currentDate.getMonth() - 1);
+    updateCurrentMonthDisplay();
+    loadAvailabilitySlots();
+}
+
+function nextMonth() {
+    currentDate.setMonth(currentDate.getMonth() + 1);
+    updateCurrentMonthDisplay();
+    loadAvailabilitySlots();
+}
+
+function changeViewMode() {
+    const mode = document.getElementById('view-mode').value;
+    const calendarView = document.getElementById('calendar-view');
+    const listView = document.getElementById('list-view');
+    
+    if (mode === 'list') {
+        calendarView.classList.add('hidden');
+        listView.classList.remove('hidden');
+        renderListView();
+    } else {
+        calendarView.classList.remove('hidden');
+        listView.classList.add('hidden');
+    }
+}
+
+function showAddSlotModal() {
+    selectedDate = null;
+    document.getElementById('slot-modal-title').textContent = t('admin.availability_management.slot_modal.title_add');
+    
+    // Reset form
+    document.getElementById('slot-form').reset();
+    document.getElementById('slot-id').value = '';
+    document.getElementById('slot-active').checked = true;
+    document.getElementById('slot-capacity').value = 1;
+    document.getElementById('slot-recurring').checked = false;
+    document.getElementById('recurring-options').classList.add('hidden');
+    
+    // Set default date to today or selected date
+    const today = new Date();
+    document.getElementById('slot-date').value = today.toISOString().split('T')[0];
+    document.getElementById('slot-start').value = '14:00';
+    document.getElementById('slot-end').value = '15:00';
+    
+    document.getElementById('slot-modal').classList.remove('hidden');
+}
+
+function hideSlotModal() {
+    document.getElementById('slot-modal').classList.add('hidden');
+    selectedDate = null;
+}
+
+function showDayDetail(dateStr, dateObj) {
+    selectedDate = dateStr;
+    const daySlots = availabilitySlots.filter(slot => slot.date === dateStr);
+    
+    const formattedDate = dateObj.toLocaleDateString('de-DE', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+    
+    document.getElementById('day-detail-title').textContent = formattedDate;
+    
+    const content = document.getElementById('day-detail-content');
+    if (daySlots.length === 0) {
+        content.innerHTML = `<p class="text-gray-500 text-center py-4">${t('admin.availability_management.day_detail_modal.no_slots')}</p>`;
+    } else {
+        content.innerHTML = daySlots.map(slot => `
+            <div class="border border-gray-200 rounded-lg p-3 flex items-center justify-between ${slot.active ? '' : 'opacity-50'}">
+                <div>
+                    <div class="font-medium">${slot.start_time} - ${slot.end_time}</div>
+                    <div class="text-sm text-gray-600">
+                        <span class="px-2 py-1 text-xs rounded-full ${getSlotColor(slot.type)}">${getSlotTypeName(slot.type)}</span>
+                        <span class="ml-2">Kapazität: ${slot.capacity}</span>
+                    </div>
+                    ${slot.note ? `<p class="text-sm text-gray-500 mt-1">${slot.note}</p>` : ''}
+                </div>
+                <div class="flex items-center space-x-1">
+                    <button onclick="editSlot(${slot.id})" 
+                            class="text-blue-600 hover:text-blue-800 p-2" title="${t('admin.common.edit')}">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button onclick="deleteSlot(${slot.id})" 
+                            class="text-red-600 hover:text-red-800 p-2" title="${t('admin.common.delete')}">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    document.getElementById('day-detail-modal').classList.remove('hidden');
+}
+
+function hideDayDetailModal() {
+    document.getElementById('day-detail-modal').classList.add('hidden');
+    selectedDate = null;
+}
+
+function addSlotForDay() {
+    if (selectedDate) {
+        hideDayDetailModal();
+        showAddSlotModal();
+        document.getElementById('slot-date').value = selectedDate;
+    }
+}
+
+function addSlotForSpecificDate(dateStr) {
+    selectedDate = dateStr;
+    showAddSlotModal();
+    document.getElementById('slot-date').value = dateStr;
+}
+
+function editSlot(slotId) {
+    const slot = availabilitySlots.find(s => s.id === slotId);
+    if (!slot) return;
+    
+    document.getElementById('slot-modal-title').textContent = t('admin.availability_management.slot_modal.title_edit');
+    
+    // Populate form
+    document.getElementById('slot-id').value = slot.id;
+    document.getElementById('slot-date').value = slot.date;
+    document.getElementById('slot-start').value = slot.start_time;
+    document.getElementById('slot-end').value = slot.end_time;
+    document.getElementById('slot-type').value = slot.type;
+    document.getElementById('slot-capacity').value = slot.capacity;
+    document.getElementById('slot-note').value = slot.note || '';
+    document.getElementById('slot-active').checked = slot.active;
+    
+    document.getElementById('slot-modal').classList.remove('hidden');
+    hideDayDetailModal();
+}
+
+function saveSlot(event) {
+    event.preventDefault();
+    
+    const formData = {
+        id: document.getElementById('slot-id').value || null,
+        date: document.getElementById('slot-date').value,
+        start_time: document.getElementById('slot-start').value,
+        end_time: document.getElementById('slot-end').value,
+        type: document.getElementById('slot-type').value,
+        capacity: parseInt(document.getElementById('slot-capacity').value),
+        note: document.getElementById('slot-note').value || null,
+        active: document.getElementById('slot-active').checked,
+        recurring: document.getElementById('slot-recurring').checked,
+        recurring_type: document.getElementById('recurring-type').value,
+        recurring_until: document.getElementById('recurring-until').value || null
+    };
+    
+    // Validate time range
+    if (formData.start_time >= formData.end_time) {
+        adminUtils.showNotification(t('admin.availability_management.messages.time_validation'), 'error');
+        return;
+    }
+    
+    const url = formData.id ? `/admin/api/availability/${formData.id}` : '/admin/api/availability';
+    const method = formData.id ? 'PUT' : 'POST';
+    
+    fetch(url, {
+        method: method,
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': document.getElementById('csrf-token').value
+        },
+        body: JSON.stringify({...formData, csrf_token: document.getElementById('csrf-token').value})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            adminUtils.showNotification(
+                formData.id ? t('admin.availability_management.messages.save_success_update') : t('admin.availability_management.messages.save_success_create'),
+                'success'
+            );
+            loadAvailabilitySlots();
+            hideSlotModal();
+        } else {
+            adminUtils.showNotification(t('admin.availability_management.messages.save_error') + ' ' + data.error, 'error');
+        }
+    })
+    .catch(error => {
+        adminUtils.showNotification(t('admin.availability_management.messages.network_error'), 'error');
+        console.error('Save error:', error);
+    });
+}
+
+function deleteSlot(slotId) {
+    const slot = availabilitySlots.find(s => s.id === slotId);
+    if (!slot) return;
+    
+    if (confirm(t('admin.availability_management.messages.delete_confirm').replace('{time}', `${slot.start_time}-${slot.end_time}`).replace('{date}', slot.date))) {
+        fetch(`/admin/api/availability/${slotId}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-Token': document.getElementById('csrf-token').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                adminUtils.showNotification(t('admin.availability_management.messages.delete_success'), 'success');
+                loadAvailabilitySlots();
+                hideDayDetailModal();
+            } else {
+                adminUtils.showNotification(t('admin.availability_management.messages.delete_error') + ' ' + data.error, 'error');
+            }
+        })
+        .catch(error => {
+            adminUtils.showNotification(t('admin.availability_management.messages.delete_network_error'), 'error');
+            console.error('Delete error:', error);
+        });
+    }
+}
+
+function validateTimeRange() {
+    const start = document.getElementById('slot-start').value;
+    const end = document.getElementById('slot-end').value;
+    
+    if (start && end && start >= end) {
+        adminUtils.showNotification(t('admin.availability_management.messages.time_validation'), 'error');
+        document.getElementById('slot-end').focus();
+    }
+}
+
+// Bulk Operations
+function applyWeeklyTemplate() {
+    const template = document.getElementById('template-week').value;
+    if (!template) {
+        adminUtils.showNotification(t('admin.availability_management.messages.template_select_error'), 'error');
+        return;
+    }
+    
+    if (confirm(t('admin.availability_management.messages.template_confirm').replace('{template}', template))) {
+        fetch('/admin/api/availability/apply-template', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                template: template,
+                year: currentDate.getFullYear(),
+                month: currentDate.getMonth() + 1,
+                csrf_token: document.getElementById('csrf-token').value
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                adminUtils.showNotification(t('admin.availability_management.messages.template_success').replace('{count}', data.created_count), 'success');
+                loadAvailabilitySlots();
+            } else {
+                adminUtils.showNotification(t('admin.availability_management.messages.template_error') + ' ' + data.error, 'error');
+            }
+        })
+        .catch(error => {
+            adminUtils.showNotification(t('admin.availability_management.messages.template_network_error'), 'error');
+            console.error('Template error:', error);
+        });
+    }
+}
+
+function copyTimeRange() {
+    const fromDate = document.getElementById('copy-from').value;
+    const toDate = document.getElementById('copy-to').value;
+    
+    if (!fromDate || !toDate) {
+        adminUtils.showNotification(t('admin.availability_management.messages.copy_dates_error'), 'error');
+        return;
+    }
+    
+    if (fromDate >= toDate) {
+        adminUtils.showNotification(t('admin.availability_management.messages.copy_date_order_error'), 'error');
+        return;
+    }
+    
+    if (confirm(t('admin.availability_management.messages.copy_confirm').replace('{from}', fromDate).replace('{to}', toDate))) {
+        fetch('/admin/api/availability/copy-range', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                from_date: fromDate,
+                to_date: toDate,
+                target_year: currentDate.getFullYear(),
+                target_month: currentDate.getMonth() + 1,
+                csrf_token: document.getElementById('csrf-token').value
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                adminUtils.showNotification(t('admin.availability_management.messages.copy_success').replace('{count}', data.copied_count), 'success');
+                loadAvailabilitySlots();
+            } else {
+                adminUtils.showNotification(t('admin.availability_management.messages.copy_error') + ' ' + data.error, 'error');
+            }
+        })
+        .catch(error => {
+            adminUtils.showNotification(t('admin.availability_management.messages.copy_network_error'), 'error');
+            console.error('Copy error:', error);
+        });
+    }
+}
+
+function clearPastSlots() {
+    if (confirm(t('admin.availability_management.messages.clear_past_confirm'))) {
+        fetch('/admin/api/availability/clear-past', {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-Token': document.getElementById('csrf-token').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                adminUtils.showNotification(t('admin.availability_management.messages.clear_past_success').replace('{count}', data.deleted_count), 'success');
+                loadAvailabilitySlots();
+            } else {
+                adminUtils.showNotification(t('admin.availability_management.messages.clear_past_error') + ' ' + data.error, 'error');
+            }
+        })
+        .catch(error => {
+            adminUtils.showNotification(t('admin.availability_management.messages.clear_past_network_error'), 'error');
+            console.error('Clear past error:', error);
+        });
+    }
+}
+
+function clearAllSlots() {
+    if (confirm(t('admin.availability_management.messages.clear_all_confirm'))) {
+        if (confirm(t('admin.availability_management.messages.clear_all_final_confirm'))) {
+            fetch('/admin/api/availability/clear-all', {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-Token': document.getElementById('csrf-token').value
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    adminUtils.showNotification(t('admin.availability_management.messages.clear_all_success').replace('{count}', data.deleted_count), 'success');
+                    loadAvailabilitySlots();
+                } else {
+                adminUtils.showNotification(t('admin.availability_management.messages.clear_all_error') + ' ' + data.error, 'error');
+                }
+            })
+            .catch(error => {
+                adminUtils.showNotification(t('admin.availability_management.messages.clear_all_network_error'), 'error');
+                console.error('Clear all error:', error);
+            });
+        }
+    }
+}
+</script>
+{% endblock %}

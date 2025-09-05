@@ -1,0 +1,591 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ get_translation('admin.status_management.title') }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto py-6 px-4">
+    <!-- Current Status Display -->
+    {% if status %}
+    <div class="bg-white rounded-lg shadow p-6 mb-6">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Aktueller Status</h2>
+        <div class="bg-gray-50 p-4 rounded">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Status</label>
+                    <p class="text-lg font-bold {% if status.type == 'ANWESEND' %}text-green-600{% else %}text-yellow-600{% endif %}">
+                        {{ status.type|smart_translate }}
+                    </p>
+                </div>
+                {% if status.description %}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Beschreibung</label>
+                    <p class="text-gray-900">{{ status.description }}</p>
+                </div>
+                {% endif %}
+                {% if status.date_from %}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Von</label>
+                    <p class="text-gray-900">{{ status.date_from.strftime('%d.%m.%Y') }}</p>
+                </div>
+                {% endif %}
+                {% if status.date_to %}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Bis</label>
+                    <p class="text-gray-900">{{ status.date_to.strftime('%d.%m.%Y') }}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Status History -->
+    {% if status_history %}
+    <div class="bg-white rounded-lg shadow p-6 mb-6">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Status Historie</h2>
+        <div class="space-y-3">
+            {% for history_status in status_history %}
+            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div class="flex items-center space-x-3">
+                    <div class="flex-shrink-0">
+                        {% if history_status.type == 'ANWESEND' %}
+                            <span class="w-3 h-3 bg-green-500 rounded-full inline-block"></span>
+                        {% else %}
+                            <span class="w-3 h-3 bg-yellow-500 rounded-full inline-block"></span>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <div class="font-medium text-gray-900">{{ history_status.type|smart_translate }}</div>
+                        {% if history_status.description %}
+                            <div class="text-sm text-gray-600">{{ history_status.description }}</div>
+                        {% endif %}
+                        {% if history_status.date_from and history_status.date_to %}
+                            <div class="text-sm text-gray-500">
+                                {{ history_status.date_from.strftime('%d.%m.%Y') }} - {{ history_status.date_to.strftime('%d.%m.%Y') }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="text-right">
+                    <div class="text-sm text-gray-500">
+                        {{ history_status.created_at.strftime('%d.%m.%Y %H:%M') }}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Update Status Form -->
+    <div class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-xl font-semibold text-gray-800 mb-6">{{ get_translation('admin.status_management.title') }}</h2>
+        
+        <form method="POST" class="space-y-6">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <div>
+                <label for="status_type" class="block text-sm font-medium text-gray-700 mb-2">
+                    Status Typ
+                </label>
+                <select id="status_type" name="status_type" required 
+                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                    <option value="ANWESEND" {% if status and status.type == 'ANWESEND' %}selected{% endif %}>
+                        {{ "ANWESEND"|smart_translate }}
+                    </option>
+                    <option value="URLAUB" {% if status and status.type == 'URLAUB' %}selected{% endif %}>
+                        {{ "URLAUB"|smart_translate }}
+                    </option>
+                    <option value="BILDUNGSURLAUB" {% if status and status.type == 'BILDUNGSURLAUB' %}selected{% endif %}>
+                        {{ "BILDUNGSURLAUB"|smart_translate }}
+                    </option>
+                    <option value="KONGRESS" {% if status and status.type == 'KONGRESS' %}selected{% endif %}>
+                        {{ "KONGRESS"|smart_translate }}
+                    </option>
+                    <option value="SONSTIGES" {% if status and status.type == 'SONSTIGES' %}selected{% endif %}>
+                        {{ "SONSTIGES"|smart_translate }}
+                    </option>
+                </select>
+            </div>
+            
+            <div class="date-fields" id="date-fields">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="date_from" class="block text-sm font-medium text-gray-700 mb-2">
+                            Von Datum <span class="text-red-500 date-required">*</span>
+                        </label>
+                        <input type="date" id="date_from" name="date_from" 
+                               value="{% if status and status.date_from %}{{ status.date_from }}{% endif %}"
+                               class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                    </div>
+                    
+                    <div>
+                        <label for="date_to" class="block text-sm font-medium text-gray-700 mb-2">
+                            Bis Datum <span class="text-red-500 date-required">*</span>
+                        </label>
+                        <input type="date" id="date_to" name="date_to" 
+                               value="{% if status and status.date_to %}{{ status.date_to }}{% endif %}"
+                               class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="description-field">
+                <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
+                    Beschreibung (optional)
+                </label>
+                <div class="relative">
+                    <textarea id="description" name="description" rows="3" maxlength="500"
+                              placeholder="z.B. 'Fortbildung in Bangkok'"
+                              class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition-colors">{% if status and status.description %}{{ status.description }}{% endif %}</textarea>
+                    <div class="absolute bottom-2 right-2 text-xs text-gray-400" id="char-counter">
+                        <span id="char-count">0</span>/500
+                    </div>
+                </div>
+            </div>
+            
+            <div>
+                <label for="next_return" class="block text-sm font-medium text-gray-700 mb-2">
+                    Nächste Rückkehr (optional)
+                </label>
+                <input type="date" id="next_return" name="next_return" 
+                       value="{% if status and status.next_return %}{{ status.next_return }}{% endif %}"
+                       class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition-colors">
+            </div>
+            
+            <div class="flex justify-end space-x-4">
+                <button type="button" onclick="resetForm()" 
+                        class="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                    Zurücksetzen
+                </button>
+                <button type="submit" 
+                        class="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg">
+                    {{ get_translation('admin.status_management.update_button') }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Global validation state
+    let validationState = {
+        isValid: true,
+        errors: [],
+        warnings: []
+    };
+
+    // Handle status type change
+    function handleStatusTypeChange() {
+        const statusType = document.getElementById('status_type').value;
+        const dateFields = document.getElementById('date-fields');
+        const dateInputs = dateFields.querySelectorAll('input[type="date"]');
+        const requiredMarks = dateFields.querySelectorAll('.date-required');
+        
+        if (statusType === 'ANWESEND') {
+            // For ANWESEND, dates are optional
+            dateInputs.forEach(input => {
+                input.removeAttribute('required');
+                input.value = '';
+            });
+            requiredMarks.forEach(mark => mark.style.display = 'none');
+        } else {
+            // For other statuses, dates are required
+            dateInputs.forEach(input => {
+                input.setAttribute('required', 'required');
+                if (!input.value) {
+                    const today = new Date().toISOString().split('T')[0];
+                    input.value = today;
+                }
+            });
+            requiredMarks.forEach(mark => mark.style.display = 'inline');
+        }
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('status_type').addEventListener('change', handleStatusTypeChange);
+        handleStatusTypeChange(); // Initialize
+    });
+
+    function resetForm() {
+        document.getElementById('status_type').value = 'ANWESEND';
+        document.getElementById('date_from').value = '';
+        document.getElementById('date_to').value = '';
+        document.getElementById('description').value = '';
+        document.getElementById('next_return').value = '';
+        clearValidationMessages();
+        toggleDateFields();
+    }
+
+    // Toggle date field visibility based on status type
+    function toggleDateFields() {
+        const statusType = document.getElementById('status_type').value;
+        const dateFields = document.querySelector('.date-fields');
+        const descriptionField = document.querySelector('.description-field');
+        
+        if (statusType === 'ANWESEND') {
+            dateFields.style.display = 'none';
+            document.getElementById('date_from').removeAttribute('required');
+            document.getElementById('date_to').removeAttribute('required');
+        } else {
+            dateFields.style.display = 'block';
+            document.getElementById('date_from').setAttribute('required', 'required');
+            document.getElementById('date_to').setAttribute('required', 'required');
+        }
+        
+        // Trigger validation when status type changes (skip for existing status)
+        {% if not status %}
+        validateForm();
+        {% endif %}
+    }
+
+    // Real-time form validation
+    async function validateForm(skipForExisting = false) {
+        // Skip validation for existing status on initial load  
+        if (skipForExisting && {{ status.id if status else 'null' }} !== null) {
+            validationState = { isValid: true, errors: [], warnings: [] };
+            updateSubmitButton();
+            clearValidationMessages();
+            return;
+        }
+        const formData = {
+            status_type: document.getElementById('status_type').value,
+            date_from: document.getElementById('date_from').value,
+            date_to: document.getElementById('date_to').value,
+            description: document.getElementById('description').value,
+            next_return: document.getElementById('next_return').value,
+            current_id: {{ status.id if status else 'null' }}
+        };
+
+        // Skip validation for ANWESEND status
+        if (formData.status_type === 'ANWESEND') {
+            validationState = { isValid: true, errors: [], warnings: [] };
+            updateSubmitButton();
+            clearValidationMessages();
+            return;
+        }
+
+        try {
+            const response = await fetch('/admin/api/validate-status', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-Token': getCsrfToken()
+                },
+                body: JSON.stringify(formData)
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const result = await response.json();
+            
+            if (result.success) {
+                // Filter out past_date errors for existing status
+                let filteredErrors = result.errors;
+                if (formData.current_id) {
+                    filteredErrors = result.errors.filter(e => 
+                        !(e.type === 'past_date' && e.severity === 'error')
+                    );
+                }
+                
+                validationState = {
+                    isValid: filteredErrors.filter(e => e.severity === 'error').length === 0,
+                    errors: filteredErrors.filter(e => e.severity === 'error'),
+                    warnings: filteredErrors.filter(e => e.severity === 'warning')
+                };
+                
+                displayValidationMessages(filteredErrors);
+                updateSubmitButton();
+                showValidationSummary(result.summary);
+            } else {
+                // API returned success=false
+                console.error('Validation API error:', result.error);
+                showValidationApiError(result.error || 'Unbekannter Validierungsfehler');
+            }
+        } catch (error) {
+            console.error('Validation network/parse error:', error);
+            // If validation fails, allow form submission but warn user
+            validationState = { 
+                isValid: true, 
+                errors: [], 
+                warnings: [{
+                    message: 'Validierung nicht verfügbar - Eingaben werden beim Speichern geprüft',
+                    field: 'status_type',
+                    severity: 'warning'
+                }] 
+            };
+            updateSubmitButton();
+            showValidationApiError('Validierung ist momentan nicht verfügbar. Ihre Eingaben werden beim Speichern geprüft.');
+        }
+    }
+
+    function showValidationApiError(message) {
+        let summaryDiv = document.getElementById('validation-summary');
+        
+        if (!summaryDiv) {
+            summaryDiv = document.createElement('div');
+            summaryDiv.id = 'validation-summary';
+            summaryDiv.className = 'mb-6 p-4 rounded-lg border';
+            document.querySelector('form').insertBefore(summaryDiv, document.querySelector('form').firstChild);
+        }
+
+        summaryDiv.className = 'mb-6 p-4 rounded-lg border bg-yellow-50 border-yellow-200 text-yellow-800';
+        summaryDiv.innerHTML = `
+            <div class="flex items-start">
+                <svg class="w-5 h-5 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                </svg>
+                <div>
+                    <div class="font-medium">Validierungs-Service nicht verfügbar</div>
+                    <div class="mt-1 text-sm">${message}</div>
+                </div>
+            </div>
+        `;
+        summaryDiv.style.display = 'block';
+    }
+
+    function displayValidationMessages(errors) {
+        clearValidationMessages();
+
+        errors.forEach(error => {
+            const field = document.getElementById(error.field);
+            if (field) {
+                // Add error styling
+                field.classList.remove('border-gray-300');
+                if (error.severity === 'error') {
+                    field.classList.add('border-red-500', 'bg-red-50');
+                } else if (error.severity === 'warning') {
+                    field.classList.add('border-yellow-500', 'bg-yellow-50');
+                }
+
+                // Create error message
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `mt-1 text-sm ${
+                    error.severity === 'error' ? 'text-red-600' : 'text-yellow-600'
+                }`;
+                messageDiv.innerHTML = `
+                    <div class="flex items-start">
+                        <svg class="w-4 h-4 mt-0.5 mr-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                        <div>
+                            <div>${error.message}</div>
+                            ${error.suggestions && error.suggestions.length > 0 ? 
+                                `<div class="mt-1 text-xs opacity-75">
+                                    Vorschlag: ${error.suggestions.join(', ')}
+                                </div>` : ''
+                            }
+                        </div>
+                    </div>
+                `;
+                
+                field.parentNode.appendChild(messageDiv);
+                messageDiv.classList.add('validation-message');
+            }
+        });
+    }
+
+    function clearValidationMessages() {
+        // Remove validation styling
+        document.querySelectorAll('input, select, textarea').forEach(field => {
+            field.classList.remove('border-red-500', 'bg-red-50', 'border-yellow-500', 'bg-yellow-50');
+            field.classList.add('border-gray-300');
+        });
+
+        // Remove validation messages
+        document.querySelectorAll('.validation-message').forEach(msg => msg.remove());
+        
+        // Hide validation summary
+        const summary = document.getElementById('validation-summary');
+        if (summary) {
+            summary.style.display = 'none';
+        }
+    }
+
+    function updateSubmitButton() {
+        const submitButton = document.querySelector('button[type="submit"]');
+        if (validationState.isValid) {
+            submitButton.disabled = false;
+            submitButton.classList.remove('bg-gray-400', 'cursor-not-allowed');
+            submitButton.classList.add('bg-blue-500', 'hover:bg-blue-600');
+            submitButton.textContent = 'Status aktualisieren';
+            submitButton.onclick = null; // Remove click handler, allow normal form submission
+        } else {
+            submitButton.disabled = false; // Keep button enabled for explanation
+            submitButton.classList.remove('bg-blue-500', 'hover:bg-blue-600');
+            submitButton.classList.add('bg-red-500', 'hover:bg-red-600');
+            submitButton.textContent = `${validationState.errors.length} Fehler gefunden`;
+            
+            // Add click handler to show error details instead of submitting
+            submitButton.onclick = function(e) {
+                e.preventDefault();
+                scrollToFirstError();
+                showErrorExplanation();
+                return false;
+            };
+        }
+    }
+
+    function scrollToFirstError() {
+        const firstErrorField = document.querySelector('.border-red-500');
+        if (firstErrorField) {
+            firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            firstErrorField.focus();
+        }
+    }
+
+    function showErrorExplanation() {
+        // Highlight all error messages briefly
+        document.querySelectorAll('.validation-message').forEach(msg => {
+            msg.style.animation = 'pulse 1s ease-in-out 2';
+        });
+        
+        // Show a more detailed error summary if not visible
+        const summaryDiv = document.getElementById('validation-summary');
+        if (summaryDiv && summaryDiv.style.display !== 'block') {
+            summaryDiv.style.display = 'block';
+            summaryDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+
+    function showValidationSummary(summary) {
+        let summaryDiv = document.getElementById('validation-summary');
+        
+        if (!summaryDiv) {
+            summaryDiv = document.createElement('div');
+            summaryDiv.id = 'validation-summary';
+            summaryDiv.className = 'mb-6 p-4 rounded-lg border';
+            document.querySelector('form').insertBefore(summaryDiv, document.querySelector('form').firstChild);
+        }
+
+        if (summary.total === 0) {
+            summaryDiv.style.display = 'none';
+            return;
+        }
+
+        const isValid = summary.errors === 0;
+        summaryDiv.className = `mb-6 p-4 rounded-lg border ${
+            isValid ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'
+        }`;
+
+        summaryDiv.innerHTML = `
+            <div class="flex items-start">
+                <svg class="w-5 h-5 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    ${isValid ? 
+                        '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>' :
+                        '<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>'
+                    }
+                </svg>
+                <div>
+                    <div class="font-medium">
+                        ${isValid ? 'Validierung erfolgreich' : `${summary.errors} Fehler gefunden`}
+                    </div>
+                    <div class="mt-1 text-sm">
+                        ${summary.warnings > 0 ? `${summary.warnings} Warnung(en). ` : ''}
+                        ${isValid ? 'Alle Eingaben sind gültig.' : 'Bitte korrigieren Sie die markierten Felder.'}
+                    </div>
+                </div>
+            </div>
+        `;
+
+        summaryDiv.style.display = 'block';
+    }
+
+    function getCsrfToken() {
+        return document.querySelector('input[name="csrf_token"]')?.value || '';
+    }
+
+    // Auto-update date_to when date_from changes
+    document.getElementById('date_from').addEventListener('change', function() {
+        const fromDate = this.value;
+        const toInput = document.getElementById('date_to');
+        
+        if (fromDate && !toInput.value) {
+            // Auto-suggest end date (7 days later for most absences)
+            const startDate = new Date(fromDate);
+            const endDate = new Date(startDate);
+            endDate.setDate(endDate.getDate() + 6); // 7 days total
+            toInput.value = endDate.toISOString().split('T')[0];
+        }
+        
+        validateForm();
+    });
+
+    // Status type change handler
+    document.getElementById('status_type').addEventListener('change', toggleDateFields);
+
+    // Character counter for description
+    function updateCharCount() {
+        const description = document.getElementById('description');
+        const charCount = document.getElementById('char-count');
+        if (description && charCount) {
+            const count = description.value.length;
+            charCount.textContent = count;
+            
+            // Update color based on length
+            const counter = document.getElementById('char-counter');
+            if (count > 450) {
+                counter.className = 'absolute bottom-2 right-2 text-xs text-red-500 font-medium';
+            } else if (count > 400) {
+                counter.className = 'absolute bottom-2 right-2 text-xs text-yellow-500';
+            } else {
+                counter.className = 'absolute bottom-2 right-2 text-xs text-gray-400';
+            }
+        }
+    }
+
+    // Real-time validation on input (skip for existing status to avoid confusion)
+    {% if not status %}
+    ['date_from', 'date_to', 'description', 'next_return'].forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+            field.addEventListener('input', debounce(validateForm, 500));
+            field.addEventListener('blur', validateForm);
+            
+            // Special handling for description field
+            if (fieldId === 'description') {
+                field.addEventListener('input', updateCharCount);
+            }
+        }
+    });
+    {% else %}
+    // For existing status, still enable character counting but no validation
+    const descField = document.getElementById('description');
+    if (descField) {
+        descField.addEventListener('input', updateCharCount);
+    }
+    {% endif %}
+
+    // Debounce function to limit API calls
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        toggleDateFields();
+        updateCharCount();
+        
+        // Initialize validation state for existing status - simplified approach
+        {% if status %}
+        validationState = { isValid: true, errors: [], warnings: [] };
+        clearValidationMessages();
+        updateSubmitButton();
+        {% else %}
+        validateForm(true);
+        {% endif %}
+    });
+</script>
+{% endblock %}

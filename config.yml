@@ -1,0 +1,258 @@
+admin:
+  password_env: ADMIN_PASSWORD
+  username: admin
+announcements: []
+appointments:
+  business_rules:
+    auto_confirm_after_minutes: 30
+    max_advance_days: 30
+    max_bookings_per_patient_monthly: 10
+    min_advance_hours: 24
+    no_show_penalty_days: 7
+    reminder_hours_before:
+    - 24
+    - 2
+  default_services:
+  - active: true
+    available_days:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+    buffer_minutes: 10
+    description:
+      de: Blutentnahme zur Laboruntersuchung
+      en: Blood sampling for laboratory analysis
+      th: การเจาะเลือดเพื่อตรวจวิเคราะห์
+    duration_minutes: 30
+    name:
+      de: Blutabnahme
+      en: Blood Test
+      th: เจาะเลือด
+    preparation_instructions:
+      de: 8-12 Stunden vor der Untersuchung nüchtern
+      en: Fasting 8-12 hours before examination
+      th: งดอาหาร 8-12 ชั่วโมงก่อนตรวจ
+    price_thb: 500
+    requires_fasting: true
+    service_type: BLOOD_TEST
+  - active: true
+    available_days:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+    buffer_minutes: 15
+    description:
+      de: Medizinische Beratung und Betreuung
+      en: Medical consultation and advice
+      th: การปรึกษาและให้คำแนะนำทางการแพทย์
+    duration_minutes: 45
+    name:
+      de: Ärztliche Beratung
+      en: Medical Consultation
+      th: ปรึกษาแพทย์
+    price_thb: 800
+    requires_fasting: false
+    service_type: CONSULTATION
+  - active: true
+    available_days:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+    buffer_minutes: 5
+    description:
+      de: Abholen der Laborergebnisse
+      en: Pick up laboratory results
+      th: รับผลการตรวจวิเคราะห์
+    duration_minutes: 15
+    name:
+      de: Ergebnisse abholen
+      en: Result Pickup
+      th: รับผลตรวจ
+    price_thb: null
+    requires_fasting: false
+    service_type: RESULT_PICKUP
+  default_slot_templates:
+  - day_of_week: null
+    end_time: '12:00'
+    max_bookings_per_slot: 2
+    name: Morgentermine
+    service_types:
+    - BLOOD_TEST
+    - CONSULTATION
+    slot_duration_minutes: 30
+    start_time: 08:30
+  - day_of_week: null
+    end_time: '16:00'
+    max_bookings_per_slot: 1
+    name: Nachmittagstermine
+    service_types:
+    - BLOOD_TEST
+    - CONSULTATION
+    slot_duration_minutes: 30
+    start_time: '13:00'
+  - day_of_week: null
+    end_time: '16:00'
+    max_bookings_per_slot: 4
+    name: Abholzeiten
+    service_types:
+    - RESULT_PICKUP
+    slot_duration_minutes: 15
+    start_time: 08:30
+  enabled: false
+  notifications:
+    channels:
+      email: false
+      line: true
+      sms: true
+    templates:
+      confirmation:
+        de: 'Terminbestätigung {reference}
+
+          Service: {service}
+
+          Datum: {date}
+
+          Uhrzeit: {time}
+
+          Bestätigungscode: {code}'
+        en: 'Appointment Confirmation {reference}
+
+          Service: {service}
+
+          Date: {date}
+
+          Time: {time}
+
+          Confirmation Code: {code}'
+        th: 'ยืนยันการนัดหมาย {reference}
+
+          บริการ: {service}
+
+          วันที่: {date}
+
+          เวลา: {time}
+
+          รหัสยืนยัน: {code}'
+      reminder:
+        de: 'Erinnerung: Ihr Termin {service} ist morgen um {time}'
+        en: 'Reminder: Your appointment {service} is tomorrow at {time}'
+        th: 'เตือนความจำ: คุณมีนัดหมาย {service} วันพรุ่งนี้เวลา {time}'
+availability:
+  indicative_slots: []
+contact:
+  email: labor@pattaya-medical.com
+  phone: +66 38 123 456
+  website: ''
+hours:
+  exceptions: []
+  weekly:
+    fri:
+    - 08:30-13:00
+    mon:
+    - 08:30-12:00
+    - 13:00-16:00
+    sat: []
+    sun: []
+    thu:
+    - 08:30-12:00
+    - 13:00-16:00
+    tue:
+    - 08:30-12:00
+    - 13:00-16:00
+    wed:
+    - 08:30-12:00
+location:
+  address: เลขที่ 20/345 Bang Lamung District, Chon Buri 20150
+  barrier_free: true
+  directions: ''
+  latitude: 12.92187526427554
+  longitude: 100.87925668989291
+  maps_link: https://maps.google.com/?q=12.923556,100.882507
+  parking_available: true
+  public_transport: Songthaew Linie 2 (Jomtien-Naklua) • Central Festival Pattaya
+    Bus
+services:
+  standard:
+  - name:
+      de: Blutabnahme/Blutuntersuchungen
+      en: Blood Tests/Laboratory Analysis
+      th: เจาะเลือด/การตรวจวิเคราะห์
+  - name:
+      de: Vorgespräch
+      en: Medical Consultation
+      th: ปรึกษาแพทย์
+  - name:
+      de: Nachgespräch
+      en: Follow-up Consultation
+      th: ติดตามผล
+  - name:
+      de: Impfung
+      en: Vaccination
+      th: ฉีดวัคซีน
+  - name:
+      de: Test
+      en: Test
+      th: ทดสอบ
+site:
+  default_language: th
+  languages:
+  - th
+  - de
+  - en
+  name: ห้องปฏิบัติการพัทยา – เจาะเลือด
+  timezone: Asia/Bangkok
+social_media:
+  enabled: true
+  platforms:
+    facebook:
+      enabled: true
+      page_id: laborpattaya
+      page_url: https://facebook.com/laborpattaya
+      qr_enabled: true
+    google_business:
+      enabled: true
+      place_id: ChIJxxxxxxxxxxxxx
+      qr_enabled: true
+      url: https://g.page/laborpattaya
+    instagram:
+      enabled: true
+      qr_enabled: true
+      url: https://instagram.com/laborpattaya
+      username: laborpattaya
+    line:
+      enabled: true
+      official_account: '@laborpattaya'
+      qr_enabled: true
+      url: https://line.me/R/ti/p/@laborpattaya
+    tiktok:
+      enabled: true
+      qr_enabled: true
+      url: https://tiktok.com/@laborpattaya
+      username: '@laborpattaya'
+    whatsapp:
+      business_number: '+66381234567'
+      enabled: true
+      qr_enabled: true
+      url: https://wa.me/66381234567
+    youtube:
+      channel_id: UCxxxxxxxxxxxxxx
+      enabled: true
+      qr_enabled: false
+      url: https://youtube.com/@laborpattaya
+  settings:
+    button_style: thai
+    qr_size: medium
+    show_follow_section: true
+    show_share_buttons: true
+status:
+  current:
+    from: null
+    note: null
+    to: null
+    type: ANWESEND

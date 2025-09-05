@@ -1,0 +1,285 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('legal.data_subject_request') }} - {{ _('site.name') }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-4xl">
+    <div class="bg-white rounded-lg shadow-lg p-8">
+        <!-- Header -->
+        <div class="border-b border-gray-200 pb-6 mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">
+                {{ _('legal.data_subject_request') }}
+            </h1>
+            <p class="text-gray-600">
+                {{ _('legal.data_subject_request_description') }}
+            </p>
+        </div>
+
+        <!-- Legal Framework Information -->
+        <div class="bg-blue-50 border-l-4 border-blue-500 p-6 mb-8">
+            <h3 class="text-lg font-medium text-blue-900 mb-4">
+                {{ _('legal.your_rights_under_law') }}
+            </h3>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-medium text-blue-800 mb-2">{{ _('legal.pdpa_thailand_rights') }}</h4>
+                    <ul class="text-sm text-blue-700 space-y-1">
+                        <li>• {{ _('legal.pdpa_right_access') }}</li>
+                        <li>• {{ _('legal.pdpa_right_rectification') }}</li>
+                        <li>• {{ _('legal.pdpa_right_erasure') }}</li>
+                        <li>• {{ _('legal.pdpa_right_portability') }}</li>
+                        <li>• {{ _('legal.pdpa_right_objection') }}</li>
+                        <li>• {{ _('legal.pdpa_right_restriction') }}</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-medium text-blue-800 mb-2">{{ _('legal.gdpr_eu_rights') }}</h4>
+                    <ul class="text-sm text-blue-700 space-y-1">
+                        <li>• {{ _('legal.gdpr_right_information') }}</li>
+                        <li>• {{ _('legal.gdpr_right_access') }}</li>
+                        <li>• {{ _('legal.gdpr_right_rectification') }}</li>
+                        <li>• {{ _('legal.gdpr_right_erasure') }}</li>
+                        <li>• {{ _('legal.gdpr_right_restriction') }}</li>
+                        <li>• {{ _('legal.gdpr_right_portability') }}</li>
+                        <li>• {{ _('legal.gdpr_right_objection') }}</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="mt-4 p-4 bg-blue-100 rounded">
+                <p class="text-sm text-blue-800">
+                    <strong>{{ _('legal.response_timeframe') }}:</strong> 
+                    {{ _('legal.response_timeframe_text') }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Request Form -->
+        <form method="POST" action="{{ url_for('legal.submit_data_request') }}" class="space-y-6">
+            <input type="hidden" name="language" value="{{ language }}">
+
+            <!-- Request Type -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-3">
+                    {{ _('legal.request_type') }} <span class="text-red-500">*</span>
+                </label>
+                <div class="space-y-3">
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <label class="flex items-start">
+                            <input type="radio" name="request_type" value="access" required 
+                                   class="mt-1 h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                            <div class="ml-3">
+                                <div class="font-medium text-gray-900">{{ _('legal.request_access') }}</div>
+                                <div class="text-sm text-gray-600">{{ _('legal.request_access_description') }}</div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <label class="flex items-start">
+                            <input type="radio" name="request_type" value="rectification" required 
+                                   class="mt-1 h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                            <div class="ml-3">
+                                <div class="font-medium text-gray-900">{{ _('legal.request_rectification') }}</div>
+                                <div class="text-sm text-gray-600">{{ _('legal.request_rectification_description') }}</div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <label class="flex items-start">
+                            <input type="radio" name="request_type" value="erasure" required 
+                                   class="mt-1 h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                            <div class="ml-3">
+                                <div class="font-medium text-gray-900">{{ _('legal.request_erasure') }}</div>
+                                <div class="text-sm text-gray-600">{{ _('legal.request_erasure_description') }}</div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <label class="flex items-start">
+                            <input type="radio" name="request_type" value="portability" required 
+                                   class="mt-1 h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                            <div class="ml-3">
+                                <div class="font-medium text-gray-900">{{ _('legal.request_portability') }}</div>
+                                <div class="text-sm text-gray-600">{{ _('legal.request_portability_description') }}</div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <label class="flex items-start">
+                            <input type="radio" name="request_type" value="objection" required 
+                                   class="mt-1 h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                            <div class="ml-3">
+                                <div class="font-medium text-gray-900">{{ _('legal.request_objection') }}</div>
+                                <div class="text-sm text-gray-600">{{ _('legal.request_objection_description') }}</div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <label class="flex items-start">
+                            <input type="radio" name="request_type" value="restriction" required 
+                                   class="mt-1 h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                            <div class="ml-3">
+                                <div class="font-medium text-gray-900">{{ _('legal.request_restriction') }}</div>
+                                <div class="text-sm text-gray-600">{{ _('legal.request_restriction_description') }}</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Email Address -->
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                    {{ _('legal.email_address') }} <span class="text-red-500">*</span>
+                </label>
+                <input type="email" 
+                       name="email" 
+                       id="email" 
+                       required 
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                       placeholder="{{ _('legal.email_placeholder') }}">
+                <p class="mt-2 text-sm text-gray-600">
+                    {{ _('legal.email_verification_note') }}
+                </p>
+            </div>
+
+            <!-- Request Details -->
+            <div>
+                <label for="details" class="block text-sm font-medium text-gray-700 mb-2">
+                    {{ _('legal.request_details') }} <span class="text-red-500">*</span>
+                </label>
+                <textarea name="details" 
+                          id="details" 
+                          required 
+                          rows="6"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          placeholder="{{ _('legal.request_details_placeholder') }}"></textarea>
+                <p class="mt-2 text-sm text-gray-600">
+                    {{ _('legal.request_details_note') }}
+                </p>
+            </div>
+
+            <!-- Privacy Notice -->
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+                <h4 class="font-medium text-yellow-900 mb-2">
+                    {{ _('legal.important_notice') }}
+                </h4>
+                <div class="text-sm text-yellow-800 space-y-2">
+                    <p>{{ _('legal.verification_process_notice') }}</p>
+                    <p>{{ _('legal.identity_verification_notice') }}</p>
+                    <p>{{ _('legal.processing_time_notice') }}</p>
+                </div>
+            </div>
+
+            <!-- Terms Acceptance -->
+            <div class="border border-gray-200 rounded-lg p-4">
+                <label class="flex items-start">
+                    <input type="checkbox" required 
+                           class="mt-1 h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                    <div class="ml-3 text-sm text-gray-700">
+                        {{ _('legal.terms_acceptance_text') }}
+                        <a href="{{ url_for('legal.privacy_policy') }}" 
+                           target="_blank" 
+                           class="text-blue-600 hover:text-blue-800">{{ _('legal.privacy_policy') }}</a>
+                        {{ _('legal.and') }}
+                        <a href="{{ url_for('legal.terms_of_service') }}" 
+                           target="_blank" 
+                           class="text-blue-600 hover:text-blue-800">{{ _('legal.terms_of_service') }}</a>.
+                    </div>
+                </label>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="pt-6">
+                <button type="submit" 
+                        class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                    {{ _('legal.submit_request') }}
+                </button>
+            </div>
+        </form>
+
+        <!-- Additional Information -->
+        <div class="mt-12 bg-gray-50 rounded-lg p-6">
+            <h4 class="font-medium text-gray-900 mb-4">
+                {{ _('legal.data_protection_contact') }}
+            </h4>
+            <div class="text-sm text-gray-600 space-y-2">
+                <p>{{ _('legal.questions_about_rights') }}</p>
+                <div class="bg-white p-4 rounded border">
+                    <strong>{{ _('legal.data_protection_officer') }}:</strong><br>
+                    E-Mail: privacy@laborpattaya.com<br>
+                    {{ _('legal.phone') }}: +66 38 123 456<br>
+                    {{ _('legal.address') }}: Soi Buakhao, Pattaya, Thailand
+                </div>
+                <p class="mt-4">
+                    <strong>{{ _('legal.supervisory_authority') }}:</strong><br>
+                    {{ _('legal.supervisory_authority_details') }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="mt-8 pt-6 border-t border-gray-200 flex flex-wrap justify-between gap-4">
+            <a href="{{ url_for('public.home') }}" 
+               class="text-blue-600 hover:text-blue-800 transition-colors">
+                ← {{ _('navigation.back_to_home') }}
+            </a>
+            
+            <div class="flex flex-wrap gap-4">
+                <a href="{{ url_for('legal.privacy_policy') }}" 
+                   class="text-gray-600 hover:text-gray-800 transition-colors">
+                    {{ _('legal.privacy_policy') }}
+                </a>
+                <a href="{{ url_for('legal.consent_settings') }}" 
+                   class="text-gray-600 hover:text-gray-800 transition-colors">
+                    {{ _('legal.consent_management') }}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Form Enhancement Script -->
+<script>
+// Show/hide additional details based on request type
+document.addEventListener('DOMContentLoaded', function() {
+    const requestTypeInputs = document.querySelectorAll('input[name="request_type"]');
+    const detailsTextarea = document.getElementById('details');
+    
+    const placeholders = {
+        'access': '{{ _("legal.access_details_placeholder") }}',
+        'rectification': '{{ _("legal.rectification_details_placeholder") }}',
+        'erasure': '{{ _("legal.erasure_details_placeholder") }}',
+        'portability': '{{ _("legal.portability_details_placeholder") }}',
+        'objection': '{{ _("legal.objection_details_placeholder") }}',
+        'restriction': '{{ _("legal.restriction_details_placeholder") }}'
+    };
+    
+    requestTypeInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            if (this.checked && placeholders[this.value]) {
+                detailsTextarea.placeholder = placeholders[this.value];
+            }
+        });
+    });
+
+    // Form validation
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+        const email = document.getElementById('email').value;
+        const details = document.getElementById('details').value;
+        
+        if (!email || !details || details.length < 50) {
+            e.preventDefault();
+            alert('{{ _("legal.form_validation_error") }}');
+            return false;
+        }
+    });
+});
+</script>
+{% endblock %}

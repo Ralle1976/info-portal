@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('legal.privacy_policy') }} - {{ _('site.name') }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-4xl">
+    <div class="bg-white rounded-lg shadow-lg p-8">
+        <!-- Header -->
+        <div class="border-b border-gray-200 pb-6 mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">
+                {{ document.title }}
+            </h1>
+            <div class="flex flex-wrap items-center gap-4 text-sm text-gray-600">
+                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full">
+                    {{ _('legal.version') }}: {{ document.version }}
+                </span>
+                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full">
+                    {{ _('legal.effective_date') }}: {{ document.effective_date.strftime('%d.%m.%Y') }}
+                </span>
+                {% if document.last_review_date %}
+                <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full">
+                    {{ _('legal.last_review') }}: {{ document.last_review_date.strftime('%d.%m.%Y') }}
+                </span>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Language Switcher -->
+        <div class="mb-6">
+            <div class="flex flex-wrap gap-2">
+                <span class="text-sm text-gray-600 mr-2">{{ _('legal.available_languages') }}:</span>
+                {% for lang_code in ['th', 'de', 'en'] %}
+                    {% if lang_code == language %}
+                        <span class="bg-blue-600 text-white px-3 py-1 rounded text-sm">
+                            {{ _('languages.' + lang_code) }}
+                        </span>
+                    {% else %}
+                        <a href="{{ url_for('legal.privacy_policy', lang=lang_code) }}" 
+                           class="bg-gray-200 text-gray-700 hover:bg-gray-300 px-3 py-1 rounded text-sm transition-colors">
+                            {{ _('languages.' + lang_code) }}
+                        </a>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- PDPA/GDPR Compliance Notice -->
+        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-8">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <h3 class="text-sm font-medium text-blue-800">
+                        {{ _('legal.compliance_notice_title') }}
+                    </h3>
+                    <div class="mt-2 text-sm text-blue-700">
+                        <p>{{ _('legal.compliance_notice_text') }}</p>
+                        <ul class="mt-2 list-disc list-inside">
+                            <li>{{ _('legal.thailand_pdpa_compliance') }}</li>
+                            <li>{{ _('legal.eu_gdpr_compliance') }}</li>
+                            <li>{{ _('legal.medical_data_protection') }}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Document Content -->
+        <div class="prose prose-lg max-w-none">
+            {{ document.content | safe }}
+        </div>
+
+        <!-- Data Subject Rights -->
+        <div class="mt-12 bg-gray-50 rounded-lg p-6">
+            <h3 class="text-xl font-semibold text-gray-900 mb-4">
+                {{ _('legal.your_rights_title') }}
+            </h3>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-medium text-gray-900 mb-2">{{ _('legal.pdpa_rights_thailand') }}</h4>
+                    <ul class="text-sm text-gray-600 space-y-1">
+                        <li>• {{ _('legal.right_access') }}</li>
+                        <li>• {{ _('legal.right_rectification') }}</li>
+                        <li>• {{ _('legal.right_erasure') }}</li>
+                        <li>• {{ _('legal.right_portability') }}</li>
+                        <li>• {{ _('legal.right_objection') }}</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-medium text-gray-900 mb-2">{{ _('legal.gdpr_rights_eu') }}</h4>
+                    <ul class="text-sm text-gray-600 space-y-1">
+                        <li>• {{ _('legal.right_information') }}</li>
+                        <li>• {{ _('legal.right_access_gdpr') }}</li>
+                        <li>• {{ _('legal.right_rectification_gdpr') }}</li>
+                        <li>• {{ _('legal.right_erasure_gdpr') }}</li>
+                        <li>• {{ _('legal.right_restriction') }}</li>
+                        <li>• {{ _('legal.right_portability_gdpr') }}</li>
+                        <li>• {{ _('legal.right_objection_gdpr') }}</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="mt-6 pt-4 border-t border-gray-200">
+                <p class="text-sm text-gray-600 mb-3">
+                    {{ _('legal.exercise_rights_text') }}
+                </p>
+                <div class="flex flex-wrap gap-3">
+                    <a href="{{ url_for('legal.data_request_form') }}" 
+                       class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors text-sm">
+                        {{ _('legal.submit_data_request') }}
+                    </a>
+                    <a href="{{ url_for('legal.consent_settings') }}" 
+                       class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 transition-colors text-sm">
+                        {{ _('legal.manage_consent') }}
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact for Privacy Matters -->
+        <div class="mt-8 bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+            <h4 class="font-medium text-yellow-900 mb-2">
+                {{ _('legal.privacy_contact_title') }}
+            </h4>
+            <div class="text-sm text-yellow-800">
+                <p>{{ _('legal.privacy_contact_text') }}</p>
+                <div class="mt-2">
+                    <strong>{{ _('legal.data_protection_officer') }}:</strong><br>
+                    E-Mail: privacy@laborpattaya.com<br>
+                    {{ _('legal.phone') }}: +66 38 123 456<br>
+                    {{ _('legal.address') }}: Soi Buakhao, Pattaya, Thailand
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="mt-12 pt-6 border-t border-gray-200 flex flex-wrap justify-between gap-4">
+            <a href="{{ url_for('public.home') }}" 
+               class="text-blue-600 hover:text-blue-800 transition-colors">
+                ← {{ _('navigation.back_to_home') }}
+            </a>
+            
+            <div class="flex flex-wrap gap-4">
+                <a href="{{ url_for('legal.terms_of_service') }}" 
+                   class="text-gray-600 hover:text-gray-800 transition-colors">
+                    {{ _('legal.terms_of_service') }}
+                </a>
+                <a href="{{ url_for('legal.impressum') }}" 
+                   class="text-gray-600 hover:text-gray-800 transition-colors">
+                    {{ _('legal.impressum') }}
+                </a>
+                <a href="{{ url_for('legal.medical_disclaimer') }}" 
+                   class="text-gray-600 hover:text-gray-800 transition-colors">
+                    {{ _('legal.medical_disclaimer') }}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Print Styles -->
+<style media="print">
+    .no-print {
+        display: none !important;
+    }
+    
+    .container {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    .bg-white {
+        box-shadow: none !important;
+    }
+</style>
+{% endblock %}
