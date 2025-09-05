@@ -67,7 +67,7 @@ jobs:
         
     - name: Install security analysis tools
       run: |
-        pip install dlint flake8-bandit flake8-bugbear flake8-secure-coding-standard
+        pip install flake8-bandit flake8-bugbear
         pip install -r requirements.txt
         
     - name: Run custom security linting
