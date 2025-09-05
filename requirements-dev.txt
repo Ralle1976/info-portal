@@ -5,7 +5,7 @@
 -r requirements.txt
 
 # Code Quality
-black==23.12.1
+black==24.3.0
 isort==5.13.2
 flake8==7.0.0
 mypy==1.8.0
@@ -47,7 +47,7 @@ pre-commit==3.6.0
 
 # Development Tools
 watchdog==3.0.0  # File system watching
-httpie==3.2.2    # HTTP client for testing APIs
+httpie==3.2.3    # HTTP client for testing APIs
 rich==13.7.0     # Beautiful terminal output
 
 # Database Tools
