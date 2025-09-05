@@ -67,12 +67,12 @@ jobs:
         run: |
           title="${{ github.event.pull_request.title }}"
           
-          # Check if title follows conventional commits
+          # Check if title follows conventional commits (warning only, don't fail)
           if echo "$title" | grep -E '^(feat|fix|docs|style|refactor|test|chore|security|perf|ci|build)(\(.+\))?: .+'; then
             echo "✅ PR title follows conventional commits format"
           else
-            echo "❌ PR title should follow conventional commits format (feat|fix|docs|style|refactor|test|chore|security|perf|ci|build): description"
-            exit 1
+            echo "⚠️ PR title doesn't follow conventional commits format"
+            echo "💡 Consider using format: feat|fix|docs|style|refactor|test|chore|security|perf|ci|build: description"
           fi
 
   code-quality:

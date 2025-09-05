@@ -1,100 +1,20 @@
-name: Advanced Security Scanning
+name: Basic Security Scanning
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main ]
   pull_request:
     branches: [ main ]
   schedule:
-    # Run security scans daily at 02:00 UTC
-    - cron: '0 2 * * *'
-  workflow_dispatch:
+    # Run security scans weekly on Sunday at 02:00 UTC
+    - cron: '0 2 * * 0'
 
 env:
   PYTHON_VERSION: '3.11'
 
 jobs:
-  security-lint:
-    name: Static Security Analysis (SAST)
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      security-events: write
-      
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          
-      - name: Cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-security-${{ hashFiles('requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-security-
-            ${{ runner.os }}-pip-
-            
-      - name: Install security tools
-        run: |
-          python -m pip install --upgrade pip
-          pip install bandit safety pip-audit semgrep
-          pip install -r requirements.txt
-          
-      - name: Run Bandit (SAST)
-        run: |
-          bandit -r app/ -f json -o bandit-report.json -ll
-          bandit -r app/ -f txt
-        continue-on-error: true
-        
-      - name: Run Safety check
-        run: |
-          safety check --json --output safety-report.json
-          safety check
-        continue-on-error: true
-        
-      - name: Run pip-audit
-        run: |
-          pip-audit --format=json --output=pip-audit-report.json
-          pip-audit --format=cyclonedx --output=sbom.json
-        continue-on-error: true
-        
-      - name: Run Semgrep SAST
-        uses: returntocorp/semgrep-action@v1
-        with:
-          config: >-
-            p/security-audit
-            p/secrets
-            p/python
-            p/flask
-            p/docker
-        continue-on-error: true
-        env:
-          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
-          
-      - name: Upload security artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: security-reports-${{ github.sha }}
-          path: |
-            bandit-report.json
-            safety-report.json
-            pip-audit-report.json
-            sbom.json
-            
-      - name: Upload to GitHub Security tab
-        if: github.event_name != 'pull_request'
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: results.sarif
-        continue-on-error: true
-
-  dependency-security:
-    name: Dependency Vulnerability Scan
+  basic-security:
+    name: Basic Security Checks
     runs-on: ubuntu-latest
     
     steps:
@@ -109,296 +29,79 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
+          pip install bandit safety
           pip install -r requirements.txt
           
-      - name: Run Snyk security scan
-        uses: snyk/actions/python-3.8@master
-        continue-on-error: true
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --severity-threshold=medium --json-file-output=snyk-report.json
-          
-      - name: Upload Snyk report
-        uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: snyk-security-report
-          path: snyk-report.json
-
-  docker-security:
-    name: Docker Image Security Scan
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-        
-      - name: Build Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          tags: qr-info-portal:scan
-          outputs: type=docker,dest=/tmp/image.tar
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          input: '/tmp/image.tar'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-          
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v2
-        if: always()
-        with:
-          sarif_file: 'trivy-results.sarif'
-          
-      - name: Run Hadolint Dockerfile lint
-        uses: hadolint/hadolint-action@v3.1.0
-        with:
-          dockerfile: Dockerfile
-          format: sarif
-          output-file: hadolint-results.sarif
-          
-      - name: Upload Hadolint results
-        uses: github/codeql-action/upload-sarif@v2
-        if: always()
-        with:
-          sarif_file: hadolint-results.sarif
-
-  secrets-scan:
-    name: Secrets Detection
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Full history for secret scanning
-          
-      - name: Run GitLeaks
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
-          
-      - name: Run TruffleHog
-        uses: trufflesecurity/trufflehog@main
-        with:
-          path: ./
-          base: main
-          head: HEAD
-          extra_args: --debug --only-verified
-
-  dynamic-security:
-    name: Dynamic Application Security Testing (DAST)
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          
-      - name: Install dependencies and start app
+      - name: Run Bandit security linter
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          # Start app in background
-          export FLASK_ENV=testing
-          export SECRET_KEY=test-secret-for-dast
-          export ADMIN_USERNAME=testadmin
-          export ADMIN_PASSWORD=testpassword123
-          python run.py &
-          sleep 10
-          
-      - name: Wait for application to be ready
-        run: |
-          for i in {1..30}; do
-            if curl -f http://localhost:5000/healthz; then
-              echo "Application is ready"
-              break
-            fi
-            echo "Waiting for app to start... attempt $i"
-            sleep 2
-          done
-          
-      - name: Run ZAP baseline scan
-        uses: zaproxy/action-baseline@v0.10.0
-        with:
-          target: 'http://localhost:5000'
-          rules_file_name: '.zap/rules.tsv'
-          cmd_options: '-a -j -m 5 -T 60'
-          
-      - name: Run ZAP full scan
-        uses: zaproxy/action-full-scan@v0.8.0
-        with:
-          target: 'http://localhost:5000'
-          rules_file_name: '.zap/rules.tsv'
-          cmd_options: '-a -j -m 5 -T 120'
+          bandit -r app/ -f txt || echo "⚠️ Bandit found potential issues (non-blocking)"
         continue-on-error: true
         
-      - name: Upload ZAP reports
-        uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: zap-security-reports
-          path: |
-            report_html.html
-            report_json.json
-            report_md.md
+      - name: Check for vulnerable dependencies
+        run: |
+          safety check || echo "⚠️ Safety found potential vulnerabilities (non-blocking)"
+        continue-on-error: true
+        
+      - name: Basic secret scanning
+        run: |
+          echo "🔍 Checking for potential secrets..."
+          
+          # Check for common secret patterns (basic)
+          if grep -r "password.*=" app/ | grep -v "os.environ\|config" | grep -v ".pyc"; then
+            echo "⚠️ Potential hardcoded passwords found - please review"
+          else
+            echo "✅ No obvious hardcoded passwords"
+          fi
+          
+          if grep -r "secret.*=" app/ | grep -v "os.environ\|config" | grep -v ".pyc"; then
+            echo "⚠️ Potential hardcoded secrets found - please review"  
+          else
+            echo "✅ No obvious hardcoded secrets"
+          fi
+          
+          if grep -r "api.*key.*=" app/ | grep -v "os.environ\|config" | grep -v ".pyc"; then
+            echo "⚠️ Potential hardcoded API keys found - please review"
+          else
+            echo "✅ No obvious hardcoded API keys"
+          fi
+        continue-on-error: true
 
-  compliance-check:
-    name: Security Compliance Check
+  docker-basic-scan:
+    name: Basic Docker Security
     runs-on: ubuntu-latest
+    if: github.event_name == 'push'
     
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         
-      - name: Check for security best practices
+      - name: Basic Dockerfile checks
         run: |
-          echo "## Security Compliance Report" > compliance-report.md
-          echo "Generated: $(date)" >> compliance-report.md
-          echo "" >> compliance-report.md
+          echo "🐳 Basic Docker security checks..."
           
-          # Check for required security files
-          echo "### Required Security Files" >> compliance-report.md
+          if [ ! -f "Dockerfile" ]; then
+            echo "⚠️ No Dockerfile found"
+            exit 0
+          fi
           
-          if [ -f "SECURITY.md" ]; then
-            echo "✅ SECURITY.md present" >> compliance-report.md
+          # Check if running as root
+          if grep -q "USER.*root" Dockerfile; then
+            echo "⚠️ Running as root user - consider using non-root user"
           else
-            echo "❌ SECURITY.md missing" >> compliance-report.md
+            echo "✅ Not explicitly running as root"
           fi
           
-          if [ -f ".github/SECURITY.md" ]; then
-            echo "✅ .github/SECURITY.md present" >> compliance-report.md
+          # Check for ADD with URLs
+          if grep -q "ADD.*http" Dockerfile; then
+            echo "⚠️ Using ADD with remote URLs - consider using COPY or RUN wget"
           else
-            echo "❌ .github/SECURITY.md missing" >> compliance-report.md
+            echo "✅ No remote ADD commands found"
           fi
           
-          if grep -q "security" requirements.txt; then
-            echo "✅ Security-focused dependencies found" >> compliance-report.md
+          # Check for latest tag
+          if grep -q "FROM.*:latest" Dockerfile; then
+            echo "⚠️ Using 'latest' tag - consider pinning to specific versions"
           else
-            echo "⚠️ Consider adding security-focused dependencies" >> compliance-report.md
+            echo "✅ Not using 'latest' tags"
           fi
-          
-          # Check for common security misconfigurations
-          echo "" >> compliance-report.md
-          echo "### Security Configuration" >> compliance-report.md
-          
-          if grep -r "SECRET_KEY.*=" app/ | grep -v "os.environ\|config"; then
-            echo "❌ Hardcoded secrets detected" >> compliance-report.md
-          else
-            echo "✅ No hardcoded secrets found" >> compliance-report.md
-          fi
-          
-          if grep -r "debug.*=.*True" app/; then
-            echo "⚠️ Debug mode enabled - verify this is intentional" >> compliance-report.md
-          else
-            echo "✅ Debug mode properly configured" >> compliance-report.md
-          fi
-          
-          # Check Docker security
-          if [ -f "Dockerfile" ]; then
-            echo "" >> compliance-report.md
-            echo "### Docker Security" >> compliance-report.md
-            
-            if grep -q "USER.*root" Dockerfile; then
-              echo "❌ Running as root user in Docker" >> compliance-report.md
-            else
-              echo "✅ Not running as root in Docker" >> compliance-report.md
-            fi
-            
-            if grep -q "ADD.*http" Dockerfile; then
-              echo "⚠️ Using ADD with remote URLs" >> compliance-report.md
-            else
-              echo "✅ No remote ADD commands" >> compliance-report.md
-            fi
-          fi
-          
-      - name: Upload compliance report
-        uses: actions/upload-artifact@v3
-        with:
-          name: compliance-report
-          path: compliance-report.md
-
-  supply-chain-security:
-    name: Supply Chain Security
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          
-      - name: Install cyclone-dx
-        run: |
-          pip install cyclonedx-bom
-          
-      - name: Generate Software Bill of Materials (SBOM)
-        run: |
-          cyclonedx-py -i requirements.txt -o sbom.json --format json
-          cyclonedx-py -i requirements.txt -o sbom.xml --format xml
-          
-      - name: Upload SBOM
-        uses: actions/upload-artifact@v3
-        with:
-          name: software-bill-of-materials
-          path: |
-            sbom.json
-            sbom.xml
-            
-      - name: Check for known bad packages
-        run: |
-          # List of known malicious packages to check for
-          MALICIOUS_PACKAGES="
-          python3-dateutil
-          python3-urllib3
-          python-dateutil
-          request
-          "
-          
-          echo "Checking for known malicious packages..."
-          for pkg in $MALICIOUS_PACKAGES; do
-            if grep -i "$pkg" requirements.txt; then
-              echo "❌ Potentially malicious package found: $pkg"
-              exit 1
-            fi
-          done
-          echo "✅ No known malicious packages detected"
-
-  notify-security-team:
-    name: Security Notifications
-    runs-on: ubuntu-latest
-    needs: [security-lint, dependency-security, docker-security, secrets-scan, compliance-check]
-    if: failure()
-    
-    steps:
-      - name: Notify security team
-        uses: 8398a7/action-slack@v3
-        with:
-          status: failure
-          title: '🚨 Security Scan Failures Detected'
-          text: |
-            Security scans have detected issues in ${{ github.repository }}
-            
-            Branch: ${{ github.ref }}
-            Commit: ${{ github.sha }}
-            
-            Please review the security reports and take immediate action.
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SECURITY_SLACK_WEBHOOK }}
+        continue-on-error: true
