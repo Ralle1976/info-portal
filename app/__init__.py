@@ -148,6 +148,12 @@ def create_app():
         return date_obj.strftime(format_str)
     
     @app.template_global()
+    def is_feature_enabled(feature_name):
+        """Check if a feature flag is enabled"""
+        import os
+        return os.environ.get(feature_name, 'false').lower() == 'true'
+    
+    @app.template_global()
     def format_time(time_obj, format_str='%H:%M'):
         """Format time for templates"""
         if not time_obj:
@@ -155,6 +161,38 @@ def create_app():
         if isinstance(time_obj, str):
             return time_obj
         return time_obj.strftime(format_str)
+    
+    @app.template_global()
+    def t(key: str, **kwargs) -> str:
+        """Template translation function"""
+        from app.services.i18n import I18nService
+        return I18nService.translate(key, **kwargs)
+    
+    @app.template_global()
+    def current_language():
+        """Get current language for templates"""
+        from app.services.i18n import I18nService
+        return I18nService.get_current_language()
+    
+    @app.template_global()
+    def get_portal_theme():
+        """Get the current portal theme from database"""
+        try:
+            from app.database import engine
+            from app.models import Settings
+            from sqlmodel import Session, select
+            
+            with Session(engine) as session:
+                theme_setting = session.exec(
+                    select(Settings).where(Settings.key == 'portal_theme')
+                ).first()
+                
+                if theme_setting and theme_setting.value.get('theme'):
+                    return theme_setting.value.get('theme')
+                
+                return 'medical-clean'  # default theme
+        except Exception:
+            return 'medical-clean'  # fallback to default
     
     # Register blueprints
     try:

@@ -1,0 +1,110 @@
+/* Admin Theme Buttons Styling */
+
+/* Theme Radio Button Styling */
+input[type="radio"][name="portal-theme"]:checked + div {
+    transform: scale(1.05);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Medical Clean Theme Button */
+label:has(input[value="medical-clean"]) .peer-checked\:border-blue-500 {
+    border-color: #3B82F6 !important;
+}
+
+/* Thai Warm Theme Button */
+label:has(input[value="thai-warm"]) .peer-checked\:border-orange-500 {
+    border-color: #F97316 !important;
+}
+
+/* Glass Modern Theme Button */  
+label:has(input[value="glass-modern"]) .peer-checked\:border-slate-500 {
+    border-color: #64748B !important;
+}
+
+/* Dark Neon Theme Button */
+label:has(input[value="dark-neon"]) .peer-checked\:border-cyan-400 {
+    border-color: #22D3EE !important;
+}
+
+/* Minimal Zen Theme Button */
+label:has(input[value="minimal-zen"]) .peer-checked\:border-gray-500 {
+    border-color: #6B7280 !important;
+}
+
+/* Colorful Bright Theme Button */
+label:has(input[value="colorful-bright"]) .peer-checked\:border-purple-500 {
+    border-color: #A855F7 !important;
+}
+
+/* Theme preview adjustments */
+#theme-preview {
+    transition: all 0.3s ease;
+    min-height: 120px;
+}
+
+/* Make clickable areas more obvious */
+label[class*="cursor-pointer"] {
+    user-select: none;
+}
+
+label[class*="cursor-pointer"]:hover {
+    opacity: 0.95;
+}
+
+/* Ensure proper stacking context */
+.relative {
+    position: relative;
+    z-index: 1;
+}
+
+/* Fix for radio button visibility */
+input[type="radio"].sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* Active theme indicator */
+input[type="radio"][name="portal-theme"]:checked ~ div {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+}
+
+/* Hover effects for theme buttons */
+label:has(input[name="portal-theme"]) {
+    transition: transform 0.2s ease;
+}
+
+label:has(input[name="portal-theme"]):hover {
+    transform: translateY(-2px);
+}
+
+/* Ensure Alpine.js x-data works properly */
+[x-data] {
+    position: relative;
+}
+
+/* Tab navigation styling */
+nav button[x-show*="activeTab"] {
+    transition: all 0.2s ease;
+}
+
+/* Active tab styling */
+.border-blue-500.text-blue-600 {
+    border-bottom-color: #3B82F6 !important;
+    color: #2563EB !important;
+}
+
+/* Fix tab content visibility */
+[x-show] {
+    display: block;
+}
+
+[x-show="false"] {
+    display: none !important;
+}

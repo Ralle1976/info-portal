@@ -2,7 +2,7 @@
 <html lang="{{ current_language }}" x-data="{ mobileMenuOpen: false, languageMenuOpen: false }"
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>{% block title %}{{ get_translation('admin.dashboard.title') }}{% endblock %} - QR-Info-Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
@@ -11,9 +11,17 @@
     
     <!-- Enhanced UI CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/enhanced-ui.css') }}">
+    <!-- Theme System CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/themes.css') }}">
+    <!-- Admin Mobile Optimizations -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-mobile.css') }}">
+    <!-- Admin Themes CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-themes.css') }}">
     
     <!-- Admin Internationalization System -->
     <script src="{{ url_for('static', filename='js/admin-i18n.js') }}"></script>
+    <!-- Admin Mobile Enhancements -->
+    <script src="{{ url_for('static', filename='js/admin-mobile.js') }}"></script>
     
     <style>
         body { font-family: 'Sarabun', sans-serif; }
@@ -55,67 +63,47 @@
                     
                     <!-- Desktop Navigation Enhanced -->
                     <div class="hidden md:flex items-center space-x-4">
-                        <!-- Language Switcher with Clickable Buttons -->
-                        <div class="bg-white/10 rounded-lg px-4 py-2 backdrop-blur-sm">
-                            <div class="flex items-center space-x-4">
-                                <i class="fas fa-globe text-white/80 mr-2"></i>
-                                
-                                <!-- Thai Button (Default) -->
-                                <a href="?lang=th" class="flex items-center cursor-pointer hover:opacity-80 transition-all group">
-                                    <div class="relative">
-                                        <div class="w-4 h-4 bg-white/20 rounded-full border-2 border-white/40 
-                                                    {% if current_language == 'th' %}bg-thai-turquoise border-white{% endif %}
-                                                    group-hover:border-white transition-all"></div>
-                                        {% if current_language == 'th' %}
-                                        <div class="absolute inset-0 flex items-center justify-center">
-                                            <div class="w-2 h-2 bg-white rounded-full"></div>
-                                        </div>
-                                        {% endif %}
-                                    </div>
-                                    <span class="ml-2 text-sm text-white/90 font-medium
-                                                 {% if current_language == 'th' %}text-white{% endif %}
-                                                 group-hover:text-white transition-colors">
+                        <!-- Theme Settings Link -->
+                        <a href="{{ url_for('admin.manage_settings') }}?activeTab=appearance" 
+                           class="bg-white/10 rounded-lg px-3 py-2 backdrop-blur-sm flex items-center text-white/80 hover:text-white transition-colors"
+                           title="Theme über Einstellungen verwalten">
+                            <i class="fas fa-palette mr-2 text-sm"></i>
+                            <span class="text-sm">Theme</span>
+                        </a>
+                        
+                        <!-- Language Switcher - Simple Button Group -->
+                        <div class="bg-white/10 rounded-lg px-2 py-1 backdrop-blur-sm">
+                            <div class="flex items-center">
+                                <i class="fas fa-globe text-white/80 mr-2 text-sm"></i>
+                                <div class="flex">
+                                    <a href="?lang=th" 
+                                       class="px-3 py-1 text-sm rounded-l transition-colors
+                                              {% if current_language == 'th' %}
+                                              bg-thai-turquoise text-white font-medium
+                                              {% else %}
+                                              text-white/80 hover:bg-white/20 hover:text-white
+                                              {% endif %}">
                                         ไทย
-                                    </span>
-                                </a>
-                                
-                                <!-- German Button -->
-                                <a href="?lang=de" class="flex items-center cursor-pointer hover:opacity-80 transition-all group">
-                                    <div class="relative">
-                                        <div class="w-4 h-4 bg-white/20 rounded-full border-2 border-white/40 
-                                                    {% if current_language == 'de' %}bg-thai-turquoise border-white{% endif %}
-                                                    group-hover:border-white transition-all"></div>
-                                        {% if current_language == 'de' %}
-                                        <div class="absolute inset-0 flex items-center justify-center">
-                                            <div class="w-2 h-2 bg-white rounded-full"></div>
-                                        </div>
-                                        {% endif %}
-                                    </div>
-                                    <span class="ml-2 text-sm text-white/80 
-                                                 {% if current_language == 'de' %}text-white font-medium{% endif %}
-                                                 group-hover:text-white transition-colors">
+                                    </a>
+                                    <a href="?lang=de" 
+                                       class="px-3 py-1 text-sm border-l border-r border-white/20 transition-colors
+                                              {% if current_language == 'de' %}
+                                              bg-thai-turquoise text-white font-medium
+                                              {% else %}
+                                              text-white/80 hover:bg-white/20 hover:text-white
+                                              {% endif %}">
                                         DE
-                                    </span>
-                                </a>
-                                
-                                <!-- English Button -->
-                                <a href="?lang=en" class="flex items-center cursor-pointer hover:opacity-80 transition-all group">
-                                    <div class="relative">
-                                        <div class="w-4 h-4 bg-white/20 rounded-full border-2 border-white/40 
-                                                    {% if current_language == 'en' %}bg-thai-turquoise border-white{% endif %}
-                                                    group-hover:border-white transition-all"></div>
-                                        {% if current_language == 'en' %}
-                                        <div class="absolute inset-0 flex items-center justify-center">
-                                            <div class="w-2 h-2 bg-white rounded-full"></div>
-                                        </div>
-                                        {% endif %}
-                                    </div>
-                                    <span class="ml-2 text-sm text-white/80 
-                                                 {% if current_language == 'en' %}text-white font-medium{% endif %}
-                                                 group-hover:text-white transition-colors">
+                                    </a>
+                                    <a href="?lang=en" 
+                                       class="px-3 py-1 text-sm rounded-r transition-colors
+                                              {% if current_language == 'en' %}
+                                              bg-thai-turquoise text-white font-medium
+                                              {% else %}
+                                              text-white/80 hover:bg-white/20 hover:text-white
+                                              {% endif %}">
                                         EN
-                                    </span>
-                                </a>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                         
@@ -162,9 +150,9 @@
                     <!-- Mobile menu button -->
                     <div class="md:hidden">
                         <button @click="mobileMenuOpen = !mobileMenuOpen" 
-                                class="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100">
-                            <i class="fas fa-bars" x-show="!mobileMenuOpen"></i>
-                            <i class="fas fa-times" x-show="mobileMenuOpen"></i>
+                                class="p-3 rounded-md text-white hover:text-white hover:bg-white/20 transition-colors">
+                            <i class="fas fa-bars text-lg" x-show="!mobileMenuOpen"></i>
+                            <i class="fas fa-times text-lg" x-show="mobileMenuOpen"></i>
                         </button>
                     </div>
                 </div>
@@ -200,6 +188,12 @@
                        class="nav-item {% if request.endpoint == 'admin.manage_settings' %}nav-active{% endif %}">
                         <i class="fas fa-cogs mr-2"></i>{{ t('admin.navigation.settings') }}
                     </a>
+                    {% if is_feature_enabled('FEATURE_SOCIAL_MEDIA') %}
+                    <a href="{{ url_for('admin.manage_social_media') }}" 
+                       class="nav-item {% if request.endpoint == 'admin.manage_social_media' %}nav-active{% endif %}">
+                        <i class="fas fa-share-alt mr-2"></i>Social Media
+                    </a>
+                    {% endif %}
                     <a href="{{ url_for('admin.analytics_dashboard') }}" 
                        class="nav-item {% if request.endpoint == 'admin.analytics_dashboard' %}nav-active{% endif %}">
                         <i class="fas fa-chart-bar mr-2"></i>Analytics
@@ -302,6 +296,12 @@
                        class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
                         <i class="fas fa-cogs mr-2"></i>{{ t('admin.navigation.settings') }}
                     </a>
+                    {% if is_feature_enabled('FEATURE_SOCIAL_MEDIA') %}
+                    <a href="{{ url_for('admin.manage_social_media') }}" 
+                       class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                        <i class="fas fa-share-alt mr-2"></i>Social Media
+                    </a>
+                    {% endif %}
                     <a href="{{ url_for('admin.change_password') }}" 
                        class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
                         <i class="fas fa-key mr-2"></i>{{ t('admin.navigation.change_password') }}

@@ -103,9 +103,12 @@ def home():
     with open('config.yml', 'r', encoding='utf-8') as f:
         config = yaml.safe_load(f)
     
-    # Get social media platforms
-    social_service = SocialMediaService()
-    social_platforms = social_service.get_platforms_for_display()
+    # Get social media platforms if feature is enabled AND platforms are configured
+    social_platforms = []
+    if os.getenv('FEATURE_SOCIAL_MEDIA', 'false').lower() == 'true':
+        social_service = SocialMediaService()
+        # get_platforms_for_display() already returns empty list if no platforms configured
+        social_platforms = social_service.get_platforms_for_display()
     
     # Get week schedule for quick view
     week_start = today - timedelta(days=today.weekday())
@@ -123,9 +126,8 @@ def home():
     availability_today = []
     # This is indicative only - would be fetched from availability service
     
-    # Determine which template to use based on language preference
-    # Thai-first approach: always show Thai as primary with EN subtitles
-    template_name = 'home_thai_first.html' if lang == 'th' else 'home.html'
+    # Use the same template for all languages to ensure consistency
+    template_name = 'home.html'
     
     # Get base template context and extend it
     context = get_template_context()
@@ -237,8 +239,21 @@ def set_language(language):
 @public_bp.route('/qr')
 def qr_png():
     """Generate QR code as PNG"""
-    # Get target URL from params or use site URL
-    target = request.args.get('target', os.getenv('SITE_URL', request.url_root))
+    # Get target URL from params or auto-detect proper URL
+    target = request.args.get('target')
+    if not target:
+        # Auto-detect the proper URL for QR code
+        site_url = os.getenv('SITE_URL')
+        if site_url and 'localhost' not in site_url:
+            target = site_url
+        else:
+            # Use the actual host IP from the request
+            host = request.environ.get('HTTP_HOST')
+            if host and 'localhost' not in host:
+                target = f"http://{host}"
+            else:
+                # Fallback to request.url_root for local development
+                target = request.url_root
     size = request.args.get('size', 300, type=int)
     
     # Generate PNG file
@@ -253,8 +268,21 @@ def qr_png():
 @public_bp.route('/qr.svg')
 def qr_svg():
     """Generate QR code as SVG"""
-    # Get target URL from params or use site URL
-    target = request.args.get('target', os.getenv('SITE_URL', request.url_root))
+    # Get target URL from params or auto-detect proper URL
+    target = request.args.get('target')
+    if not target:
+        # Auto-detect the proper URL for QR code
+        site_url = os.getenv('SITE_URL')
+        if site_url and 'localhost' not in site_url:
+            target = site_url
+        else:
+            # Use the actual host IP from the request
+            host = request.environ.get('HTTP_HOST')
+            if host and 'localhost' not in host:
+                target = f"http://{host}"
+            else:
+                # Fallback to request.url_root for local development
+                target = request.url_root
     
     # Generate SVG
     svg_data = QRService.generate_qr_svg(target)
@@ -351,6 +379,9 @@ def kiosk_single():
     
     opening_status = ScheduleService.get_opening_status()
     
+    # Get week schedule (same as triple view)
+    week_schedule = ScheduleService.get_week_schedule(today)
+    
     # Load config
     with open('config.yml', 'r', encoding='utf-8') as f:
         config = yaml.safe_load(f)
@@ -358,11 +389,13 @@ def kiosk_single():
     # Get current language for kiosk
     lang = I18nService.get_current_language()
     
-    return render_template('kiosk/single_redesigned.html',
+    return render_template('kiosk/single.html',
         status=status,
         today_hours=today_hours,
         opening_status=opening_status,
+        week_schedule=week_schedule,
         config=config,
+        services=_get_services_for_language(lang),
         today=today,
         now=datetime.now(ScheduleService.TIMEZONE),
         lang=lang,
@@ -401,13 +434,18 @@ def kiosk_triple():
     # Get current language for kiosk
     lang = I18nService.get_current_language()
     
+    # Extract time_ranges from today_hours for template compatibility
+    today_time_ranges = today_hours.get('time_ranges', []) if today_hours else []
+    
     context = {
         'status': status,
-        'today_hours': today_hours,
+        'today_hours': today_time_ranges,  # Pass only the time ranges list
+        'today_hours_data': today_hours,   # Keep full data available if needed
         'opening_status': opening_status,
         'week_schedule': week_schedule,
         'preview_weeks': preview_weeks,
         'config': config,
+        'services': _get_services_for_language(lang),
         'today': today,
         'now': datetime.now(ScheduleService.TIMEZONE),
         'lang': lang,
@@ -418,7 +456,7 @@ def kiosk_triple():
         'announcements': []
     }
     
-    return render_template('kiosk/triple_modern.html', **context)
+    return render_template('kiosk/triple.html', **context)
 
 @public_bp.route('/kiosk/ultimate')
 def kiosk_ultimate():
@@ -445,7 +483,7 @@ def kiosk_ultimate():
     with open('config.yml', 'r', encoding='utf-8') as f:
         config = yaml.safe_load(f)
     
-    return render_template('kiosk/ultimate.html',
+    return render_template('kiosk/single.html',
         status=status,
         today_hours=today_hours,
         opening_status=opening_status,
@@ -491,7 +529,7 @@ def kiosk_rotation():
         # Get current language
         lang = I18nService.get_current_language()
         
-        return render_template('kiosk/rotation_system.html',
+        return render_template('kiosk/single.html',
             status=status,
             today_hours=today_hours,
             week_schedule=week_schedule,
@@ -538,7 +576,7 @@ def kiosk_triple_modern():
     # Get current language for kiosk
     lang = I18nService.get_current_language()
     
-    return render_template('kiosk/triple_modern.html',
+    return render_template('kiosk/triple.html',
         status=status,
         today_hours=today_hours,
         opening_status=opening_status,
@@ -584,9 +622,12 @@ def home_modern():
     with open('config.yml', 'r', encoding='utf-8') as f:
         config = yaml.safe_load(f)
     
-    # Get social media platforms
-    social_service = SocialMediaService()
-    social_platforms = social_service.get_platforms_for_display()
+    # Get social media platforms if feature is enabled AND platforms are configured
+    social_platforms = []
+    if os.getenv('FEATURE_SOCIAL_MEDIA', 'false').lower() == 'true':
+        social_service = SocialMediaService()
+        # get_platforms_for_display() already returns empty list if no platforms configured
+        social_platforms = social_service.get_platforms_for_display()
     
     # Get week schedule for quick view
     week_start = today - timedelta(days=today.weekday())

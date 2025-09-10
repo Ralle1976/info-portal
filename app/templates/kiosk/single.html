@@ -1,266 +1,246 @@
 <!DOCTYPE html>
-<html lang="{{ i18n.get_current_language() }}">
+<html lang="{{ current_language() }}">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-    <title>{{ config.site.name }} - Kiosk</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>{{ config.site.name }} - Single Kiosk</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Google Fonts - Sarabun -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
-    
-    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
-    <!-- Enhanced UI CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/enhanced-ui.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/kiosk-responsive.css') }}">
-    <!-- Font Optimization CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/font-optimization.css') }}">
-    <!-- Performance Optimization CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/kiosk-enhanced.css') }}">
+    <!-- Theme System CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/themes.css') }}">
+    <!-- Adaptive Kiosk CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/kiosk-adaptive.css') }}">
     
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'medical-primary': '#00A86B',
-                        'medical-secondary': '#0056B3',
-                        'thai-accent': '#B8860B',
-                        'medical-coral': '#CD5C5C',
-                        'status-open': '#059669',
-                        'status-closed': '#DC2626',
-                        'status-warning': '#D97706',
-                        'thai-respect': '#4A5568',
-                        'thai-calm': '#EDF2F7'
-                    }
-                }
-            }
-        }
-    </script>
-    
-    <style>
-        body {
-            background: linear-gradient(135deg, #EDF2F7 0%, #E0F2FE 50%, #F0FDF4 100%);
-            font-family: 'Sarabun', sans-serif;
-            min-height: 100vh;
-        }
-        .kiosk-gradient-overlay {
-            background: linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0.05));
-            backdrop-filter: blur(2px);
-        }
-    </style>
-    <script nonce="{{ csp_nonce }}">
-        // Performance-optimized auto-refresh system
+        // Auto-refresh and clock
         (function() {
-            const REFRESH_INTERVAL = {{ config.get('performance', {}).get('refresh', {}).get('interval_seconds', 120) }} * 1000;
-            const MAX_RETRIES = {{ config.get('performance', {}).get('refresh', {}).get('max_retries', 3) }};
-            let retryCount = 0;
-            
-            function performRefresh() {
-                {% if config.get('performance', {}).get('refresh', {}).get('smooth_reload', True) %}
-                // Smooth reload with overlay
-                const overlay = document.createElement('div');
-                overlay.style.cssText = `
-                    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-                    background: linear-gradient(135deg, #F0FDF4, #E0F2FE);
-                    display: flex; align-items: center; justify-content: center;
-                    z-index: 10000; opacity: 0; transition: opacity 0.5s ease;
-                `;
-                overlay.innerHTML = `
-                    <div style="text-align: center; color: #00A86B; font-family: 'Sarabun', sans-serif;">
-                        <div style="font-size: 3rem; margin-bottom: 1rem;">
-                            <i class="fas fa-sync-alt fa-spin"></i>
-                        </div>
-                        <div style="font-size: 1.5rem; font-weight: 600;">
-                            กำลังปรับปรุงข้อมูล<br>
-                            <span style="font-size: 1rem; opacity: 0.7;">Updating Information</span>
-                        </div>
-                    </div>
-                `;
-                document.body.appendChild(overlay);
-                requestAnimationFrame(() => {
-                    overlay.style.opacity = '1';
-                    setTimeout(() => window.location.reload(), 800);
-                });
-                {% else %}
-                window.location.reload();
-                {% endif %}
-            }
-            
-            // Set refresh timer
-            setTimeout(performRefresh, REFRESH_INTERVAL);
+            const REFRESH_INTERVAL = 60000; // 1 minute
+            setTimeout(() => window.location.reload(), REFRESH_INTERVAL);
         })();
         
-        // Update clock every second
         function updateClock() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('de-DE', {
+            const time = new Date().toLocaleTimeString('de-DE', {
                 hour: '2-digit',
                 minute: '2-digit',
                 second: '2-digit',
                 timeZone: 'Asia/Bangkok'
             });
-            document.getElementById('clock').textContent = timeString;
+            const clockEl = document.getElementById('clock');
+            if (clockEl) clockEl.textContent = time;
         }
         
-        // Update immediately and then every second
         document.addEventListener('DOMContentLoaded', function() {
             updateClock();
             setInterval(updateClock, 1000);
         });
+        
+        // Fix viewport zoom on orientation change
+        window.addEventListener('orientationchange', function() {
+            setTimeout(function() {
+                // Force viewport reset
+                const viewport = document.querySelector('meta[name="viewport"]');
+                viewport.setAttribute('content', 
+                    'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover'
+                );
+                // Force reflow
+                document.body.style.height = '100.001vh';
+                setTimeout(() => {
+                    document.body.style.height = '100vh';
+                }, 10);
+            }, 500);
+        });
     </script>
+    
+    <style>
+        /* Single Kiosk Specific Styles */
+        .single-kiosk-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            height: auto;
+        }
+        
+        /* PC Layout */
+        @media screen and (min-width: 1025px) {
+            .single-kiosk-layout {
+                grid-template-columns: 1fr 1fr 1fr;
+                grid-template-rows: 1fr;
+                gap: 1.5rem;
+                height: calc(100vh - 180px);
+                align-items: stretch;
+            }
+            
+            .kiosk-content {
+                padding: 2rem 1.5rem 1.5rem 1.5rem;
+                height: calc(100vh - 60px);
+                display: flex;
+                flex-direction: column;
+                box-sizing: border-box;
+            }
+        }
+        
+        /* Mobile Layout */
+        @media screen and (max-width: 768px) {
+            .single-kiosk-layout {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .section-card {
+                min-height: auto;
+            }
+        }
+    </style>
 </head>
-<body class="kiosk-single-mode text-white">
-    <div class="kiosk-gradient-overlay min-h-screen">
-        <!-- Kiosk Language Switcher -->
-        <div class="absolute top-4 right-4 z-20">
-            {% include 'components/language_switcher.html' %}
+<body class="kiosk-single" data-theme="{{ get_portal_theme() }}">
+    <div class="kiosk-container">
+        
+        <!-- Language Switcher - Fixed Top Bar -->
+        <div class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-sm border-b border-white/20 py-2 px-4">
+            <div class="flex justify-end">
+                {% include 'components/language_switcher.html' %}
+            </div>
         </div>
         
-        <div class="container mx-auto px-8 h-screen flex flex-col justify-center animate-fade-in">
+        <div class="kiosk-content" style="padding-top: 60px;">
             
-            <!-- Header Enhanced -->
-            <div class="text-center mb-12">
-                <div class="flex items-center justify-center mb-6">
-                    <div class="bg-white/20 p-4 rounded-2xl mr-4 backdrop-blur-sm">
-                        <i class="fas fa-stethoscope text-white text-5xl"></i>
-                    </div>
-                    <div class="text-left">
-                        <h1 class="kiosk-title text-white">{{ config.site.name }}</h1>
-                        <p class="kiosk-subtitle text-white/90">Labor für Blutuntersuchungen • Pattaya</p>
+            <!-- Kiosk Header - Labor Identifikation -->
+            <div class="kiosk-header-section">
+                <h1 class="kiosk-main-title">{{ config.site.name }}</h1>
+                <div class="kiosk-subtitle">{{ t('live_information') }}</div>
+            </div>
+            
+            <!-- PC Layout: Grid mit 3 Spalten, Mobile: Vertikal -->
+            <div class="single-kiosk-layout">
+                
+                <!-- Column 1: Zeit und Status -->
+                <div class="section-card">
+                    <h2 class="section-title">{{ t('today') }}</h2>
+                    <div class="section-content">
+                        <!-- Live Clock -->
+                        <div class="text-center mb-6">
+                            <div id="clock" class="text-3xl font-bold text-medical-green">--:--:--</div>
+                            <div class="text-sm text-gray-600">{{ now.strftime('%A, %d. %B %Y') }}</div>
+                            <div class="text-xs text-gray-500 mt-1">{{ t('bangkok_time') }}</div>
+                        </div>
+                        
+                        <!-- Status -->
+                        <div class="mb-4">
+                            <div class="status-badge status-{{ status.status_type|lower }}">
+                                {% if status.status_type == 'ANWESEND' %}
+                                    <i class="fas fa-door-open mr-2"></i>{{ t('we_are_here') }}
+                                {% elif status.status_type == 'URLAUB' %}
+                                    <i class="fas fa-umbrella-beach mr-2"></i>{{ t('on_vacation') }}
+                                {% elif status.status_type == 'BILDUNGSURLAUB' %}
+                                    <i class="fas fa-graduation-cap mr-2"></i>{{ t('educational_leave') }}
+                                {% else %}
+                                    <i class="fas fa-info-circle mr-2"></i>{{ t('information') }}
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Today's Hours -->
+                        <div class="today-hours">
+                            <h4 class="font-semibold mb-2">{{ t('todays_opening_hours') }}</h4>
+                            {% if today_hours %}
+                                {% for hour_range in today_hours %}
+                                    <div class="time-slot">
+                                        <i class="fas fa-clock mr-2"></i>{{ hour_range }}
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="text-red-600">
+                                    <i class="fas fa-door-closed mr-2"></i>{{ t('closed_today') }}
+                                </div>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
-            </div>
-            
-            <!-- Live Clock Enhanced -->
-            <div class="text-center mb-16">
-                <div class="kiosk-time text-thai-gold" id="clock">--:--:--</div>
-                <div class="kiosk-date">{{ now.strftime('%A, %d. %B %Y') }}</div>
-                <div class="text-white/70 text-lg">{{ t('ui_common.bangkok_time') }}</div>
-            </div>
-            
-            <!-- Status Banner Enhanced -->
-            <div class="mb-12">
-                {% if status.status_type == 'ANWESEND' %}
-                    <div class="kiosk-card bg-green-500/90 max-w-4xl mx-auto border-4 border-white/20">
-                        <div class="kiosk-content text-center">
-                            <div class="bg-white/20 rounded-full p-6 w-24 h-24 mx-auto mb-6 flex items-center justify-center">
-                                <i class="fas fa-door-open text-white text-4xl"></i>
-                            </div>
-                            <div class="kiosk-status-badge bg-white/20 text-white mb-4">
-                                {{ t('kiosk.we_are_here') }}
-                            </div>
-                            <div class="text-2xl text-white/90">{{ t('kiosk.open_and_available') }}</div>
-                        </div>
-                    </div>
-                {% elif status.status_type == 'URLAUB' %}
-                    <div class="kiosk-card bg-red-500/90 max-w-4xl mx-auto border-4 border-white/20">
-                        <div class="kiosk-content text-center">
-                            <div class="bg-white/20 rounded-full p-6 w-24 h-24 mx-auto mb-6 flex items-center justify-center">
-                                <i class="fas fa-umbrella-beach text-white text-4xl"></i>
-                            </div>
-                            <div class="kiosk-status-badge bg-white/20 text-white mb-4">
-                                {{ t('on_vacation') }}
-                            </div>
-                            <div class="text-2xl text-white/90">
-                                {% if status.to_date %}
-                                    {{ t('kiosk_texts.back_on_date') }} {{ status.to_date.strftime('%d.%m.%Y') }}
-                                {% else %}
-                                    {{ t('kiosk_texts.back_soon') }}
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                {% elif status.status_type == 'BILDUNGSURLAUB' %}
-                    <div class="kiosk-card bg-blue-500/90 max-w-4xl mx-auto border-4 border-white/20">
-                        <div class="kiosk-content text-center">
-                            <div class="bg-white/20 rounded-full p-6 w-24 h-24 mx-auto mb-6 flex items-center justify-center">
-                                <i class="fas fa-graduation-cap text-white text-4xl"></i>
-                            </div>
-                            <div class="kiosk-status-badge bg-white/20 text-white mb-4">
-                                {{ t('educational_leave') }}
-                            </div>
-                            <div class="text-2xl text-white/90">
-                                {% if status.to_date %}
-                                    {{ t('kiosk_texts.back_on_date') }} {{ status.to_date.strftime('%d.%m.%Y') }}
-                                {% else %}
-                                    {{ t('kiosk_texts.for_better_treatment') }}
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                {% else %}
-                    <div class="kiosk-card bg-yellow-500/90 max-w-4xl mx-auto border-4 border-white/20">
-                        <div class="kiosk-content text-center">
-                            <div class="bg-white/20 rounded-full p-6 w-24 h-24 mx-auto mb-6 flex items-center justify-center">
-                                <i class="fas fa-info-circle text-white text-4xl"></i>
-                            </div>
-                            <div class="kiosk-status-badge bg-white/20 text-white mb-4">
-                                {{ t('kiosk_texts.information') }}
-                            </div>
-                            <div class="text-2xl text-white/90">{{ status.note or t('kiosk_texts.please_note') }}</div>
-                        </div>
-                    </div>
-                {% endif %}
-            </div>
-            
-            <!-- Today's Hours Enhanced -->
-            <div class="mb-12">
-                <h2 class="text-4xl font-semibold mb-8 text-center text-white">{{ t('kiosk.todays_opening_hours') }}</h2>
-                {% if today_hours %}
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-                        {% for hour_range in today_hours %}
-                            <div class="bg-white/20 rounded-2xl p-8 backdrop-blur-sm border border-white/30 text-center">
-                                <div class="bg-white/20 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                                    <i class="fas fa-clock text-white text-2xl"></i>
+                
+                <!-- Column 2: Woche -->
+                <div class="section-card">
+                    <h2 class="section-title">{{ t('this_week') }}</h2>
+                    <div class="section-content">
+                        {% set day_names = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] %}
+                        {% for day_info in week_schedule %}
+                            {% set is_today = day_info.date == today %}
+                            <div class="week-day {{ 'today' if is_today else '' }}">
+                                <div class="day-header">
+                                    <strong>{{ t(day_names[loop.index0]) }}</strong>
+                                    <span class="day-date">{{ day_info.date.strftime('%d.%m') if day_info.date else '' }}</span>
                                 </div>
-                                <div class="text-3xl font-bold text-white mb-2">{{ hour_range }}</div>
-                                <div class="text-white/80">{{ t('open') }}</div>
+                                <div class="day-hours">
+                                    {% if day_info.get('closed', False) %}
+                                        <span class="closed-indicator">{{ t('closed') }}</span>
+                                    {% else %}
+                                        {% for time_range in day_info.get('time_ranges', []) %}
+                                            <span class="time-range">{{ time_range }}</span>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                                {% if day_info.get('is_exception', False) and day_info.get('note') %}
+                                    <div class="exception-note">{{ day_info.get('note') }}</div>
+                                {% endif %}
                             </div>
                         {% endfor %}
                     </div>
-                {% else %}
-                    <div class="{% if status and status.type == 'URLAUB' %}bg-blue-500/30 border-blue-300/50{% elif status and status.type == 'BILDUNGSURLAUB' %}bg-purple-500/30 border-purple-300/50{% elif status and status.type == 'KONGRESS' %}bg-indigo-500/30 border-indigo-300/50{% else %}bg-red-500/30 border-red-300/50{% endif %} rounded-2xl p-8 max-w-lg mx-auto backdrop-blur-sm border text-center">
-                        <div class="bg-white/20 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                            <i class="fas {% if status and status.type == 'URLAUB' %}fa-umbrella-beach{% elif status and status.type == 'BILDUNGSURLAUB' %}fa-graduation-cap{% elif status and status.type == 'KONGRESS' %}fa-users{% else %}fa-door-closed{% endif %} text-white text-2xl"></i>
+                </div>
+                
+                <!-- Column 3: Kontakt & Services -->
+                <div class="section-card">
+                    <h2 class="section-title">{{ t('contact') }} & {{ t('services') }}</h2>
+                    <div class="section-content">
+                        <!-- Contact Info -->
+                        <div class="contact-section mb-4">
+                            {% if config.contact.phone %}
+                            <div class="contact-item">
+                                <i class="fas fa-phone mr-2"></i>
+                                <span>{{ config.contact.phone }}</span>
+                            </div>
+                            {% endif %}
+                            {% if config.contact.email %}
+                            <div class="contact-item">
+                                <i class="fas fa-envelope mr-2"></i>
+                                <span>{{ config.contact.email }}</span>
+                            </div>
+                            {% endif %}
                         </div>
-                        <div class="text-3xl font-bold text-white">
-                            {% if status and status.type == 'URLAUB' %}{{ t('kiosk.vacation_big') }}
-                            {% elif status and status.type == 'BILDUNGSURLAUB' %}{{ t('kiosk.education_big') }}
-                            {% elif status and status.type == 'KONGRESS' %}{{ t('kiosk.congress_big') }}
-                            {% else %}{{ t('kiosk.closed_today_big') }}{% endif %}
+                        
+                        <!-- Services -->
+                        {% if services %}
+                        <div class="services-section">
+                            <h4 class="services-header">{{ t('services') }}</h4>
+                            <ul class="services-list">
+                                {% for service in services %}
+                                <li><i class="fas fa-stethoscope mr-2"></i>{{ service }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- QR Code Integration - klein und dezent für Mobile -->
+                        <div class="qr-section qr-mobile-only">
+                            <img src="/qr?size=80" alt="QR Code Portal">
+                            <p class="qr-label">{{ t('online_portal') }}</p>
                         </div>
                     </div>
-                {% endif %}
+                </div>
+                
             </div>
             
-            <!-- Contact Enhanced -->
-            <div class="flex justify-center space-x-12 text-xl text-white/90">
-                {% if config.contact.phone %}
-                <div class="flex items-center">
-                    <i class="fas fa-phone text-2xl mr-4"></i>
-                    <span class="font-semibold">{{ config.contact.phone }}</span>
-                </div>
-                {% endif %}
-                {% if config.contact.email %}
-                <div class="flex items-center">
-                    <i class="fas fa-envelope text-2xl mr-4"></i>
-                    <span class="font-semibold">{{ config.contact.email }}</span>
-                </div>
-                {% endif %}
+            <!-- QR Code für PC - dezent positioniert -->
+            <div class="qr-pc-overlay">
+                <img src="/qr?size=100" alt="QR Code Portal">
+                <p class="qr-label">{{ t('online_portal') }}</p>
             </div>
             
-        </div>
-        
-        <!-- QR Code Enhanced -->
-        <div class="qr-kiosk">
-            <img src="/qr?size=150" alt="QR Code Portal" class="rounded-lg">
-            <div class="qr-label text-black font-medium">{{ t('kiosk_texts.scan_for_info') | safe }}</div>
         </div>
     </div>
+
+    <!-- Adaptive Kiosk JavaScript -->
+    <script src="{{ url_for('static', filename='js/kiosk-adaptive.js') }}"></script>
 </body>
 </html>
